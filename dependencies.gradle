@@ -9,11 +9,11 @@ ext {
             mapStruct     : "1.5.5.Final",
             jwt           : "4.4.0",
             swagger       : "2.3.0",
-            twilio        : "9.14.1",
             micrometer    : "1.2.2",   		// new spring sleuth
             zipkinBrave   : "2.16.3",  		// new zipkin brave
 
             /*
+            twilio        : "9.14.1",
             prometheus    : "1.12.2",
             iTextPDF      : "5.5.13.3",
             jasperReports : "6.21.0",

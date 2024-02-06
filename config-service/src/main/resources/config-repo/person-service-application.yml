@@ -1,0 +1,33 @@
+#server:
+#  port: 9091
+#spring:
+#  security: # security 19 aralık salı
+#    user: # bu tek kullanıcı için, istediğim şey tam olarak bu değil
+#      name: java12
+#      password: 1234
+#  rabbitmq:
+#    host: localhost
+#    port: 5672
+#    username: user
+#    password: user
+#  zipkin:
+#    enabled: true
+#    base-url: http://localhost:9411
+#    service:
+#      name: person-service
+#  data:
+#    mongodb:
+#      host: localhost
+#      port: 27017
+#      database: UserProfileDB
+#      username: defaultUser
+#      password: bilge!123
+#
+#authserviceconfig:
+#  secrets:
+#    secret-key: ${JAVA12_m001_SECRETKEY}
+#    issuer: ${JAVA12_m001_ISSUER}
+#
+#redisconfig:
+#  host: localhost
+#  port: 6379

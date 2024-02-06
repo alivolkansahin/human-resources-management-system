@@ -1,0 +1,27 @@
+#server:
+#  port: 9090
+#spring:
+#  rabbitmq:
+#    host: localhost
+#    port: 5672
+#    username: user
+#    password: user
+#  zipkin:
+#    enabled: true
+#    base-url: http://localhost:9411
+#    service:
+#      name: auth-service
+#  datasource:
+#    driver-class-name: org.postgresql.Driver
+#    #    url: jdbc:postgresql://192.168.1.37:5433/m1Java12Auth  #192.168.1.37
+#    url: jdbc:postgresql://localhost:5432/databaseAdi
+#    username: postgres
+#    password: 1234
+#  jpa:
+#    hibernate:
+#      ddl-auto: update
+#
+#auth-service-config:
+#  secrets:
+#    secret-key: ${JAVA12_m001_SECRETKEY}
+#    issuer: ${JAVA12_m001_ISSUER}

@@ -1,1 +1,9 @@
 rootProject.name = 'human-resources-management-system'
+include 'gateway-service'
+include 'auth-service'
+include 'config-service'
+include 'config-git-service'
+include 'mail-service'
+include 'company-service'
+include 'person-service'
+

@@ -9,7 +9,7 @@ plugins {
 allprojects {
     apply from: "${rootDir}/dependencies.gradle"
     apply plugin: 'application'
-    group = 'org.vemfs'
+    group = 'org.musketeers'
     version = 'v.0.0.1'
     sourceCompatibility=JavaVersion.VERSION_19
     targetCompatibility=JavaVersion.VERSION_19

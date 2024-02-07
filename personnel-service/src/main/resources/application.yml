@@ -1,0 +1,28 @@
+server:
+  port: 9091
+spring:
+  data:
+    mongodb:
+      host: localhost
+      port: 27017
+      database: HRSystem
+      username: devAvs
+      password: musketeers!123
+  cloud:
+    config:
+      enabled: false
+
+
+
+
+
+
+
+#spring:
+#  cloud:
+#    config:
+#      uri: ${config-server-url} #http://localhost:8888
+#  config:
+#    import: "configserver:"
+#  application:
+#    name: person-service-application

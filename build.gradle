@@ -35,7 +35,7 @@ allprojects {
     }
     dependencies {
         implementation libs.springBootActuator
-        implementation libs.springBootSecurity
+//        implementation libs.springBootSecurity
         implementation libs.springBootValidation
         implementation libs.springBootWeb
         implementation libs.springCloudOpenFeign
@@ -44,7 +44,7 @@ allprojects {
         implementation libs.zipkinBrave
         compileOnly libs.lombok
         annotationProcessor libs.lombok
-        implementation libs.springDockerCompose
+//        implementation libs.springDockerCompose
         implementation libs.mapStruct
         annotationProcessor libs.mapStructProcessor
         implementation libs.jwt

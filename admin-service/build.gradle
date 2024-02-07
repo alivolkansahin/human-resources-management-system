@@ -2,11 +2,11 @@ dependencies {
 /*
         // seçimlerini yap ve ekle
         implementation libs.springBootAMQP
-        implementation libs.springBootJPA
-        implementation libs.springBootMongoDB
         implementation libs.springBootRedis
         implementation libs.springBootCassandra
         implementation libs.springBootElasticsearch
+        implementation libs.springBootJPA
+        implementation libs.springBootMongoDB
         implementation libs.postgreSQL
         implementation libs.mySQL
 */

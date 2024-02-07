@@ -1,8 +1,0 @@
-#spring:
-#  cloud:
-#    config:
-#      uri: ${config-server-url} #http://localhost:8888
-#  config:
-#    import: "configserver:"
-#  application:
-#    name: person-service-application

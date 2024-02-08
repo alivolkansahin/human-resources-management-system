@@ -2,11 +2,13 @@ package org.musketeers.entity;
 
 import lombok.*;
 import lombok.experimental.SuperBuilder;
+import org.musketeers.entity.enums.ActivationStatus;
+import org.musketeers.entity.enums.Gender;
+import org.musketeers.entity.enums.Image;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.time.LocalDate;
-import java.util.List;
 
 @EqualsAndHashCode(callSuper = true)
 @NoArgsConstructor
@@ -25,18 +27,21 @@ public class Guest extends BaseEntity {
 
     private String lastName;
 
+    private Gender gender;
+
     private String identityNumber;
 
     private String email;
 
-    private String password;
+//    private String password;
 
     private String image;
-
-    private List<Address> addresses;
 
     private Phone phone;
 
     private LocalDate dateOfBirth;
+
+    @Builder.Default
+    private ActivationStatus activationStatus = ActivationStatus.PENDING;
 
 }

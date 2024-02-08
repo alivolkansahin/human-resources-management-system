@@ -23,4 +23,8 @@ public class CompanyService extends ServiceManager<Company, Long> {
             return ResponseEntity.ok(true);
         }
     }
+
+    public boolean findByCompanyName(String companyName){
+        return companyRepository.findByCompanyName(companyName);
+    }
 }

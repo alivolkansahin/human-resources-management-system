@@ -15,9 +15,9 @@ import java.util.*;
 @Table(name = "tbl_departments")
 public class Department extends BaseEntity{
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-    private Long companyId;
+    @GeneratedValue(strategy = GenerationType.UUID)
+    private String id;
+    private String companyId;
     private String name;
     @ElementCollection
     private List<String> employeeIds = new ArrayList<String>();

@@ -6,4 +6,5 @@ import org.springframework.stereotype.Repository;
 import java.util.UUID;
 @Repository
 public interface CompanyRepository extends JpaRepository<Company, Long> {
+    boolean findByCompanyName(String companyName);
 }

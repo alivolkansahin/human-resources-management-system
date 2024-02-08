@@ -18,10 +18,13 @@ import java.util.UUID;
 public class Company extends BaseEntity{
 
     @jakarta.persistence.Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @GeneratedValue(strategy = GenerationType.UUID)
+    private String id;
 
     private String companyName;
+
+    @OneToOne
+    private Address address;
 
     @OneToMany(mappedBy = "companyId",cascade = CascadeType.PERSIST,fetch = FetchType.EAGER)
     private List<HRInfo> hrInfos = new ArrayList<HRInfo>();
@@ -37,4 +40,7 @@ public class Company extends BaseEntity{
 
     @OneToMany(mappedBy = "companyId",cascade = CascadeType.PERSIST,fetch = FetchType.EAGER)
     private List<Expense> expenses = new ArrayList<Expense>();
+
+    @ElementCollection
+    private List<String> supervisorIds = new ArrayList<String>();
 }

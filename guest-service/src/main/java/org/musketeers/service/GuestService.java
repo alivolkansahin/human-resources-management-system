@@ -17,9 +17,10 @@ public class GuestService extends ServiceManager<Guest, String> {
         this.guestRepository = guestRepository;
     }
 
-    public Guest register(Guest guest) {
-        return save(guest);
-    }
+    // bunu rabbitmq ile auth yapacak... modeli gueste çevirip save(guest) çalıştırılmalı. Belki sonrasında mail produce ?
+//    public Guest register(Guest guest) {
+//        return save(guest);
+//    }
 
     public Guest getGuestById(String id) {
         return findById(id);

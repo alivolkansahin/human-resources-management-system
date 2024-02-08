@@ -3,9 +3,8 @@ package org.musketeers.entity;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
-import org.bahadir.entity.enums.EStatus;
-
-import java.util.UUID;
+import org.musketeers.entity.enums.EGender;
+import org.musketeers.entity.enums.EStatus;
 
 @EqualsAndHashCode(callSuper = true)
 @SuperBuilder
@@ -17,12 +16,13 @@ import java.util.UUID;
 public class Auth extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
-    private UUID id;
+    private String id;
     @Column(unique = true,nullable = false)
     private String email;
     private String password;
     private String phone;
     private String activationCode;
+    private EGender gender;
 
     @Builder.Default
     @Enumerated(EnumType.STRING)

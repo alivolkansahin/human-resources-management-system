@@ -15,9 +15,9 @@ import java.util.UUID;
 @Table(name = "tbl_incomes")
 public class Income extends BaseEntity{
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-    private Long companyId;
+    @GeneratedValue(strategy = GenerationType.UUID)
+    private String id;
+    private String companyId;
     private String description;
     private Double amount;
 }

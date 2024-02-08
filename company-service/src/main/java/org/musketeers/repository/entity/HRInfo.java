@@ -16,9 +16,9 @@ import java.util.UUID;
 public class HRInfo extends BaseEntity{
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-    private Long companyId;
+    @GeneratedValue(strategy = GenerationType.UUID)
+    private String id;
+    private String companyId;
     private String firstName;
     private String lastName;
     private String title;

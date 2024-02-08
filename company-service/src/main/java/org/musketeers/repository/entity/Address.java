@@ -2,7 +2,6 @@ package org.musketeers.repository.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
-import lombok.experimental.SuperBuilder;
 
 import java.util.UUID;
 
@@ -10,14 +9,19 @@ import java.util.UUID;
 @NoArgsConstructor
 @Data
 @EqualsAndHashCode(callSuper = true)
-@SuperBuilder
+@Builder
 @Entity
-@Table(name = "tbl_holidays")
-public class Holiday extends BaseEntity{
+@Table(name = "tbl_addresses")
+public class Address extends BaseEntity{
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private String id;
-    private String companyId;
-    private String name;
-    private Integer duration;
+
+    private String city;
+
+    private String state;
+
+    private String address;
+
+    private String postalCode;
 }

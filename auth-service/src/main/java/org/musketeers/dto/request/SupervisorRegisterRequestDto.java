@@ -7,6 +7,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.musketeers.entity.enums.EGender;
 
+import java.time.LocalDate;
+
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
@@ -16,7 +18,7 @@ public class SupervisorRegisterRequestDto {
     private String name;
     @NotBlank(message = "SurName cannot be left blank !")
     private String surName;
-    @Email()
+    @Email(message = "The entered entry is not in email format !")
     private String email;
     @NotBlank(message = "Password cannot be left blank !")
     @Pattern(regexp="^(?=.*[0-9])(?=.*[A-Z]).{8,32}$",message =
@@ -29,8 +31,8 @@ public class SupervisorRegisterRequestDto {
     @Size(min = 11, max = 11, message = "Identity number must be 11 characters long")
     @Pattern(regexp = "[0-9]+", message = "Identity number must contain only digits")
     private String identityNumber;
-    @NotBlank(message = "dayOfBirth cannot be left blank !")
-    private String dayOfBirth;
+    @NotNull(message = "Date of birth cannot be left blank !")
+    private LocalDate dateOfBirth;
     @NotNull(message = "Gender must not be null")
     private EGender gender;
     @NotBlank(message = "phone cannot be left blank !")

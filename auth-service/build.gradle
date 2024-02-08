@@ -1,6 +1,7 @@
 dependencies {
     implementation libs.springBootJPA
     implementation libs.postgreSQL
+    //implementation libs.springBootAMQP
 /*
         // seçimlerini yap ve ekle
         implementation libs.springBootAMQP

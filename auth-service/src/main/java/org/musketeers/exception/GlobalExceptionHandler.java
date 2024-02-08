@@ -45,7 +45,7 @@ public class GlobalExceptionHandler {
         System.out.println("Hata olustu: "+ex.getMessage());
         return ErrorMessage.builder()
                 .code(errorType)
-                .message(errorType.getMesaj())
+                .message(errorType.getMessage())
                 .build();
     }
 

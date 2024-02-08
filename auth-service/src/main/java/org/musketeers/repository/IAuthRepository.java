@@ -9,5 +9,7 @@ import org.springframework.stereotype.Repository;
 import java.util.UUID;
 
 @Repository
-public interface IAuthRepository extends JpaRepository<Auth, UUID> {
+public interface IAuthRepository extends JpaRepository<Auth, String> {
+
+    Boolean existsByEmail(String email);
 }

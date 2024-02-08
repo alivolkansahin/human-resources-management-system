@@ -1,7 +1,11 @@
 package org.musketeers.controller;
 
 
+import jakarta.validation.Valid;
+import org.musketeers.dto.request.GuestRegisterRequestDto;
 import org.musketeers.entity.Auth;
+import org.musketeers.exception.AuthServiceException;
+import org.musketeers.exception.ErrorType;
 import org.musketeers.service.AuthService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -20,8 +24,9 @@ public class AuthController {
     public AuthController(AuthService authService) {
         this.authService = authService;
     }
-    @PostMapping(DENEME_REGISTER)
-    public ResponseEntity<Auth> registerDeneme(@RequestBody Auth auth) {
-        return ResponseEntity.ok(authService.registerDeneme(auth));
+
+    @PostMapping(GUEST_REGISTER)
+    public ResponseEntity<String> registerGuest(@Valid @RequestBody GuestRegisterRequestDto dto){
+        return ResponseEntity.ok(authService.registerGuest(dto));
     }
 }

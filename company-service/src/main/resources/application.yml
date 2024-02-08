@@ -1,8 +1,15 @@
-#spring:
-#  cloud:
-#    config:
-#      uri: ${CONFIG_URI}
-#  config:
-#    import: "configserver:"
-#  application:
-#    name: company-service-application
+server:
+  port: 9090
+spring:
+  cloud:
+    config:
+      enabled: false
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://localhost:5432/CompanyDb
+    username: postgres
+    password: 1234
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+    show-sql: true

@@ -1,3 +1,27 @@
+server:
+  port: 9093
+spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/hrsystem
+    username: devAvs
+    password: musketeers!123
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+  cloud:
+    config:
+      enabled: false
+
+
+
+
+
+
+
+
+
+
 #spring:
 #  cloud:
 #    config:

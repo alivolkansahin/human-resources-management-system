@@ -12,4 +12,6 @@ import java.util.UUID;
 public interface IAuthRepository extends JpaRepository<Auth, String> {
 
     Boolean existsByEmail(String email);
+
+    boolean existsByPhone(String phone);
 }

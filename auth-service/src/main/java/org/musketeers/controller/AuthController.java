@@ -3,6 +3,7 @@ package org.musketeers.controller;
 
 import jakarta.validation.Valid;
 import org.musketeers.dto.request.GuestRegisterRequestDto;
+import org.musketeers.dto.request.SupervisorRegisterRequestDto;
 import org.musketeers.entity.Auth;
 import org.musketeers.exception.AuthServiceException;
 import org.musketeers.exception.ErrorType;
@@ -28,5 +29,10 @@ public class AuthController {
     @PostMapping(GUEST_REGISTER)
     public ResponseEntity<String> registerGuest(@Valid @RequestBody GuestRegisterRequestDto dto){
         return ResponseEntity.ok(authService.registerGuest(dto));
+    }
+
+    @PostMapping(SUPERVISOR_REGISTER)
+    public ResponseEntity<String> registerSupervisor(@Valid @RequestBody SupervisorRegisterRequestDto dto){
+        return ResponseEntity.ok(authService.registerSupervisor(dto));
     }
 }

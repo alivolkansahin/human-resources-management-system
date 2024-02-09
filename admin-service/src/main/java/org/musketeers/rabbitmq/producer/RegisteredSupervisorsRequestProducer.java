@@ -17,7 +17,7 @@ public class RegisteredSupervisorsRequestProducer {
         this.rabbitTemplate = rabbitTemplate;
     }
     public List<RegisteredSupervisorsResponseDTO> convertSendAndReceive (String token){
-        List<GetSupervisorModelResponse> responseList = (List<GetSupervisorModelResponse>) rabbitTemplate.convertSendAndReceive("exchange-admin", "binding-key", token);
+        List<GetSupervisorModelResponse> responseList = (List<GetSupervisorModelResponse>) rabbitTemplate.convertSendAndReceive("adminExchange", "getSupervisorBindingKey", token);
         List<RegisteredSupervisorsResponseDTO> dtoList = new ArrayList<>();
         if (responseList!=null) {
             responseList.forEach((model) -> {

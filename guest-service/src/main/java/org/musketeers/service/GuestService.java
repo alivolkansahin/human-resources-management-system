@@ -1,6 +1,9 @@
 package org.musketeers.service;
 
 import org.musketeers.entity.Guest;
+import org.musketeers.entity.enums.ActivationStatus;
+import org.musketeers.exception.ErrorType;
+import org.musketeers.exception.GuestServiceException;
 import org.musketeers.repository.GuestRepository;
 import org.musketeers.utility.ServiceManager;
 import org.springframework.stereotype.Service;
@@ -17,11 +20,6 @@ public class GuestService extends ServiceManager<Guest, String> {
         this.guestRepository = guestRepository;
     }
 
-    // bunu rabbitmq ile auth yapacak... modeli gueste çevirip save(guest) çalıştırılmalı. Belki sonrasında mail produce ?
-//    public Guest register(Guest guest) {
-//        return save(guest);
-//    }
-
     public Guest getGuestById(String id) {
         return findById(id);
     }
@@ -33,4 +31,11 @@ public class GuestService extends ServiceManager<Guest, String> {
     public Boolean softDeleteGuestById(String id) {
         return softDeleteById(id);
     }
+
+    public void activateGuest(String authId) {
+        Guest guest = guestRepository.findOptionalByAuthId(authId).orElseThrow(() -> new GuestServiceException(ErrorType.GUEST_NOT_FOUND));
+        guest.setActivationStatus(ActivationStatus.ACTIVATED);
+        save(guest);
+    }
+
 }

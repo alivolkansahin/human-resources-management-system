@@ -12,10 +12,9 @@ public class ActivationGuestConsumer {
 
     private final GuestService guestService;
 
-    // activation olmazsa buna gerek yok...
-    @RabbitListener(queues = "${guest-service-config.rabbitmq.activation-guest-queue}")
-    public void activateGuestFromQueue(AuthActivationGuestModel model) {
-//        guestService.activateGuest(model);
-    }
+//    @RabbitListener(queues = "${guest-service-config.rabbitmq.activation-guest-queue}")
+//    public void activateGuestFromQueue(AuthActivationGuestModel model) {
+////        guestService.activateGuest(model.getAuthId());
+//    }
 
 }

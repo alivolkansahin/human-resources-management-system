@@ -11,7 +11,21 @@ spring:
   cloud:
     config:
       enabled: false
-
+  rabbitmq:
+    host: localhost
+    port: 5672
+    username: user
+    password: user
+supervisor-service-config:
+  jwt:
+    issuer: ${MUSKETEERS_GUEST_SERVICE_ISSUER}
+    secret-key: ${MUSKETEERS_GUEST_SERVICE_SECRET_KEY}
+  rabbitmq:
+    auth-exchange: authExchange
+    register-guest-queue: registerQueue
+    register-guest-bindingKey: registerBindingKey
+    activation-guest-queue: activationQueue
+    activation-guest-bindingKey: activationBindingKey
 
 
 

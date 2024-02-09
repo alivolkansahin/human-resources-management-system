@@ -17,9 +17,10 @@ public class PersonnelService extends ServiceManager<Personnel, String> {
         this.personnelRepository = personnelRepository;
     }
 
-    public Personnel register(Personnel personnel) {
-        return save(personnel);
-    }
+    //rabbitmq consumer ile yapılacak...
+//    public Personnel register(Personnel personnel) {
+//        return save(personnel);
+//    }
 
     public Personnel getPersonnelById(String id) {
         return findById(id);

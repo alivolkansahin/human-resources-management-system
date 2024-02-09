@@ -10,6 +10,8 @@ import org.musketeers.exception.GuestServiceException;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
+import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
 
 @Component
@@ -21,20 +23,12 @@ public class JwtTokenManager {
     @Value("${guest-service-config.jwt.secret-key}")
     String secretKey;
 
-    Long expTime = 1000L * 60 * 15;
-
-    public Optional<String> getIdFromToken(String token){
+    public List<String> getClaimsFromToken(String token){
         DecodedJWT decodedJWT = decodeToken(token);
-        if (decodedJWT == null) return Optional.empty();
-        String authId = decodedJWT.getClaim("authid").asString();
-        return Optional.of(authId);
-    }
-
-    public Optional<String> getRoleFromToken(String token){
-        DecodedJWT decodedJWT = decodeToken(token);
-        if (decodedJWT == null) return Optional.empty();
-        String role = decodedJWT.getClaim("role").asString();
-        return Optional.of(role);
+        Optional<String> optionalId = Optional.ofNullable(decodedJWT.getClaim("id").asString());
+        Optional<String> optionalRole = Optional.ofNullable(decodedJWT.getClaim("role").asString());
+        if(optionalId.isEmpty() || optionalRole.isEmpty()) throw new GuestServiceException(ErrorType.INVALID_TOKEN);
+        return Arrays.asList(optionalId.get(), optionalRole.get());
     }
 
     private DecodedJWT decodeToken(String token) {

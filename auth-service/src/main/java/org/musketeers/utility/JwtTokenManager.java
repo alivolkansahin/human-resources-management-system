@@ -3,11 +3,16 @@ package org.musketeers.utility;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.algorithms.Algorithm;
+import com.auth0.jwt.exceptions.JWTVerificationException;
 import com.auth0.jwt.interfaces.DecodedJWT;
+import org.musketeers.exception.AuthServiceException;
+import org.musketeers.exception.ErrorType;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
+import java.util.Arrays;
 import java.util.Date;
+import java.util.List;
 import java.util.Optional;
 
 @Component
@@ -45,39 +50,31 @@ public class JwtTokenManager {
 
     }
 
-    //2. token verify et. (doğrula)
-    public Boolean verifyToken(String token){
-        try {
-            Algorithm algorithm = Algorithm.HMAC512(secretKey);
-            JWTVerifier verifier = JWT.require(algorithm).withIssuer(issuer).build();
-            DecodedJWT decodedJWT = verifier.verify(token);
-            if (decodedJWT == null)
-                return false;
-        }
-        catch (Exception e){
-            return false;
-        }
-
-        return true;
+    /* Volkan:
+    artık bi yerde tokeni deşifre ederken aşağıdaki 3 yöntem gibi alacağız. Eğer bir yerde hem id hem rolü kontrol etmek gerekiyorsa (ki olacak) diye bu hale getirdim.
+    2 yerde kontrol etmek gerekiyorsa 1 methodda, 2 defa jwtTokenManagerin getclaimsfromtoken methodunu çalıştırmaya gerek yok artık, 1 kere çalışsın hepsini alsın (3.yöntemdeki gibi)
+                        1.yöntem --->  String id = jwtTokenManager.getClaimsFromToken(token).get(0);     --> burdaki id authid olacak her zaman. Diğer servisler karıştırmamalı bunu.
+                        2.yöntem --->  String role = jwtTokenManager.getClaimsFromToken(token).get(1);   --> Bu tokene sahip olan kişi kim, admin mi supervisor mı guest mi onun kontrolü
+                        3.yöntem --->  List<String> claims = jwtTokenManager.getClaimsFromToken(token);
+    Bütün servislerin decode kısmı aynı oldu, uyumlu oldu. Create kısmı sende ve seninle konuşuruz onu :D
+     */
+    public List<String> getClaimsFromToken(String token){
+        DecodedJWT decodedJWT = decodeToken(token);
+        Optional<String> optionalId = Optional.ofNullable(decodedJWT.getClaim("id").asString());
+        Optional<String> optionalRole = Optional.ofNullable(decodedJWT.getClaim("role").asString());
+        if(optionalId.isEmpty() || optionalRole.isEmpty()) throw new AuthServiceException(ErrorType.INVALID_TOKEN);
+        return Arrays.asList(optionalId.get(), optionalRole.get());
     }
 
-    //3. token decode et. (bilgi çıkarımı yap)
-    public Optional<Long> decodeToken(String token){
+    private DecodedJWT decodeToken(String token) {
+        Algorithm algorithm = Algorithm.HMAC512(secretKey);
+        JWTVerifier verifier = JWT.require(algorithm).withIssuer(issuer).build();
+        DecodedJWT decodedJWT = null;
         try {
-            Algorithm algorithm = Algorithm.HMAC512(secretKey);
-            JWTVerifier verifier = JWT.require(algorithm).withIssuer(issuer).build();
-            DecodedJWT decodedJWT = verifier.verify(token);
-            //Eğer decoded jwt null gelirse
-            if (decodedJWT == null)
-                return Optional.empty();
-            //Eğer decodedjwt dolu ise içinden bilgi çıkarımı yapabiliriz:
-            Long id = decodedJWT.getClaim("id").asLong(); //claim içindeki valuenun tipini as ile yazıyoruz.
-            String service = decodedJWT.getClaim("service").asString();
-            System.out.println("tokenin oluşturulduğu service:"+service);
-            return Optional.of(id);
-        }
-        catch (Exception e){
-            return Optional.empty();
+            decodedJWT = verifier.verify(token);
+            return decodedJWT;
+        } catch (JWTVerificationException e) {
+            throw new AuthServiceException(ErrorType.INVALID_TOKEN);
         }
     }
 }

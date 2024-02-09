@@ -13,12 +13,13 @@ public class SaveCompanyConsumer {
 
     private final CompanyService companyService;
 
-    @RabbitListener(queues = "queue-auth")
-    public void createUserFromQueue(SaveCompanyModel model){
-        if (!companyService.findByCompanyName(model.getName())) {
-            companyService.save(Company.builder()
-                    .companyName(model.getName())
-                    .build());
-        }
-    }
+    // Volkan: kod kızıyordu servis ayağa kalkıyor mu diye test ederken, yoruma aldım bende, normalde açıktı sende
+//    @RabbitListener(queues = "queue-auth")
+//    public void createUserFromQueue(SaveCompanyModel model){
+//        if (!companyService.findByCompanyName(model.getName())) {
+//            companyService.save(Company.builder()
+//                    .companyName(model.getName())
+//                    .build());
+//        }
+//    }
 }

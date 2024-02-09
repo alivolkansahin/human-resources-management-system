@@ -18,3 +18,7 @@ spring:
     hibernate:
       ddl-auto: create-drop
     show-sql: true
+company-service-config:
+  jwt:
+    issuer: ${HR_SYSTEM_ISSUER}
+    secret-key: ${HR_SYSTEM_KEY}

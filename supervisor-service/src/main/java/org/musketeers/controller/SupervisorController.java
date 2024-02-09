@@ -28,10 +28,10 @@ public class SupervisorController {
         return ResponseEntity.ok((supervisorService.getSupervisorById(id)));
     }
 
-    @PostMapping(REGISTER)
-    public ResponseEntity<Supervisor> register(@RequestBody Supervisor supervisor){
-        return ResponseEntity.ok(supervisorService.register(supervisor));
-    }
+//    @PostMapping(REGISTER)
+//    public ResponseEntity<Supervisor> register(@RequestBody Supervisor supervisor){
+//        return ResponseEntity.ok(supervisorService.register(supervisor));
+//    }
 
     @DeleteMapping(DELETE + "/{id}")
     public ResponseEntity<Boolean> softDeleteSupervisorById(@PathVariable String id) {

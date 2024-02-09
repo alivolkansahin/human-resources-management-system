@@ -15,5 +15,9 @@ public class Phone {
     private PhoneType phoneType;
 
     private String phoneNumber;
+    @Override
+    public String toString() {
+        return phoneType.toString() + " "+ phoneNumber;
+    }
 
 }

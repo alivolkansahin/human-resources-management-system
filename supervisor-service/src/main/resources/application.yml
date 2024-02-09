@@ -18,14 +18,12 @@ spring:
     password: user
 supervisor-service-config:
   jwt:
-    issuer: ${MUSKETEERS_GUEST_SERVICE_ISSUER}
-    secret-key: ${MUSKETEERS_GUEST_SERVICE_SECRET_KEY}
+    issuer: ${HR_SYSTEM_ISSUER}
+    secret-key: ${HR_SYSTEM_KEY}
   rabbitmq:
-    auth-exchange: authExchange
-    register-guest-queue: registerQueue
-    register-guest-bindingKey: registerBindingKey
-    activation-guest-queue: activationQueue
-    activation-guest-bindingKey: activationBindingKey
+    register-supervisor-queue: registerSupervisorQueue
+    get-supervisor-queue: getSupervisorQueue
+#    activation-supervisor-queue: activationSupervisorQueue
 
 
 

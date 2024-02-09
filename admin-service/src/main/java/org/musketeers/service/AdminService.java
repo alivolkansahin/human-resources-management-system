@@ -8,13 +8,11 @@ import org.musketeers.exception.ErrorType;
 import org.musketeers.mapper.IAdminMapper;
 import org.musketeers.rabbitmq.producer.RegisteredSupervisorsRequestProducer;
 import org.musketeers.repository.AdminRepository;
-import org.musketeers.utility.JwtTokenManager;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -22,7 +20,7 @@ public class AdminService {
 
     private final AdminRepository adminRepository;
     private final RegisteredSupervisorsRequestProducer registeredSupervisorsRequestProducer;
-    private final JwtTokenManager jwtTokenManager;
+    //private final JwtTokenManager jwtTokenManager;
     private final IAdminMapper adminMapper;
     public List<Admin> getAllAdmins() {
         return adminRepository.findAll();

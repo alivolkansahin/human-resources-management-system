@@ -17,6 +17,10 @@ spring:
   cloud:
     config:
       enabled: false
+admin-service-config:
+  jwt:
+    issuer: ${HR_SYSTEM_ISSUER}
+    secret-key: ${HR_SYSTEM_KEY}
 
 
 

@@ -18,8 +18,8 @@ spring:
     password: user
 personnel-service-config:
   jwt:
-    issuer: ${MUSKETEERS_GUEST_SERVICE_ISSUER} #buraya genel ad lazım bütün servisler için, aynı olmalı çünkü decode işlemi için.
-    secret-key: ${MUSKETEERS_GUEST_SERVICE_SECRET_KEY}
+    issuer: ${HR_SYSTEM_ISSUER}
+    secret-key: ${HR_SYSTEM_KEY}
   rabbitmq:
     auth-exchange: authExchange
     personnel-register-queue: personnelRegisterQueue

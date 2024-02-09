@@ -2,6 +2,7 @@ package org.musketeers.repository.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
+import lombok.experimental.SuperBuilder;
 
 import java.util.UUID;
 
@@ -9,7 +10,7 @@ import java.util.UUID;
 @NoArgsConstructor
 @Data
 @EqualsAndHashCode(callSuper = true)
-@Builder
+@SuperBuilder // Volkan. @Builder kalmıştı @SuperBuilder yaptım, kod kızıyordu.
 @Entity
 @Table(name = "tbl_addresses")
 public class Address extends BaseEntity{

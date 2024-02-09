@@ -29,11 +29,19 @@ public class RabbitMqConfig {
     @Value("${rabbitmq.register-guest-bindingKey}")
     private String registerGuestBindingKey;
 
+    @Value("${rabbitmq.register-supervisor-queue}")
+    private String registerSupervisorQueueName;
+    @Value("${rabbitmq.register-supervisor-bindingKey}")
+    private String registerSupervisorBindingKey;
+
 
     @Bean
     DirectExchange exchangeAuth(){
         return new DirectExchange(exchange);
     }
+
+
+
 
     @Bean
     Queue mailQueue(){
@@ -44,6 +52,9 @@ public class RabbitMqConfig {
         return BindingBuilder.bind(mailQueue).to(exchangeAuth).with(mailBindingKey);
     }
 
+
+
+
     @Bean
     Queue registerGuestQueue(){
         return new Queue(registerGuestQueueName);
@@ -52,6 +63,18 @@ public class RabbitMqConfig {
     public Binding bindingRegisterGuest(Queue registerGuestQueue, DirectExchange exchangeAuth){
         return BindingBuilder.bind(registerGuestQueue).to(exchangeAuth).with(registerGuestBindingKey);
     }
+
+
+
+    @Bean
+    Queue registerSupervisorQueue(){
+        return new Queue(registerSupervisorQueueName);
+    }
+    @Bean
+    public Binding bindingRegisterSupervisor(Queue registerSupervisorQueue, DirectExchange exchangeAuth){
+        return BindingBuilder.bind(registerSupervisorQueue).to(exchangeAuth).with(registerSupervisorBindingKey);
+    }
+
 
 
 

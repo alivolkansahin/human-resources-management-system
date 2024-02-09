@@ -12,6 +12,7 @@ public enum ErrorType {
 
     REGISTER_PASSWORD_MISMATCH(1001,"The entered passwords did not match !",HttpStatus.BAD_REQUEST),
     EMAIL_ALREADY_EXISTS(1002,"The email address you entered is being used by someone else !",HttpStatus.BAD_REQUEST),
+    PHONE_ALREADY_EXISTS(1002,"The phone you entered is being used by someone else !",HttpStatus.BAD_REQUEST),
 
     DOLOGIN_EMAILORPASSWORD_NOT_EXISTS(2001, "Kullanıcı adı veya şifre yanlış.",HttpStatus.BAD_REQUEST),
 

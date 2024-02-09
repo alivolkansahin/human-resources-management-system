@@ -3,7 +3,7 @@ package org.musketeers.entity;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
-import org.musketeers.entity.enums.EGender;
+import org.musketeers.entity.enums.ERole;
 import org.musketeers.entity.enums.EStatus;
 
 @EqualsAndHashCode(callSuper = true)
@@ -20,10 +20,14 @@ public class Auth extends BaseEntity {
     @Column(unique = true,nullable = false)
     private String email;
     private String password;
+    @Column(unique = true,nullable = false)
     private String phone;
     private String activationCode;
 
     @Builder.Default
     @Enumerated(EnumType.STRING)
     private EStatus status = EStatus.PENDING;
+
+    @Enumerated(EnumType.STRING)
+    private ERole role;
 }

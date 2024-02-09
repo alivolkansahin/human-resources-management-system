@@ -1,4 +1,4 @@
-package org.musketeers.entity;
+package org.musketeers.rabbitmq.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -9,14 +9,8 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Data
 @Builder
-public class Address {
+public class GetSupervisorModelRequest {
 
-    private String city;
-
-    private String state;
-
-    private String address;
-
-    private String postalCode;
+    private String token;
 
 }

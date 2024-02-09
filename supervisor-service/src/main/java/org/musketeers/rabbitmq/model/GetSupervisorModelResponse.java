@@ -1,24 +1,23 @@
-package org.musketeers.entity;
+package org.musketeers.rabbitmq.model;
 
-import lombok.*;
-import lombok.experimental.SuperBuilder;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import org.musketeers.entity.Phone;
 import org.musketeers.entity.enums.ActivationStatus;
 import org.musketeers.entity.enums.Gender;
 import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.time.LocalDate;
 import java.util.List;
 
-@EqualsAndHashCode(callSuper = true)
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
-@SuperBuilder
-@Document(collection = "supervisors")
-public class Supervisor extends BaseEntity {
+@Builder
+public class GetSupervisorModelResponse {
 
-    @Id
     private String id;
 
     private String authId;
@@ -27,7 +26,7 @@ public class Supervisor extends BaseEntity {
 
     private String lastName;
 
-    private Gender gender;
+    private String gender;
 
     private String identityNumber;
 
@@ -37,7 +36,7 @@ public class Supervisor extends BaseEntity {
 
     private List<String> addresses;
 
-    private List<Phone> phones;
+    private List<String> phones;
 
     private String companyName;
 
@@ -45,7 +44,6 @@ public class Supervisor extends BaseEntity {
 
     private LocalDate dateOfBirth;
 
-    @Builder.Default
-    private ActivationStatus activationStatus = ActivationStatus.PENDING;
+    private String activationStatus;
 
 }

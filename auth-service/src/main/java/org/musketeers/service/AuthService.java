@@ -6,6 +6,8 @@ import org.musketeers.dto.request.GuestRegisterRequestDto;
 import org.musketeers.entity.Auth;
 import org.musketeers.exception.AuthServiceException;
 import org.musketeers.exception.ErrorType;
+import org.musketeers.rabbitmq.model.RegisterGuestModel;
+import org.musketeers.rabbitmq.producer.RegisterGuestProducer;
 import org.musketeers.repository.IAuthRepository;
 import org.musketeers.utility.CodeGenerator;
 import org.musketeers.utility.JwtTokenManager;
@@ -17,12 +19,14 @@ public class AuthService extends ServiceManager<Auth, String> {
     private final IAuthRepository repository;
     private final JwtTokenManager tokenManager;
     //private final MailSenderProducer mailSenderProducer;
+    private final RegisterGuestProducer registerGuestProducer;
 
-    public AuthService(IAuthRepository repository, JwtTokenManager tokenManager) {
+    public AuthService(IAuthRepository repository, JwtTokenManager tokenManager, RegisterGuestProducer registerGuestProducer) {
         super(repository);
         this.repository = repository;
         this.tokenManager = tokenManager;
 
+        this.registerGuestProducer = registerGuestProducer;
     }
 
     @Transactional
@@ -34,10 +38,21 @@ public class AuthService extends ServiceManager<Auth, String> {
                         .email(dto.getEmail())
                         .password(dto.getPassword())
                         .phone(dto.getPhone())
-                        .gender(dto.getGender())
                         .activationCode(CodeGenerator.generateCode())
                         .build();
         save(auth);
+        RegisterGuestModel registerGuestModel = RegisterGuestModel.builder()
+                .authid(auth.getId())
+                .name(dto.getName())
+                .surName(dto.getSurName())
+                .identityNumber(dto.getIdentityNumber())
+                .phone(dto.getPhone())
+                .dateOfBirth(dto.getDateOfBirth())
+                .email(dto.getEmail())
+                .gender(dto.getGender().toString())
+                .build();
+        registerGuestProducer.sendNewGuest(registerGuestModel);
+
         //mailSenderProducer.convertAndSendToRabbit(IAuthMapper.INSTANCE.authToMailSenderGuestModel(auth));  -- Yarın bakıcam !!!
 
         return "Successfully registered";

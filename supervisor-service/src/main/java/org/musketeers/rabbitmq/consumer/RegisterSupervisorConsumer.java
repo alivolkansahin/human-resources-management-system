@@ -24,7 +24,7 @@ public class RegisterSupervisorConsumer {
         List<String> address = new ArrayList<>();
         List<Phone> phones = new ArrayList<>();
         address.add(model.getAddress());
-        phones.add(Phone.builder().phoneType(PhoneType.PERSONAL).build());
+        phones.add(Phone.builder().phoneType(PhoneType.PERSONAL).phoneNumber(model.getPhone()).build());
         Supervisor supervisor = Supervisor.builder()
                 .authId(model.getAuthid())
                 .name(model.getName())

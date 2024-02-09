@@ -5,11 +5,11 @@ spring:
   cloud:
     config:
       enabled: false
-#  rabbitmq:
-#    host: localhost
-#    port: 5672
-#    username: user
-#    password: user
+  rabbitmq:
+    host: localhost
+    port: 5672
+    username: user
+    password: user
   datasource:
     driver-class-name: org.postgresql.Driver
     url: jdbc:postgresql://localhost:5432/AuthDBForProject
@@ -30,8 +30,9 @@ rabbitmq:
   mail-bindingKey: mailBindingKey
 
   auth-exchange: authExchange
-#  register-queue: registerQueue
-#  register-bindingKey: registerBindingKey
+
+  register-guest-queue: registerGuestQueue
+  register-guest-bindingKey: registerGuestBindingKey
 #
 #  active-status-queue: activeStatusQueue
 #  active-status-bindingKey: activeStatusBindingKey

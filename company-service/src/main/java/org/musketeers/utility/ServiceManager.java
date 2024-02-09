@@ -59,12 +59,4 @@ public class ServiceManager<T extends BaseEntity,ID> implements IService<T,ID> {
         return jpaRepository.findAll();
     }
 
-    public boolean softDelete(ID id,T t) {
-        if (jpaRepository.findById(id).isPresent()) {
-            t.setStatus(false);
-            return true;
-        }else {
-            return false;
-        }
-    }
 }

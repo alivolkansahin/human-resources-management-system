@@ -18,11 +18,11 @@ public class JwtTokenManager {
     String issuer;
     Long expTime = 1000L*60*15; // 15dk
     // 1. Generate
-    public Optional<String> createToken(String id){
+    public Optional<String> createToken(String companyName){
 
         try {
             return Optional.of(JWT.create().withAudience()
-                    .withClaim("id",id)
+                    .withClaim("companyName",companyName)
                     .withIssuer(issuer)
                     .withIssuedAt(new Date(System.currentTimeMillis()))                    .withExpiresAt(new Date(System.currentTimeMillis()+expTime))
                     .sign(Algorithm.HMAC512(secretKey)));
@@ -44,15 +44,15 @@ public class JwtTokenManager {
         return true;
     }
     // 3. Decode
-    public Optional<Long> decodeToken(String token){
+    public Optional<String> decodeToken(String token){
         try {
             Algorithm algorithm = Algorithm.HMAC512(secretKey);
             JWTVerifier verifier = JWT.require(algorithm).withIssuer(issuer).build();
             DecodedJWT decodedJWT = verifier.verify(token);
             if (decodedJWT==null)
                 return Optional.empty();
-            Long id = decodedJWT.getClaim("id").asLong();
-            return Optional.of(id);
+            String companyName = decodedJWT.getClaim("companyName").asString();
+            return Optional.of(companyName);
         } catch (Exception e){
             return Optional.empty();
         }

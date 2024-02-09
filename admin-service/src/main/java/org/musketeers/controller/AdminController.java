@@ -2,6 +2,7 @@ package org.musketeers.controller;
 
 
 import lombok.RequiredArgsConstructor;
+import org.musketeers.dto.response.RegisteredSupervisorsResponseDTO;
 import org.musketeers.entity.Admin;
 import org.musketeers.service.AdminService;
 import org.springframework.http.ResponseEntity;
@@ -15,8 +16,6 @@ import static org.musketeers.constant.Endpoint.*;
 @RequestMapping(ROOT + ADMIN )
 @RequiredArgsConstructor
 public class AdminController {
-
-    // QUESTIONS ?
 
     private final AdminService adminService;
 
@@ -47,7 +46,10 @@ public class AdminController {
 
 //    @PutMapping(UPDATE + "/{id}")
 
-
+    @GetMapping(GET_ALL_REGISTERED_SUPERVISORS)
+    public ResponseEntity<List<RegisteredSupervisorsResponseDTO>> getAllRegisteredSupervisors(String adminId){
+        return adminService.getAllRegisteredSupervisors(adminId);
+    }
 
 
 

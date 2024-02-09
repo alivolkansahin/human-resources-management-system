@@ -23,6 +23,20 @@ public class GuestController {
         return ResponseEntity.ok(guestService.getAllGuests());
     }
 
+    // convertSendAndReceive --> şuna bi bak.
+//        return (List<Personel>) rabbitTemplate.convertSendAndReceive(exchange, registerGuestBindingKey, registerGuestModel);
+//    @GetMapping("/get-all-supervisor-pending-requests")
+//    findAllByActivationStatusPending
+//
+//    @PostMapping("/accept-supervisor-request") //fronttan supervisorın idsi falan lazım ?
+//    // findById --> supervisorı bul
+//    //activationstatus change
+//
+//    @DeleteMapping("/decline-supervisor-request")//fronttan supervisorın idsi falan lazım ?
+//    // findById --> supervisorı bul
+//    mongorepository.hardDeleteById(İD) //Hard Delete
+
+
     @GetMapping(GET + "/{id}") // dtosu sonra yapılacak.
     public ResponseEntity<Guest> getGuestById(@PathVariable String id){
         return ResponseEntity.ok((guestService.getGuestById(id)));

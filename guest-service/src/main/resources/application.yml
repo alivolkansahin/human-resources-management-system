@@ -18,14 +18,13 @@ spring:
     password: user
 guest-service-config:
   jwt:
-    issuer: ${MUSKETEERS_GUEST_SERVICE_ISSUER}
-    secret-key: ${MUSKETEERS_GUEST_SERVICE_SECRET_KEY}
+    issuer: ${HR_SYSTEM_ISSUER}
+    secret-key: ${HR_SYSTEM_KEY}
   rabbitmq:
-    auth-exchange: authExchange
-    register-guest-queue: registerQueue
-    register-guest-bindingKey: registerBindingKey
-    activation-guest-queue: activationQueue
-    activation-guest-bindingKey: activationBindingKey
+    register-guest-queue: registerGuestQueue
+    activation-guest-queue: activationGuestQueue
+#    register-guest-bindingKey: registerGuestBindingKey
+#    activation-guest-queue: activationQueue
 
 
 

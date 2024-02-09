@@ -24,7 +24,8 @@ public class JwtTokenManager {
             return Optional.of(JWT.create().withAudience()
                     .withClaim("companyName",companyName)
                     .withIssuer(issuer)
-                    .withIssuedAt(new Date(System.currentTimeMillis()))                    .withExpiresAt(new Date(System.currentTimeMillis()+expTime))
+                    .withIssuedAt(new Date(System.currentTimeMillis()))
+                    .withExpiresAt(new Date(System.currentTimeMillis()+expTime))
                     .sign(Algorithm.HMAC512(secretKey)));
         } catch (Exception e) {
             return Optional.empty();

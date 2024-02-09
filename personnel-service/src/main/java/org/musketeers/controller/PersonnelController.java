@@ -28,10 +28,11 @@ public class PersonnelController {
         return ResponseEntity.ok((personnelService.getPersonnelById(id)));
     }
 
-    @PostMapping(REGISTER)
-    public ResponseEntity<Personnel> register(@RequestBody Personnel personnel){
-        return ResponseEntity.ok(personnelService.register(personnel));
-    }
+    //rabbitmq artık...
+//    @PostMapping(REGISTER)
+//    public ResponseEntity<Personnel> register(@RequestBody Personnel personnel){
+//        return ResponseEntity.ok(personnelService.register(personnel));
+//    }
 
     @DeleteMapping(DELETE + "/{id}")
     public ResponseEntity<Boolean> softDeletePersonnelById(@PathVariable String id) {

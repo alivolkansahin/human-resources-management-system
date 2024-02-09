@@ -1,7 +1,7 @@
 dependencies {
     implementation libs.springBootMongoDB
+    implementation libs.springBootAMQP
 
-//    implementation libs.springBootAMQP
 //    implementation libs.springBootRedis
 /*
         // seçimlerini yap ve ekle

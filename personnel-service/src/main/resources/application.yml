@@ -11,7 +11,21 @@ spring:
   cloud:
     config:
       enabled: false
-
+  rabbitmq:
+    host: localhost
+    port: 5672
+    username: user
+    password: user
+personnel-service-config:
+  jwt:
+    issuer: ${MUSKETEERS_GUEST_SERVICE_ISSUER} #buraya genel ad lazım bütün servisler için, aynı olmalı çünkü decode işlemi için.
+    secret-key: ${MUSKETEERS_GUEST_SERVICE_SECRET_KEY}
+  rabbitmq:
+    auth-exchange: authExchange
+    personnel-register-queue: personnelRegisterQueue
+    personnel-register-bindingKey: personnelRegisterBindingKey
+    personnel-activation-queue: personnelActivationQueue
+    personnel-activation-bindingKey: personnelActivationBindingKey
 
 
 

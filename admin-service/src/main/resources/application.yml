@@ -21,6 +21,12 @@ admin-service-config:
   jwt:
     issuer: ${HR_SYSTEM_ISSUER}
     secret-key: ${HR_SYSTEM_KEY}
+  rabbitmq:
+    admin-supervisor-registration-decision-exchange: adminSupervisorRegistrationDecisionExchange
+    registration-decision-supervisor-queue: registrationDecisionSupervisorQueue
+    registration-decision-auth-queue: registrationDecisionAuthQueue
+#    registration-decision-supervisor-bindingKey: registrationDecisionSupervisorBindingKey
+#    registration-decision-auth-bindingKey: registrationDecisionAuthBindingKey
 
 
 

@@ -23,6 +23,7 @@ supervisor-service-config:
   rabbitmq:
     register-supervisor-queue: registerSupervisorQueue
     get-supervisor-queue: getSupervisorQueue
+    registration-decision-supervisor-queue: registrationDecisionSupervisorQueue
 #    activation-supervisor-queue: activationSupervisorQueue
 
 

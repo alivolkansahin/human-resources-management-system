@@ -1,14 +1,16 @@
 package org.musketeers.service;
 
 import lombok.RequiredArgsConstructor;
+import org.musketeers.dto.request.AdminSupervisorRegistrationDecisionRequestDto;
 import org.musketeers.dto.response.RegisteredSupervisorsResponseDTO;
 import org.musketeers.entity.Admin;
 import org.musketeers.exception.AdminServiceException;
 import org.musketeers.exception.ErrorType;
 import org.musketeers.mapper.IAdminMapper;
+import org.musketeers.rabbitmq.model.SupervisorRegistrationDecisionModel;
+import org.musketeers.rabbitmq.producer.SupervisorRegistrationDecisionProducer;
 import org.musketeers.rabbitmq.producer.RegisteredSupervisorsRequestProducer;
 import org.musketeers.repository.AdminRepository;
-
 import org.musketeers.utility.JwtTokenManager;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -20,9 +22,10 @@ import java.util.List;
 public class AdminService {
 
     private final AdminRepository adminRepository;
-    private final RegisteredSupervisorsRequestProducer registeredSupervisorsRequestProducer;
     private final JwtTokenManager jwtTokenManager;
     private final IAdminMapper adminMapper;
+    private final RegisteredSupervisorsRequestProducer registeredSupervisorsRequestProducer;
+    private final SupervisorRegistrationDecisionProducer supervisorRegistrationDecisionProducer;
     public List<Admin> getAllAdmins() {
         return adminRepository.findAll();
     }
@@ -45,7 +48,7 @@ public class AdminService {
     }
 
     public ResponseEntity<List<RegisteredSupervisorsResponseDTO>> getAllRegisteredSupervisors(String adminId) {
-        // Volkan: 49-50ye gerek yok, company mikroservisindeki servis katmanındaki updateCompany methodunda güzelce açıklamıştım neyin nasıl olacağını, ona göre düzenlenecek buralar...
+        // Volkan: 52-53e gerek yok, company mikroservisindeki servis katmanındaki updateCompany methodunda güzelce açıklamıştım neyin nasıl olacağını, ona göre düzenlenecek buralar...
         //Optional<String> token = jwtTokenManager.createToken(adminId);
         //if (token.isPresent()){
             List<RegisteredSupervisorsResponseDTO> dtoList = registeredSupervisorsRequestProducer.convertSendAndReceive(adminId);
@@ -55,4 +58,14 @@ public class AdminService {
       // }
 
     }
+
+    public String handleSupervisorRegistration(AdminSupervisorRegistrationDecisionRequestDto dto) {
+        SupervisorRegistrationDecisionModel model = SupervisorRegistrationDecisionModel.builder()
+                .supervisorAuthId(dto.getSupervisorAuthId())
+                .decision(dto.getDecision())
+                .build();
+        supervisorRegistrationDecisionProducer.sendRegistrationDecision(model);
+        return "Success";
+    }
+
 }

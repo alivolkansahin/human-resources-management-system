@@ -29,7 +29,7 @@ public class RegisterSupervisorConsumer {
                 .authId(model.getAuthid())
                 .name(model.getName())
                 .lastName(model.getSurName())
-                .gender(model.getGender().equals("male") ? Gender.MALE : Gender.FEMALE)
+                .gender(model.getGender().equals("MALE") ? Gender.MALE : Gender.FEMALE)
                 .identityNumber(model.getIdentityNumber())
                 .email(model.getEmail())
                 .image("asd")

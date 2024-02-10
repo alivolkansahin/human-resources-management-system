@@ -1,6 +1,8 @@
 package org.musketeers.service;
 
 import org.musketeers.entity.Supervisor;
+import org.musketeers.exception.ErrorType;
+import org.musketeers.exception.SupervisorServiceException;
 import org.musketeers.repository.SupervisorRepository;
 import org.musketeers.utility.JwtTokenManager;
 import org.musketeers.utility.ServiceManager;
@@ -28,6 +30,10 @@ public class SupervisorService extends ServiceManager<Supervisor, String> {
     public Supervisor getSupervisorById(String id) {
 //        jwtTokenManager.getClaimsFromToken(id).get(0)
         return findById(id);
+    }
+
+    public Supervisor getSupervisorByAuthId(String authId) {
+        return supervisorRepository.findOptionalByAuthId(authId).orElseThrow(() -> new SupervisorServiceException(ErrorType.SUPERVISOR_NOT_FOUND));
     }
 
     public List<Supervisor> getAllSupervisors() {

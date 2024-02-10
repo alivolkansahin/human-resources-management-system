@@ -2,6 +2,7 @@ package org.musketeers.controller;
 
 
 import lombok.RequiredArgsConstructor;
+import org.musketeers.dto.request.AdminSupervisorRegistrationDecisionRequestDto;
 import org.musketeers.dto.response.RegisteredSupervisorsResponseDTO;
 import org.musketeers.entity.Admin;
 import org.musketeers.service.AdminService;
@@ -50,6 +51,12 @@ public class AdminController {
     public ResponseEntity<List<RegisteredSupervisorsResponseDTO>> getAllRegisteredSupervisors(String adminId){
         return adminService.getAllRegisteredSupervisors(adminId);
     }
+
+    @PostMapping(HANDLE_SUPERVISOR_REGISTRATION)
+    public ResponseEntity<String> acceptSupervisorRegistration(AdminSupervisorRegistrationDecisionRequestDto dto){
+        return ResponseEntity.ok(adminService.handleSupervisorRegistration(dto));
+    }
+
 
 
 

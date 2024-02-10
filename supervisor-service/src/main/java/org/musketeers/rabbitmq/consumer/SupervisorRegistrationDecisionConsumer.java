@@ -25,13 +25,12 @@ public class SupervisorRegistrationDecisionConsumer {
 
     @RabbitListener(queues = "${supervisor-service-config.rabbitmq.registration-decision-supervisor-queue}")
     public void handleAdminDecisionForSupervisorRegistration(SupervisorRegistrationDecisionModel model) {
-        Supervisor supervisor = supervisorService.getSupervisorByAuthId(model.getSupervisorAuthId());
+        Supervisor supervisor = supervisorService.getSupervisorByAuthId(model.getSupervisorAuthId()); // Sonsuz döngü :( :(
         if(supervisor.getActivationStatus().equals(ActivationStatus.ACTIVATED)) return; // already activated exception maybe...
-        if(!model.getDecision()) {
-            supervisorService.hardDelete(supervisor);
+        if(model.getDecision()) {
+            supervisorService.activate(supervisor);
         } else {
-            supervisor.setActivationStatus(ActivationStatus.ACTIVATED);
-            supervisorService.update(supervisor);
+            supervisorService.hardDelete(supervisor);
         }
     }
 

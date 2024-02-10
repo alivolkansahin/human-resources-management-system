@@ -42,5 +42,5 @@ public class Company extends BaseEntity{
     private List<Expense> expenses = new ArrayList<Expense>();
 
     @ElementCollection
-    private List<String> supervisorIds = new ArrayList<String>();
+    private List<String> supervisorIds; // Volkan: new Arraylisti sildim, create ederken içine supervisor id'li bir liste veriyorum çünkü, boş liste newlemeye gerek yok burda.
 }

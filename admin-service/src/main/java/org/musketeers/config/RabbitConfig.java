@@ -31,19 +31,13 @@ public class RabbitConfig {
     String bindingKey;
 
     @Value("${admin-service-config.rabbitmq.admin-supervisor-registration-decision-exchange}")
-    String supervisorDecisionExchange;
+    private String supervisorDecisionExchange;
 
     @Value("${admin-service-config.rabbitmq.registration-decision-supervisor-queue}")
-    String supervisorDecisionSupervisorQueue;
+    private String supervisorDecisionSupervisorQueue;
 
     @Value("${admin-service-config.rabbitmq.registration-decision-auth-queue}")
-    String supervisorDecisionAuthQueue;
-
-//    @Value("${admin-service-config.rabbitmq.registration-decision-supervisor-bindingKey}")
-//    String supervisorDecisionSupervisorBindingKey;
-//
-//    @Value("${admin-service-config.rabbitmq.registration-decision-auth-bindingKey}")
-//    String supervisorDecisionAuthBindingKey;
+    private String supervisorDecisionAuthQueue;
 
     @Bean
     DirectExchange exchange() {

@@ -9,8 +9,10 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Data
 @Builder
-public class GetSupervisorModelRequest {
+public class CreateCompanyRequestModel {
 
-    private String token;
+    private String supervisorId;
+
+    private String companyName;
 
 }

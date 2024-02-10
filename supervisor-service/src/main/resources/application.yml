@@ -24,7 +24,9 @@ supervisor-service-config:
     register-supervisor-queue: registerSupervisorQueue
     get-supervisor-queue: getSupervisorQueue
     registration-decision-supervisor-queue: registrationDecisionSupervisorQueue
-#    activation-supervisor-queue: activationSupervisorQueue
+    supervisor-activation-exchange: supervisorActivationExchange
+    supervisor-activation-company-queue: supervisorActivationCompanyQueue
+    supervisor-activation-company-binding-key: supervisorActivationCompanyBindingKey
 
 
 

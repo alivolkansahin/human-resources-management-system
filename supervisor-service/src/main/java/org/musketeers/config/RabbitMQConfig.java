@@ -15,35 +15,28 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class RabbitMQConfig {
 
-    /*
-    *  1-Produces
-    *
-    *  2-Consumes
-    *
-    *  3-Models
-    *
-    */
+    @Value("${supervisor-service-config.rabbitmq.supervisor-activation-exchange}")
+    private String supervisorActivationExchange;
 
-    @Value("exchane")
-    String exchangeName;
+    @Value("${supervisor-service-config.rabbitmq.supervisor-activation-company-queue}")
+    private String supervisorActivationCompanyQueue;
 
-    @Value("queue")
-    String queueName;
-
-    @Value("key")
-    String bindingKey;
+    @Value("${supervisor-service-config.rabbitmq.supervisor-activation-company-binding-key}")
+    private String supervisorActivationCompanyBindingKey;
 
     @Bean
-    DirectExchange exchange() {
-        return new DirectExchange(exchangeName);
+    DirectExchange supervisorActivationExchange(){
+        return new DirectExchange(supervisorActivationExchange);
     }
+
     @Bean
-    Queue registerQueue(){
-        return new Queue(queueName);
+    Queue supervisorActivationCompanyQueue(){
+        return new Queue(supervisorActivationCompanyQueue);
     }
+
     @Bean
-    Binding bindingRegisterQueue(DirectExchange exchangeAuth, Queue registerQueue){
-        return BindingBuilder.bind(registerQueue).to(exchangeAuth).with(bindingKey);
+    public Binding bindingSupervisorActivationCompanyQueue(DirectExchange supervisorActivationExchange, Queue supervisorActivationCompanyQueue){
+        return BindingBuilder.bind(supervisorActivationCompanyQueue).to(supervisorActivationExchange).with(supervisorActivationCompanyBindingKey);
     }
 
     @Bean
@@ -57,4 +50,5 @@ public class RabbitMQConfig {
         template.setMessageConverter(messageConverter());
         return template;
     }
+
 }

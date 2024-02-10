@@ -4,10 +4,6 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.musketeers.entity.Phone;
-import org.musketeers.entity.enums.ActivationStatus;
-import org.musketeers.entity.enums.Gender;
-import org.springframework.data.annotation.Id;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -16,7 +12,7 @@ import java.util.List;
 @AllArgsConstructor
 @Data
 @Builder
-public class GetSupervisorModelResponse {
+public class GetSupervisorResponseModel {
 
     private String id;
 

@@ -2,7 +2,7 @@ package org.musketeers.rabbitmq.producer;
 
 import org.musketeers.dto.response.RegisteredSupervisorsResponseDTO;
 import org.musketeers.mapper.IAdminMapper;
-import org.musketeers.rabbitmq.model.GetSupervisorModelResponse;
+import org.musketeers.rabbitmq.model.GetSupervisorResponseModel;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.stereotype.Service;
 
@@ -17,7 +17,7 @@ public class RegisteredSupervisorsRequestProducer {
         this.rabbitTemplate = rabbitTemplate;
     }
     public List<RegisteredSupervisorsResponseDTO> convertSendAndReceive (String token){
-        List<GetSupervisorModelResponse> responseList = (List<GetSupervisorModelResponse>) rabbitTemplate.convertSendAndReceive("adminExchange", "getSupervisorBindingKey", token);
+        List<GetSupervisorResponseModel> responseList = (List<GetSupervisorResponseModel>) rabbitTemplate.convertSendAndReceive("adminExchange", "getSupervisorBindingKey", token);
         List<RegisteredSupervisorsResponseDTO> dtoList = new ArrayList<>();
         if (responseList!=null) {
             responseList.forEach((model) -> {

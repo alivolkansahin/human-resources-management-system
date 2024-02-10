@@ -12,7 +12,7 @@ import java.util.List;
 @AllArgsConstructor
 @Data
 @Builder
-public class GetSupervisorModelResponse {
+public class GetSupervisorResponseModel {
 
     private String id;
 

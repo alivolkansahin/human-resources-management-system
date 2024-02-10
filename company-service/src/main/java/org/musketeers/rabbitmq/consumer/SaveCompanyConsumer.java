@@ -13,7 +13,7 @@ public class SaveCompanyConsumer {
 
     private final CompanyService companyService;
 
-    // Volkan: kod kızıyordu servis ayağa kalkıyor mu diye test ederken, yoruma aldım bende, normalde açıktı sende
+    // Volkan: kod kızıyordu servis ayağa kalkıyor mu diye test ederken, yoruma aldım bende, normalde açıktı sende + EKLEME: Gerek kalmadı, createcompanymodelleri geldi.
 //    @RabbitListener(queues = "queue-auth")
 //    public void createUserFromQueue(SaveCompanyModel model){
 //        if (!companyService.findByCompanyName(model.getName())) {

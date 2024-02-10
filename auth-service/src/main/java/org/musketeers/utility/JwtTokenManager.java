@@ -5,6 +5,8 @@ import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.exceptions.JWTVerificationException;
 import com.auth0.jwt.interfaces.DecodedJWT;
+import org.musketeers.entity.enums.EGender;
+import org.musketeers.entity.enums.ERole;
 import org.musketeers.exception.AuthServiceException;
 import org.musketeers.exception.ErrorType;
 import org.springframework.beans.factory.annotation.Value;
@@ -22,25 +24,18 @@ public class JwtTokenManager {
 
     @Value("${authserviceconfig.secrets.issuer}")
     String issuer;
-    Long expTime=1000L*60*15;//15dk lık bir süre.
-    //1. token generate et. (üret)
+    Long expTime=1000L*60*15;
 
-    /**
-     * Claim objesi içine yazacağınız bilgiler herkes tarafından görünebilecektir.
-     * O yüzden, email-password gibi bilgiler burada olmamalıdır.
-     * @param id
-     * @return
-     */
-    public Optional<String> createToken(Long id){
+    public Optional<String> createToken(String id, ERole role){
         try {
           return Optional.of(JWT.create()
                     .withAudience()
                     .withClaim("id", id)
                     .withClaim("service", "AuthMicroService")
-                    .withClaim("ders", "Java JWT")
-                    .withClaim("grup", "Java 12")
-                    .withIssuer(issuer) //jwt token oluşturan
-                    .withIssuedAt(new Date(System.currentTimeMillis())) //jwt token oluşturma zamanı
+                    .withClaim("role",role.toString())
+                    .withClaim("group", "Musketeers")
+                    .withIssuer(issuer)
+                    .withIssuedAt(new Date(System.currentTimeMillis()))
                     .withExpiresAt(new Date(System.currentTimeMillis() + expTime))
                     .sign(Algorithm.HMAC512(secretKey)));
         }

@@ -5,18 +5,20 @@ import org.musketeers.entity.Guest;
 import org.musketeers.entity.Phone;
 import org.musketeers.entity.enums.Gender;
 import org.musketeers.entity.enums.PhoneType;
+import org.musketeers.rabbitmq.model.ActivationGuestModel;
 import org.musketeers.rabbitmq.model.RegisterGuestModel;
+import org.musketeers.rabbitmq.producer.ActivationGuestProducer;
 import org.musketeers.service.GuestService;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.stereotype.Service;
-
-import java.time.LocalDate;
 
 @Service
 @RequiredArgsConstructor
 public class RegisterGuestConsumer {
 
     private final GuestService guestService;
+
+    private final ActivationGuestProducer activationGuestProducer;
 
     @RabbitListener(queues = "${guest-service-config.rabbitmq.register-guest-queue}")
     public void createGuestFromQueue(RegisterGuestModel model) {
@@ -32,6 +34,12 @@ public class RegisterGuestConsumer {
                 .dateOfBirth(model.getDateOfBirth())
                 .build();
         guestService.save(guest);
+        // MAIL ICIN...
+//        activationGuestProducer.sendActivate(ActivationGuestModel.builder()
+//                .id(model.getAuthid())
+//                .email(model.getEmail())
+//                .name(model.getName())
+//                .build());
     }
 
 }

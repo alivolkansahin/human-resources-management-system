@@ -15,45 +15,27 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class RabbitMqConfig {
 
-//    @Value("${rabbitmq.auth-exchange}")
-//    private String exchange;
-//
-//    @Value("${rabbitmq.mail-queue-guest}")
-//    private String mailQueueName;
-//
-//    @Value("${rabbitmq.mail-bindingKey}")
-//    private String mailBindingKey;
-//
-//    @Value(("${rabbitmq.register-guest-queue}"))
-//    private String registerGuestQueueName;
-//    @Value("${rabbitmq.register-guest-bindingKey}")
-//    private String registerGuestBindingKey;
-//
-//
-//    @Bean
-//    DirectExchange exchangeAuth(){
-//        return new DirectExchange(exchange);
-//    }
-//
-//    @Bean
-//    Queue mailQueue(){
-//        return new Queue(mailQueueName);
-//    }
-//    @Bean
-//    public Binding bindingMail(Queue mailQueue, DirectExchange exchangeAuth){
-//        return BindingBuilder.bind(mailQueue).to(exchangeAuth).with(mailBindingKey);
-//    }
-//
-//    @Bean
-//    Queue registerGuestQueue(){
-//        return new Queue(registerGuestQueueName);
-//    }
-//    @Bean
-//    public Binding bindingRegisterGuest(Queue registerGuestQueue, DirectExchange exchangeAuth){
-//        return BindingBuilder.bind(registerGuestQueue).to(exchangeAuth).with(registerGuestBindingKey);
-//    }
+    @Value("${guest-service-config.rabbitmq.activation-guest-exchange}")
+    private String exchange;
 
+    @Value("${guest-service-config.rabbitmq.activation-guest-queue}")
+    private String mailQueueName;
 
+    @Value("${guest-service-config.rabbitmq.activation-guest-binding-key}")
+    private String mailBindingKey;
+
+    @Bean
+    DirectExchange exchangeAuth(){
+        return new DirectExchange(exchange);
+    }
+    @Bean
+    Queue mailQueue(){
+        return new Queue(mailQueueName);
+    }
+    @Bean
+    public Binding bindingMail(DirectExchange exchangeAuth, Queue mailQueue){
+        return BindingBuilder.bind(mailQueue).to(exchangeAuth).with(mailBindingKey);
+    }
 
     @Bean
     MessageConverter messageConverter(){

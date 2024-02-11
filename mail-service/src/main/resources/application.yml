@@ -1,3 +1,38 @@
+server:
+  port: 9096
+spring:
+  rabbitmq:
+    host: localhost
+    port: 5672
+    username: user
+    password: user
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: avolkan.shn@gmail.com
+    password: iczo injt ndgg xjgf
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+  cloud:
+    config:
+      enabled: false
+mail-service-config:
+  rabbitmq:
+    activation-guest-queue: guestActivationQueue  # consume yapılacak queue adı...
+
+
+
+
+
+
+
+
+
+
 #spring:
 #  cloud:
 #    config:

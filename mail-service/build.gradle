@@ -1,9 +1,7 @@
 dependencies {
-
-/*
     implementation libs.springBootAMQP
     implementation libs.springBootMail
-*/
+    implementation libs.springBootFreemarker
 
 /*
     testImplementation platform('org.junit:junit-bom:5.9.1')

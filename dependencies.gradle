@@ -30,6 +30,7 @@ ext {
             springBootMongoDB               : "org.springframework.boot:spring-boot-starter-data-mongodb:$versions.springBoot",             // MongoDB
             springBootRedis                 : "org.springframework.boot:spring-boot-starter-data-redis:$versions.springBoot",               // Redis
             springBootMail                  : "org.springframework.boot:spring-boot-starter-mail:$versions.springBoot",                     // Mail
+            springBootFreemarker            : "org.springframework.boot:spring-boot-starter-freemarker:$versions.springBoot",               // Freemarker for creating html templates in mail
             springBootSecurity              : "org.springframework.boot:spring-boot-starter-security:$versions.springBoot",                 // Security
             springBootValidation            : "org.springframework.boot:spring-boot-starter-validation:$versions.springBoot",               // Validation
             springBootWeb                   : "org.springframework.boot:spring-boot-starter-web:$versions.springBoot",                      // Web - Development kit for MVC including REST API
@@ -49,7 +50,7 @@ ext {
             mapStruct                       : "org.mapstruct:mapstruct:$versions.mapStruct",                                                // MapStruct for easier handling DTOs
             mapStructProcessor              : "org.mapstruct:mapstruct-processor:$versions.mapStruct",                                      // MapStruct Processor to allow usage of its @Annotations
             jwt                             : "com.auth0:java-jwt:$versions.jwt",                                                           // JSON Web Token - JWT
-            swagger                         : "org.springdoc:springdoc-openapi-starter-webmvc-ui:$versions.swagger",                        // Swagger UI --> "/swagger-ui/index.html"
+            swagger                         : "org.springdoc:springdoc-openapi-starter-webmvc-ui:$versions.swagger"                         // Swagger UI --> "/swagger-ui/index.html"
 
             /*
             prometheus                      : "io.micrometer:micrometer-registry-prometheus:$versions.prometheus",                          // Prometheus tool for system resource monitoring and altering

@@ -28,6 +28,7 @@ public class Company extends BaseEntity{
     private String companyLogo;
 
     @Builder.Default
+    @Enumerated(EnumType.STRING)
     private EStatus companyStatus = EStatus.PENDING;
 
     @OneToOne

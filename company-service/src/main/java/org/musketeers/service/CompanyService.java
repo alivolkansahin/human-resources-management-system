@@ -58,7 +58,7 @@ public class CompanyService extends ServiceManager<Company, Long> {
         byCompanyId.setSupervisorIds(dto.getSupervisorIds());
         byCompanyId.setCompanyLogo(dto.getCompanyLogo());
         byCompanyId.setEstablishmentDate(dto.getEstablishmentDate());
-        byCompanyId.setEStatus(EStatus.ACTIVE);
+        byCompanyId.setCompanyStatus(EStatus.ACTIVE);
         return byCompanyId;
     }
 

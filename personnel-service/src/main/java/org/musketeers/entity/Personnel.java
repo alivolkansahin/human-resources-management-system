@@ -33,11 +33,9 @@ public class Personnel extends BaseEntity {
 
     private String email;
 
-//    private String password;
-
     private String image;
 
-    private List<Address> addresses;
+    private List<String> addresses;
 
     private List<Phone> phones;
 
@@ -56,7 +54,7 @@ public class Personnel extends BaseEntity {
     @Builder.Default
     private Double dayOff = 14d;
 
-    @Builder.Default
-    private ActivationStatus activationStatus = ActivationStatus.PENDING;
+//    @Builder.Default
+//    private ActivationStatus activationStatus = ActivationStatus.PENDING;
 
 }

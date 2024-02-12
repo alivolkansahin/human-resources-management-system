@@ -21,12 +21,11 @@ personnel-service-config:
     issuer: ${HR_SYSTEM_ISSUER}
     secret-key: ${HR_SYSTEM_KEY}
   rabbitmq:
-    auth-exchange: authExchange
-    personnel-register-queue: personnelRegisterQueue
-    personnel-register-bindingKey: personnelRegisterBindingKey
-    personnel-activation-queue: personnelActivationQueue
-    personnel-activation-bindingKey: personnelActivationBindingKey
-
+    create-personnel-exchange: createPersonnelExchange
+    create-personnel-auth-queue: createPersonnelAuthQueue
+    create-personnel-auth-binding-key: createPersonnelAuthBindingKey
+    create-personnel-company-queue: createPersonnelCompanyQueue
+    create-personnel-company-binding-key: createPersonnelCompanyBindingKey
 
 
 

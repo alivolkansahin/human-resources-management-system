@@ -40,7 +40,9 @@ rabbitmq:
   register-supervisor-queue: registerSupervisorQueue
   register-supervisor-bindingKey: registerSupervisorBindingKey
 
-  registration-decision-auth-queue: registrationDecisionAuthQueue # Volkan: Admindeki accept/decline'ı dinleyecek kuyruk adını ekledim buraya.
+  registration-decision-auth-queue: registrationDecisionAuthQueue
+
+  create-personnel-auth-queue: createPersonnelAuthQueue # Volkan: Personneldeki create'i dinleyip authid döndürecek kuyruk adını ekledim buraya.
 #
 #  active-status-queue: activeStatusQueue
 #  active-status-bindingKey: activeStatusBindingKey

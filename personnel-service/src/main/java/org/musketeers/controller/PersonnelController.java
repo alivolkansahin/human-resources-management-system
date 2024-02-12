@@ -2,6 +2,7 @@ package org.musketeers.controller;
 
 
 import lombok.RequiredArgsConstructor;
+import org.musketeers.dto.request.CreatePersonnelRequestDto;
 import org.musketeers.entity.Personnel;
 import org.musketeers.service.PersonnelService;
 import org.springframework.http.ResponseEntity;
@@ -28,11 +29,10 @@ public class PersonnelController {
         return ResponseEntity.ok((personnelService.getPersonnelById(id)));
     }
 
-    //rabbitmq artık...
-//    @PostMapping(REGISTER)
-//    public ResponseEntity<Personnel> register(@RequestBody Personnel personnel){
-//        return ResponseEntity.ok(personnelService.register(personnel));
-//    }
+    @PostMapping(CREATE)
+    public ResponseEntity<String> createPersonnel(@RequestBody CreatePersonnelRequestDto dto){
+        return ResponseEntity.ok(personnelService.createPersonnel(dto));
+    }
 
     @DeleteMapping(DELETE + "/{id}")
     public ResponseEntity<Boolean> softDeletePersonnelById(@PathVariable String id) {

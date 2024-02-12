@@ -28,4 +28,5 @@ rabbitmq:
   supervisor-activation-company-queue: supervisorActivationCompanyQueue
   get-company-id-from-supervisor-queue: getCompanyIdFromSupervisorQueue
   get-company-id-from-supervisor-binding-key: getCompanyIdFromSupervisorBindingKey
+  create-personnel-company-queue: createPersonnelCompanyQueue
 

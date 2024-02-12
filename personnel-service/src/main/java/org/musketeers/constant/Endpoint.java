@@ -11,7 +11,7 @@ public abstract class Endpoint {
 
     public static final String PERSONNEL = "/personnel";
 
-    public static final String REGISTER = "/register";
+    public static final String CREATE = "/create";
 
     public static final String DELETE = "/delete";
 
@@ -20,9 +20,5 @@ public abstract class Endpoint {
     public static final String GET = "/get";
 
     public static final String GET_ALL = "/get-all";
-
-
-
-
 
 }

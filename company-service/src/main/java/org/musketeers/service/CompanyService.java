@@ -49,7 +49,7 @@ public class CompanyService extends ServiceManager<Company, Long> {
         return true;
     }
 
-    private static Company getUpdatedCompany(CompanyUpdateRequestDTO dto,Company byCompanyId) {
+    private Company getUpdatedCompany(CompanyUpdateRequestDTO dto,Company byCompanyId) {
         byCompanyId.setHolidays(dto.getHolidays());
         byCompanyId.setHrInfos(dto.getHrInfos());
         byCompanyId.setAddress(dto.getAddress());

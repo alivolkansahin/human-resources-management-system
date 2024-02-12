@@ -33,6 +33,8 @@ public class Company extends BaseEntity{
 
     @OneToOne
     private Address address;
+    // Volkan : addresi direkt string tutalım, diğer yerlerde öyle yapmıştık
+//    private String address;
 
     @OneToMany(mappedBy = "companyId",cascade = CascadeType.PERSIST,fetch = FetchType.EAGER)
     private List<HRInfo> hrInfos = new ArrayList<HRInfo>();
@@ -49,6 +51,7 @@ public class Company extends BaseEntity{
     @OneToMany(mappedBy = "companyId",cascade = CascadeType.PERSIST,fetch = FetchType.EAGER)
     private List<Expense> expenses = new ArrayList<Expense>();
 
+    // Volkan : bence buraya OneToMany ve Supervisor entity lazım, orada da id ve companyId tutulmalı. id supervisor servisinden gelcek, companyIdde burda tutuluyor.
     @ElementCollection
     private List<String> supervisorIds;
 }

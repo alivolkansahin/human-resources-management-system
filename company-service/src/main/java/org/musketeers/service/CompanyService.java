@@ -15,7 +15,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
-public class CompanyService extends ServiceManager<Company, Long> {
+public class CompanyService extends ServiceManager<Company, String> {
     private final CompanyRepository companyRepository;
     private final JwtTokenManager jwtTokenManager;
 

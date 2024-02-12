@@ -6,10 +6,12 @@ import org.musketeers.repository.entity.Income;
 import org.musketeers.utility.ServiceManager;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Service;
 
 import java.util.UUID;
 
-public class IncomeService extends ServiceManager<Income, Long> {
+@Service
+public class IncomeService extends ServiceManager<Income, String> {
     private final IncomeRepository incomeRepository;
 
     public IncomeService(IncomeRepository incomeRepository) {

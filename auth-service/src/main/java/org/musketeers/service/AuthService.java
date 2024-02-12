@@ -9,8 +9,12 @@ import org.musketeers.entity.enums.ERole;
 import org.musketeers.entity.enums.EStatus;
 import org.musketeers.exception.AuthServiceException;
 import org.musketeers.exception.ErrorType;
+import org.musketeers.rabbitmq.model.ActivationGuestModel;
+import org.musketeers.rabbitmq.model.RegisterGuestActivationModel;
 import org.musketeers.rabbitmq.model.RegisterGuestModel;
 import org.musketeers.rabbitmq.model.RegisterSupervisorModel;
+import org.musketeers.rabbitmq.producer.MailSenderForGuestProducer;
+import org.musketeers.rabbitmq.producer.RegisterGuestActivationProducer;
 import org.musketeers.rabbitmq.producer.RegisterGuestProducer;
 import org.musketeers.rabbitmq.producer.RegisterSupervisorProducer;
 import org.musketeers.repository.IAuthRepository;
@@ -19,20 +23,25 @@ import org.musketeers.utility.JwtTokenManager;
 import org.musketeers.utility.ServiceManager;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+
 @Service
 public class AuthService extends ServiceManager<Auth, String> {
     private final IAuthRepository repository;
     private final JwtTokenManager tokenManager;
-    //private final MailSenderProducer mailSenderProducer;
+    private final MailSenderForGuestProducer mailSenderForGuestProducer;
     private final RegisterGuestProducer registerGuestProducer;
     private final RegisterSupervisorProducer registerSupervisorProducer;
+    private final RegisterGuestActivationProducer registerGuestActivationProducer;
 
-    public AuthService(IAuthRepository repository, JwtTokenManager tokenManager, RegisterGuestProducer registerGuestProducer, RegisterSupervisorProducer registerSupervisorProducer) {
+    public AuthService(IAuthRepository repository, JwtTokenManager tokenManager, MailSenderForGuestProducer mailSenderProducerForGuest, RegisterGuestProducer registerGuestProducer, RegisterSupervisorProducer registerSupervisorProducer, RegisterGuestActivationProducer registerGuestActivationProducer) {
         super(repository);
         this.repository = repository;
         this.tokenManager = tokenManager;
+        this.mailSenderForGuestProducer = mailSenderProducerForGuest;
         this.registerGuestProducer = registerGuestProducer;
         this.registerSupervisorProducer = registerSupervisorProducer;
+        this.registerGuestActivationProducer = registerGuestActivationProducer;
     }
 
     @Transactional
@@ -61,7 +70,12 @@ public class AuthService extends ServiceManager<Auth, String> {
                 .build();
         registerGuestProducer.sendNewGuest(registerGuestModel);
 
-        //mailSenderProducer.convertAndSendToRabbit(IAuthMapper.INSTANCE.authToMailSenderGuestModel(auth));  -- Yarın bakıcam !!!
+        ActivationGuestModel activationGuestModel = ActivationGuestModel.builder()
+                .id(auth.getId())
+                .name(registerGuestModel.getName())
+                .email(auth.getEmail())
+                .build();
+        mailSenderForGuestProducer.convertAndSendToRabbit(activationGuestModel);
 
         return "Successfully registered";
     }
@@ -97,5 +111,18 @@ public class AuthService extends ServiceManager<Auth, String> {
 
     public void activateSupervisor(Auth auth){
         auth.setStatus(EStatus.ACTIVE);
+        update(auth);
+    }
+
+    public String activateGuest(String id) {
+        Optional<Auth> auth = findById(id);
+        if (auth.isEmpty()) throw new AuthServiceException(ErrorType.NOT_FOUND);
+        auth.get().setStatus(EStatus.ACTIVE);
+        update(auth.get());
+        RegisterGuestActivationModel registerGuestActivationModel = RegisterGuestActivationModel.builder()
+                .id(auth.get().getId())
+                .build();
+        registerGuestActivationProducer.changeGuestStatus(registerGuestActivationModel);
+        return "updated successfully";
     }
 }

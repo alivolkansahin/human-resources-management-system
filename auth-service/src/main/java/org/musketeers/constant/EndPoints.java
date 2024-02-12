@@ -5,9 +5,6 @@ public class EndPoints {
     public static final String API="/api";
     public static final String ROOT=API+VERSION;
     public static final String AUTH="/auth";
-    public static final String DENEME_REGISTER="/denemeregister";
-
-
 
     public static final String GUEST_REGISTER="/register-guest";
     public static final String PERSONEL_REGISTER="/register-personnel";
@@ -16,6 +13,8 @@ public class EndPoints {
     public static final String PERSONEL_LOGIN="/login-personnel";
     public static final String SUPERVISOR_LOGIN="/login-supervisor";
     public static final String GUEST_LOGIN="/login-guest";
+
+    public static final String ACTIVATE_GUEST="/activate-guest";
 
     public static final String SAVE="/save";
     public static final String UPDATE="/update";

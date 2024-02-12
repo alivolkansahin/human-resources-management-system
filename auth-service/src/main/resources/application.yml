@@ -34,6 +34,9 @@ rabbitmq:
   register-guest-queue: registerGuestQueue
   register-guest-bindingKey: registerGuestBindingKey
 
+  register-guest-activation-queue: registerGuestActivationQueue
+  register-guest-activation-bindingKey: registerGuestActivationBindingKey
+
   register-supervisor-queue: registerSupervisorQueue
   register-supervisor-bindingKey: registerSupervisorBindingKey
 

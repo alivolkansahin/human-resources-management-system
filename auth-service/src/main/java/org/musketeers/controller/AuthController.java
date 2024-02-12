@@ -9,10 +9,7 @@ import org.musketeers.exception.AuthServiceException;
 import org.musketeers.exception.ErrorType;
 import org.musketeers.service.AuthService;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import static org.musketeers.constant.EndPoints.*;
 
@@ -34,5 +31,10 @@ public class AuthController {
     @PostMapping(SUPERVISOR_REGISTER)
     public ResponseEntity<String> registerSupervisor(@Valid @RequestBody SupervisorRegisterRequestDto dto){
         return ResponseEntity.ok(authService.registerSupervisor(dto));
+    }
+
+    @PostMapping(ACTIVATE_GUEST+"{id}")
+    public ResponseEntity<String> activateGuest(@PathVariable String id){
+        return ResponseEntity.ok(authService.activateGuest(id));
     }
 }

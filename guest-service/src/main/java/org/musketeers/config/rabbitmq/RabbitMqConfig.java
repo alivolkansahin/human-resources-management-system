@@ -15,28 +15,28 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class RabbitMqConfig {
 
-    @Value("${guest-service-config.rabbitmq.activation-guest-exchange}")
-    private String exchange;
-
-    @Value("${guest-service-config.rabbitmq.activation-guest-queue}")
-    private String mailQueueName;
-
-    @Value("${guest-service-config.rabbitmq.activation-guest-binding-key}")
-    private String mailBindingKey;
-
-    @Bean
-    DirectExchange exchangeAuth(){
-        return new DirectExchange(exchange);
-    }
-    @Bean
-    Queue mailQueue(){
-        return new Queue(mailQueueName);
-    }
-    @Bean
-    public Binding bindingMail(DirectExchange exchangeAuth, Queue mailQueue){
-        return BindingBuilder.bind(mailQueue).to(exchangeAuth).with(mailBindingKey);
-    }
-
+//    @Value("${guest-service-config.rabbitmq.activation-guest-exchange}")
+//    private String exchange;
+//
+//    @Value("${guest-service-config.rabbitmq.activation-guest-queue}")
+//    private String mailQueueName;
+//
+//    @Value("${guest-service-config.rabbitmq.activation-guest-binding-key}")
+//    private String mailBindingKey;
+//
+//    @Bean
+//    DirectExchange exchangeAuth(){
+//        return new DirectExchange(exchange);
+//    }
+//    @Bean
+//    Queue mailQueue(){
+//        return new Queue(mailQueueName);
+//    }
+//    @Bean
+//    public Binding bindingMail(DirectExchange exchangeAuth, Queue mailQueue){
+//        return BindingBuilder.bind(mailQueue).to(exchangeAuth).with(mailBindingKey);
+//    }
+//
     @Bean
     MessageConverter messageConverter(){
         return new Jackson2JsonMessageConverter();

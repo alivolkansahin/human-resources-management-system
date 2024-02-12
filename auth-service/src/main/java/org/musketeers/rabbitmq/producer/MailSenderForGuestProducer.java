@@ -1,5 +1,6 @@
 package org.musketeers.rabbitmq.producer;
 
+
 import lombok.RequiredArgsConstructor;
 import org.musketeers.rabbitmq.model.ActivationGuestModel;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
@@ -8,20 +9,17 @@ import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
-public class ActivationGuestProducer {
+public class MailSenderForGuestProducer {
 
     private final RabbitTemplate rabbitTemplate;
 
-    @Value("${guest-service-config.rabbitmq.activation-guest-exchange}")
+    @Value("${rabbitmq.auth-exchange}")
     private String directExchange;
 
-    @Value("${guest-service-config.rabbitmq.activation-guest-binding-key}")
-    private String bindingKey;
+    @Value("${rabbitmq.mail-bindingKey}")
+    private String mailBindingKey;
 
-    public void sendActivate(ActivationGuestModel model) {
-        rabbitTemplate.convertAndSend(directExchange, bindingKey, model);
+    public void convertAndSendToRabbit(ActivationGuestModel model){
+        rabbitTemplate.convertAndSend(directExchange,mailBindingKey,model);
     }
-
-
-
 }

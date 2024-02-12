@@ -34,6 +34,12 @@ public class RabbitMqConfig {
     @Value("${rabbitmq.register-supervisor-bindingKey}")
     private String registerSupervisorBindingKey;
 
+    @Value("${rabbitmq.register-guest-activation-queue}")
+    private String registerGuestActivationQueueName;
+
+    @Value("${rabbitmq.register-guest-activation-bindingKey}")
+    private String registerGuestActivationBindingKey;
+
 
     @Bean
     DirectExchange exchangeAuth(){
@@ -62,6 +68,15 @@ public class RabbitMqConfig {
     @Bean
     public Binding bindingRegisterGuest(Queue registerGuestQueue, DirectExchange exchangeAuth){
         return BindingBuilder.bind(registerGuestQueue).to(exchangeAuth).with(registerGuestBindingKey);
+    }
+
+    @Bean
+    Queue registerGuestActivationQueue(){
+        return new Queue(registerGuestActivationQueueName);
+    }
+    @Bean
+    public Binding bindingRegisterGuestActivation(Queue registerGuestActivationQueue, DirectExchange exchangeAuth){
+        return BindingBuilder.bind(registerGuestActivationQueue).to(exchangeAuth).with(registerGuestActivationBindingKey);
     }
 
 

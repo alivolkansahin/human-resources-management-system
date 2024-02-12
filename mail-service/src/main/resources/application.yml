@@ -22,7 +22,8 @@ spring:
       enabled: false
 mail-service-config:
   rabbitmq:
-    activation-guest-queue: guestActivationQueue  # consume yapılacak queue adı...
+    activation-guest-queue: mailQueue  # consume yapılacak queue adı...
+
 
 
 

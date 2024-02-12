@@ -33,7 +33,7 @@ public class AuthController {
         return ResponseEntity.ok(authService.registerSupervisor(dto));
     }
 
-    @PostMapping(ACTIVATE_GUEST+"{id}")
+    @GetMapping(ACTIVATE_GUEST+"/{id}")
     public ResponseEntity<String> activateGuest(@PathVariable String id){
         return ResponseEntity.ok(authService.activateGuest(id));
     }

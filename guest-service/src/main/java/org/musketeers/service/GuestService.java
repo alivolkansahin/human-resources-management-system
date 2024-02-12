@@ -40,7 +40,7 @@ public class GuestService extends ServiceManager<Guest, String> {
     public void activateGuest(String authId) {
         Guest guest = guestRepository.findOptionalByAuthId(authId).orElseThrow(() -> new GuestServiceException(ErrorType.GUEST_NOT_FOUND));
         guest.setActivationStatus(ActivationStatus.ACTIVATED);
-        save(guest);
+        update(guest);
     }
 
 }

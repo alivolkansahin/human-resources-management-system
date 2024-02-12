@@ -29,9 +29,9 @@ public class CompanyController {
         return companyService.findAll();
     }
 
-    @GetMapping(FINDBYNAME)
-    public Optional<Company> findByCompanyName(String companyName){
-        return companyService.findByCompanyName(companyName);
+    @GetMapping(FINDCOMPANYBYSUPERVISORTOKEN)
+    public Company findByCompanyId(String supervisorToken){
+        return companyService.findByCompanyId(supervisorToken);
     }
 
     @PostMapping(UPDATE)
@@ -42,5 +42,10 @@ public class CompanyController {
     @PostMapping(SOFT_DELETE)
     public ResponseEntity<Boolean> softDelete(String companyName){
         return ResponseEntity.ok(companyService.softDelete(companyName));
+    }
+
+    @PostMapping(HARD_DELETE)
+    public ResponseEntity<Boolean> hardDelete(String companyName){
+        return ResponseEntity.ok(companyService.hardDelete(companyName));
     }
 }

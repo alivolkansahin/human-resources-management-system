@@ -10,5 +10,6 @@ import java.util.UUID;
 public interface CompanyRepository extends JpaRepository<Company, Long> {
     Optional<Company> findOptionalByCompanyName(String companyName);
 
+    Optional<Company> findOptionalById(String companyId);
     void deleteByCompanyName(String companyName);
 }

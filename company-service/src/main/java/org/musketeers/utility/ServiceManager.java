@@ -18,8 +18,9 @@ public class ServiceManager<T extends BaseEntity,ID> implements IService<T,ID> {
 
     @Override
     public T save(T t) {
-        t.setCreatedAt(LocalDateTime.now());
-        t.setUpdatedAt(LocalDateTime.now());
+        LocalDateTime time = LocalDateTime.now();
+        t.setCreatedAt(time);
+        t.setUpdatedAt(time);
         t.setStatus(true);
         return jpaRepository.save(t);
     }
@@ -27,8 +28,10 @@ public class ServiceManager<T extends BaseEntity,ID> implements IService<T,ID> {
     @Override
     public Iterable<T> saveAll(Iterable<T> t) {
         t.forEach(x-> {
+            LocalDateTime time = LocalDateTime.now();
             x.setStatus(true);
-            x.setCreatedAt(LocalDateTime.now());
+            x.setCreatedAt(time);
+            x.setUpdatedAt(time);
         });
         return jpaRepository.saveAll(t);
     }

@@ -10,7 +10,7 @@ import org.springframework.stereotype.Service;
 public class GetCompanyIdFromSupervisorProducer {
     private final RabbitTemplate rabbitTemplate;
 
-    @Value("${rabbitmq.company-exchange}")
+    @Value("${rabbitmq.exchange-name}")
     private String exchange;
 
     @Value("${rabbitmq.get-company-id-from-supervisor-binding-key}")

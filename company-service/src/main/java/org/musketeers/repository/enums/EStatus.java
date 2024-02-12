@@ -1,5 +1,5 @@
 package org.musketeers.repository.enums;
 
-public enum Status {
+public enum EStatus {
     PENDING,ACTIVE
 }

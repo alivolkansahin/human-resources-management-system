@@ -6,15 +6,14 @@ import org.musketeers.exception.ErrorType;
 import org.musketeers.rabbitmq.producer.GetCompanyIdFromSupervisorProducer;
 import org.musketeers.repository.CompanyRepository;
 import org.musketeers.repository.entity.Company;
-import org.musketeers.repository.enums.Status;
+import org.musketeers.repository.enums.EStatus;
 import org.musketeers.utility.JwtTokenManager;
 import org.musketeers.utility.ServiceManager;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
+
 @Service
 public class CompanyService extends ServiceManager<Company, Long> {
     private final CompanyRepository companyRepository;
@@ -59,7 +58,7 @@ public class CompanyService extends ServiceManager<Company, Long> {
         byCompanyId.setSupervisorIds(dto.getSupervisorIds());
         byCompanyId.setCompanyLogo(dto.getCompanyLogo());
         byCompanyId.setEstablishmentDate(dto.getEstablishmentDate());
-        byCompanyId.setStatus(Status.ACTIVE);
+        byCompanyId.setEStatus(EStatus.ACTIVE);
         return byCompanyId;
     }
 

@@ -3,11 +3,10 @@ package org.musketeers.repository.entity;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
-import org.musketeers.repository.enums.Status;
+import org.musketeers.repository.enums.EStatus;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -29,7 +28,7 @@ public class Company extends BaseEntity{
     private String companyLogo;
 
     @Builder.Default
-    private Status status = Status.PENDING;
+    private EStatus companyStatus = EStatus.PENDING;
 
     @OneToOne
     private Address address;

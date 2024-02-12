@@ -6,6 +6,7 @@ import org.musketeers.dto.request.GuestRegisterRequestDto;
 import org.musketeers.dto.request.SupervisorRegisterRequestDto;
 import org.musketeers.entity.Auth;
 import org.musketeers.entity.enums.ERole;
+import org.musketeers.entity.enums.EStatus;
 import org.musketeers.exception.AuthServiceException;
 import org.musketeers.exception.ErrorType;
 import org.musketeers.rabbitmq.model.RegisterGuestModel;
@@ -92,5 +93,9 @@ public class AuthService extends ServiceManager<Auth, String> {
                 .build();
         registerSupervisorProducer.sendNewSupervisor(registerSupervisorModel);
         return "Successfully registered";
+    }
+
+    public void activateSupervisor(Auth auth){
+        auth.setStatus(EStatus.ACTIVE);
     }
 }

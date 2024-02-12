@@ -12,7 +12,7 @@ public class EndPoints {
     public static final String ADMIN_LOGIN="/login-admin";
     public static final String PERSONEL_LOGIN="/login-personnel";
     public static final String SUPERVISOR_LOGIN="/login-supervisor";
-    public static final String GUEST_LOGIN="/login-guest";
+    public static final String LOGIN="/login";
 
     public static final String ACTIVATE_GUEST="/activate-guest";
 

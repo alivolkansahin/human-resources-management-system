@@ -2,6 +2,7 @@ package org.musketeers.service;
 
 
 import jakarta.transaction.Transactional;
+import org.musketeers.dto.request.LoginRequestDto;
 import org.musketeers.dto.request.GuestRegisterRequestDto;
 import org.musketeers.dto.request.SupervisorRegisterRequestDto;
 import org.musketeers.entity.Auth;
@@ -9,14 +10,8 @@ import org.musketeers.entity.enums.ERole;
 import org.musketeers.entity.enums.EStatus;
 import org.musketeers.exception.AuthServiceException;
 import org.musketeers.exception.ErrorType;
-import org.musketeers.rabbitmq.model.ActivationGuestModel;
-import org.musketeers.rabbitmq.model.RegisterGuestActivationModel;
-import org.musketeers.rabbitmq.model.RegisterGuestModel;
-import org.musketeers.rabbitmq.model.RegisterSupervisorModel;
-import org.musketeers.rabbitmq.producer.MailSenderForGuestProducer;
-import org.musketeers.rabbitmq.producer.RegisterGuestActivationProducer;
-import org.musketeers.rabbitmq.producer.RegisterGuestProducer;
-import org.musketeers.rabbitmq.producer.RegisterSupervisorProducer;
+import org.musketeers.rabbitmq.model.*;
+import org.musketeers.rabbitmq.producer.*;
 import org.musketeers.repository.IAuthRepository;
 import org.musketeers.utility.CodeGenerator;
 import org.musketeers.utility.JwtTokenManager;
@@ -34,7 +29,9 @@ public class AuthService extends ServiceManager<Auth, String> {
     private final RegisterSupervisorProducer registerSupervisorProducer;
     private final RegisterGuestActivationProducer registerGuestActivationProducer;
 
-    public AuthService(IAuthRepository repository, JwtTokenManager tokenManager, MailSenderForGuestProducer mailSenderProducerForGuest, RegisterGuestProducer registerGuestProducer, RegisterSupervisorProducer registerSupervisorProducer, RegisterGuestActivationProducer registerGuestActivationProducer) {
+    private final PersonnelMailSendProducer personnelMailSendProducer;
+
+    public AuthService(IAuthRepository repository, JwtTokenManager tokenManager, MailSenderForGuestProducer mailSenderProducerForGuest, RegisterGuestProducer registerGuestProducer, RegisterSupervisorProducer registerSupervisorProducer, RegisterGuestActivationProducer registerGuestActivationProducer, PersonnelMailSendProducer personnelMailSendProducer) {
         super(repository);
         this.repository = repository;
         this.tokenManager = tokenManager;
@@ -42,6 +39,7 @@ public class AuthService extends ServiceManager<Auth, String> {
         this.registerGuestProducer = registerGuestProducer;
         this.registerSupervisorProducer = registerSupervisorProducer;
         this.registerGuestActivationProducer = registerGuestActivationProducer;
+        this.personnelMailSendProducer = personnelMailSendProducer;
     }
 
     @Transactional
@@ -54,7 +52,6 @@ public class AuthService extends ServiceManager<Auth, String> {
                         .email(dto.getEmail())
                         .password(dto.getPassword())
                         .phone(dto.getPhone())
-                        .activationCode(CodeGenerator.generateCode())
                         .role(ERole.GUEST)
                         .build();
         save(auth);
@@ -124,5 +121,44 @@ public class AuthService extends ServiceManager<Auth, String> {
                 .build();
         registerGuestActivationProducer.changeGuestStatus(registerGuestActivationModel);
         return "updated successfully";
+    }
+
+    public String login(LoginRequestDto dto) {
+        Optional<Auth> optionalAuth = repository.findOptionalByEmailOrPhone(dto.getIdentity(), dto.getIdentity());
+        if (optionalAuth.isEmpty()) throw new AuthServiceException(ErrorType.NOT_FOUND);
+        if (optionalAuth.get().getState().equals(false)) throw new AuthServiceException(ErrorType.ACCOUNT_DELETED);
+        if (!optionalAuth.get().getPassword().equals(dto.getPassword())) throw new AuthServiceException(ErrorType.INVALID_PASSWORD_OR_EMAIL);
+        if (!optionalAuth.get().getStatus().equals(EStatus.ACTIVE)) throw new AuthServiceException(ErrorType.ACCOUNT_NOT_ACTIVE);
+
+        Optional<String> token = tokenManager.createToken(optionalAuth.get().getId(), optionalAuth.get().getRole());
+
+        if (token.isEmpty()) throw new AuthServiceException(ErrorType.TOKEN_NOT_CREATED);
+
+        return token.get();
+    }
+
+    public String registerPersonnel(CreatePersonnelAuthModel model) {
+        String code = model.getName()+CodeGenerator.generateCode();
+
+
+        Auth auth = Auth.builder()
+                .email(model.getEmail())
+                .phone(model.getPhone())
+                .role(ERole.PERSONNEL)
+                .status(EStatus.ACTIVE)
+                .password(code)
+                .build();
+        save(auth);
+
+        CreatePersonnelMailModel mailModel = CreatePersonnelMailModel.builder()
+                .email(auth.getEmail())
+                .password(auth.getPassword())
+                .name(model.getName())
+                .build();
+
+        personnelMailSendProducer.sendMail(mailModel);
+
+        return auth.getId();
+
     }
 }

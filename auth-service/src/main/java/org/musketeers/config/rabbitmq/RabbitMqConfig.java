@@ -40,6 +40,12 @@ public class RabbitMqConfig {
     @Value("${rabbitmq.register-guest-activation-bindingKey}")
     private String registerGuestActivationBindingKey;
 
+    @Value("${rabbitmq.mail-queue-personnel}")
+    private String mailPersonnelQueueName;
+
+    @Value("${rabbitmq.mail-bindingKey-personnel}")
+    private String mailPersonnelBindingKey;
+
 
     @Bean
     DirectExchange exchangeAuth(){
@@ -58,8 +64,15 @@ public class RabbitMqConfig {
         return BindingBuilder.bind(mailQueue).to(exchangeAuth).with(mailBindingKey);
     }
 
+    @Bean
+    Queue mailPersonnelQueue(){
+        return new Queue(mailPersonnelQueueName);
+    }
 
-
+    @Bean
+    public Binding bindingPersonnelMail(Queue mailPersonnelQueue, DirectExchange exchangeAuth){
+        return BindingBuilder.bind(mailPersonnelQueue).to(exchangeAuth).with(mailPersonnelBindingKey);
+    }
 
     @Bean
     Queue registerGuestQueue(){

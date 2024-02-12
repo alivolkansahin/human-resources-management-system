@@ -29,6 +29,9 @@ rabbitmq:
   mail-queue-guest: mailQueue
   mail-bindingKey: mailBindingKey
 
+  mail-queue-personnel: mailQueuePersonnel
+  mail-bindingKey-personnel: mailBindingPersonnel
+
   auth-exchange: authExchange
 
   register-guest-queue: registerGuestQueue
@@ -43,6 +46,8 @@ rabbitmq:
   registration-decision-auth-queue: registrationDecisionAuthQueue
 
   create-personnel-auth-queue: createPersonnelAuthQueue # Volkan: Personneldeki create'i dinleyip authid döndürecek kuyruk adını ekledim buraya.
+
+
 #
 #  active-status-queue: activeStatusQueue
 #  active-status-bindingKey: activeStatusBindingKey

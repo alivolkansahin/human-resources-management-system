@@ -2,11 +2,9 @@ package org.musketeers.controller;
 
 
 import jakarta.validation.Valid;
+import org.musketeers.dto.request.LoginRequestDto;
 import org.musketeers.dto.request.GuestRegisterRequestDto;
 import org.musketeers.dto.request.SupervisorRegisterRequestDto;
-import org.musketeers.entity.Auth;
-import org.musketeers.exception.AuthServiceException;
-import org.musketeers.exception.ErrorType;
 import org.musketeers.service.AuthService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -36,5 +34,10 @@ public class AuthController {
     @GetMapping(ACTIVATE_GUEST+"/{id}")
     public ResponseEntity<String> activateGuest(@PathVariable String id){
         return ResponseEntity.ok(authService.activateGuest(id));
+    }
+
+    @PostMapping(LOGIN)
+    public ResponseEntity<String> login(LoginRequestDto dto){
+        return ResponseEntity.ok(authService.login(dto));
     }
 }

@@ -24,13 +24,13 @@ public class RabbitMQConfig {
     *
     */
 
-    @Value("exchane")
+    @Value("${rabbitmq.exchange-name}")
     String exchangeName;
 
-    @Value("queue")
+    @Value("${rabbitmq.get-company-id-from-supervisor-queue}")
     String queueName;
 
-    @Value("key")
+    @Value("${rabbitmq.get-company-id-from-supervisor-binding-key}")
     String bindingKey;
 
     @Bean

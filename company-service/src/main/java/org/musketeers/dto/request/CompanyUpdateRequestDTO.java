@@ -14,7 +14,9 @@ import java.util.List;
 @Builder
 public class CompanyUpdateRequestDTO {
     private String token;
-    private String companyName;
+    private String companyId;
+    private String companyLogo;
+    private String establishmentDate;
     private Address address;
     private List<HRInfo> hrInfos;
     private List<Department> departments;

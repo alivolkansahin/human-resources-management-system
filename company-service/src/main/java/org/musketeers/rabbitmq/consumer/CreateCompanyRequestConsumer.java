@@ -19,7 +19,7 @@ public class CreateCompanyRequestConsumer {
 
     private final CompanyService companyService;
 
-    @RabbitListener(queues = "${company-service-config.rabbitmq.supervisor-activation-company-queue}")
+    @RabbitListener(queues = "${rabbitmq.supervisor-activation-company-queue}")
     public CreateCompanyResponseModel createCompanyFromQueue(CreateCompanyRequestModel model) {
         // VOLKAN:
         // Company name database'de nasıl tutulacak (hem burda, hem supervisorda) ona göre .toLowerCase falan düşünülecek.

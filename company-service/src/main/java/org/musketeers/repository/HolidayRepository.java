@@ -6,5 +6,5 @@ import org.springframework.stereotype.Repository;
 
 import java.util.UUID;
 @Repository
-public interface HolidayRepository extends JpaRepository<Holiday, Long> {
+public interface HolidayRepository extends JpaRepository<Holiday, String> {
 }

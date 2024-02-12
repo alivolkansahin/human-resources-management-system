@@ -27,6 +27,7 @@ supervisor-service-config:
     supervisor-activation-exchange: supervisorActivationExchange
     supervisor-activation-company-queue: supervisorActivationCompanyQueue
     supervisor-activation-company-binding-key: supervisorActivationCompanyBindingKey
+    get-company-id-from-supervisor-queue: getCompanyIdFromSupervisorQueue
 
 
 

@@ -4,10 +4,12 @@ import org.musketeers.repository.HolidayRepository;
 import org.musketeers.repository.entity.Holiday;
 import org.musketeers.utility.ServiceManager;
 import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Service;
 
 import java.util.UUID;
 
-public class HolidayService extends ServiceManager<Holiday, Long> {
+@Service
+public class HolidayService extends ServiceManager<Holiday, String> {
     private final HolidayRepository holidayRepository;
 
     public HolidayService(HolidayRepository holidayRepository) {

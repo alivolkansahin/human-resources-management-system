@@ -4,10 +4,12 @@ import org.musketeers.repository.ExpenseRepository;
 import org.musketeers.repository.entity.Expense;
 import org.musketeers.utility.ServiceManager;
 import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Service;
 
 import java.util.UUID;
 
-public class ExpenseService extends ServiceManager<Expense, Long> {
+@Service
+public class ExpenseService extends ServiceManager<Expense, String> {
     private final ExpenseRepository expenseRepository;
 
     public ExpenseService(ExpenseRepository expenseRepository) {

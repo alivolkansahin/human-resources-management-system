@@ -5,10 +5,12 @@ import org.musketeers.repository.entity.HRInfo;
 import org.musketeers.utility.ServiceManager;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Service;
 
 import java.util.UUID;
 
-public class HRInfoService extends ServiceManager<HRInfo, Long> {
+@Service
+public class HRInfoService extends ServiceManager<HRInfo, String> {
     private final HRInfoRepository hrInfoRepository;
 
     public HRInfoService(HRInfoRepository hrInfoRepository) {

@@ -4,10 +4,12 @@ import org.musketeers.repository.DepartmentRepository;
 import org.musketeers.repository.entity.Department;
 import org.musketeers.utility.ServiceManager;
 import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Service;
 
 import java.util.UUID;
 
-public class DepartmentService extends ServiceManager<Department, Long> {
+@Service
+public class DepartmentService extends ServiceManager<Department, String> {
     private final DepartmentRepository departmentRepository;
 
     public DepartmentService(DepartmentRepository departmentRepository) {

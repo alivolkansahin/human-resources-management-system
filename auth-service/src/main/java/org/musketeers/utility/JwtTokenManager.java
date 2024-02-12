@@ -23,16 +23,14 @@ public class JwtTokenManager {
 
     @Value("${authserviceconfig.secrets.issuer}")
     String issuer;
-    Long expTime=1000L*60*15;
+    Long expTime=1000L*60*90;
 
     public Optional<String> createToken(String id, ERole role){
         try {
           return Optional.of(JWT.create()
                     .withAudience()
                     .withClaim("id", id)
-                    .withClaim("service", "AuthMicroService")
                     .withClaim("role",role.toString())
-                    .withClaim("group", "Musketeers")
                     .withIssuer(issuer)
                     .withIssuedAt(new Date(System.currentTimeMillis()))
                     .withExpiresAt(new Date(System.currentTimeMillis() + expTime))

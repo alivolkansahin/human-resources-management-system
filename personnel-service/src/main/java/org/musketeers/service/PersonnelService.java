@@ -57,6 +57,7 @@ public class PersonnelService extends ServiceManager<Personnel, String> {
         return createPersonnelProducer.sendPersonnelInfoToAuth(CreatePersonnelAuthModel.builder()
                 .phone(dto.getPhone())
                 .email(dto.getEmail())
+                .name(dto.getName())
                 .build());
     }
 

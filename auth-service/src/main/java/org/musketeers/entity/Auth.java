@@ -22,7 +22,6 @@ public class Auth extends BaseEntity {
     private String password;
     @Column(unique = true,nullable = false)
     private String phone;
-    private String activationCode;
 
     @Builder.Default
     @Enumerated(EnumType.STRING)

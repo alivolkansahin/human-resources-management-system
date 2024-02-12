@@ -13,6 +13,8 @@ public class CreatePersonnelAuthModel {
 
     private String email;
 
+    private String name;
+
     private String phone;
 
 }

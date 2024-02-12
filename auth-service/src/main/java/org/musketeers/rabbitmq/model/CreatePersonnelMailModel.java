@@ -9,12 +9,8 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Data
 @Builder
-public class CreatePersonnelAuthModel {
-
+public class CreatePersonnelMailModel {
     private String email;
-
+    private String password;
     private String name;
-
-    private String phone;
-
 }

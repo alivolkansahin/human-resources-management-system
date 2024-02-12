@@ -22,9 +22,7 @@ guest-service-config:
     secret-key: ${HR_SYSTEM_KEY}
   rabbitmq:
     register-guest-queue: registerGuestQueue
-    activation-guest-exchange: guestActivationExchange
-    activation-guest-queue: guestActivationQueue
-    activation-guest-binding-key: guestActivationBindingKey
+    register-guest-activation-queue: registerGuestActivationQueue
 
 
 

@@ -1,10 +1,11 @@
 package org.musketeers.repository.entity;
 
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
-
-import java.util.UUID;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -18,9 +19,16 @@ public class HRInfo extends BaseEntity{
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private String id;
-    private String companyId;
+
+    @ManyToOne
+    private Company company;
+
     private String firstName;
+
     private String lastName;
+
     private String email;
+
     private String phone;
+
 }

@@ -1,9 +1,9 @@
 package org.musketeers.repository;
 
-import org.musketeers.repository.entity.EmployeeId;
+import org.musketeers.repository.entity.Supervisor;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface EmployeeIdRepository extends JpaRepository<EmployeeId,String> {
+public interface SupervisorRepository extends JpaRepository<Supervisor,String> {
 }

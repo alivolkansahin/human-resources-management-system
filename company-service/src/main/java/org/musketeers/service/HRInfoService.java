@@ -3,11 +3,8 @@ package org.musketeers.service;
 import org.musketeers.repository.HRInfoRepository;
 import org.musketeers.repository.entity.HRInfo;
 import org.musketeers.utility.ServiceManager;
-import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-
-import java.util.UUID;
 
 @Service
 public class HRInfoService extends ServiceManager<HRInfo, String> {

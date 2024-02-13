@@ -8,10 +8,16 @@ import lombok.*;
 @Data
 @Builder
 @Entity
-@Table(name = "tbl_employeeids")
-public class EmployeeId {
+@Table(name = "tbl_personnel")
+public class Personnel {
+
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private String id;
-    private String employeeId;
+
+    private String personnelId;
+
+    @ManyToOne
+    private Department department;
+
 }

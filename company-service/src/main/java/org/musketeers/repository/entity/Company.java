@@ -3,9 +3,10 @@ package org.musketeers.repository.entity;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
+import org.hibernate.annotations.Cascade;
+import org.hibernate.annotations.CascadeType;
 import org.musketeers.repository.enums.EStatus;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @AllArgsConstructor
@@ -17,7 +18,7 @@ import java.util.List;
 @Table(name = "tbl_companies")
 public class Company extends BaseEntity{
 
-    @jakarta.persistence.Id
+    @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private String id;
 
@@ -27,27 +28,34 @@ public class Company extends BaseEntity{
 
     private String companyLogo;
 
-    @Builder.Default
     @Enumerated(EnumType.STRING)
+    @Builder.Default
     private EStatus companyStatus = EStatus.PENDING;
 
     private String address;
 
-    @OneToMany(mappedBy = "companyId",cascade = CascadeType.PERSIST,fetch = FetchType.EAGER)
-    private List<HRInfo> hrInfos = new ArrayList<HRInfo>();
+    @OneToMany(mappedBy = "company", fetch = FetchType.EAGER)
+    @Cascade(CascadeType.ALL)
+    private List<HRInfo> hrInfos;
 
-    @OneToMany(mappedBy = "companyId",cascade = CascadeType.PERSIST,fetch = FetchType.EAGER)
-    private List<Department> departments = new ArrayList<Department>();
+    @OneToMany(mappedBy = "company", fetch = FetchType.EAGER)
+    @Cascade(CascadeType.ALL)
+    private List<Department> departments;
 
-    @OneToMany(mappedBy = "companyId",cascade = CascadeType.PERSIST,fetch = FetchType.EAGER)
-    private List<Holiday> holidays = new ArrayList<Holiday>();
+    @OneToMany(mappedBy = "company", fetch = FetchType.EAGER)
+    @Cascade(CascadeType.ALL)
+    private List<Holiday> holidays;
 
-    @OneToMany(mappedBy = "companyId",cascade = CascadeType.PERSIST,fetch = FetchType.EAGER)
-    private List<Income> incomes = new ArrayList<Income>();
+    @OneToMany(mappedBy = "company", fetch = FetchType.EAGER)
+    @Cascade(CascadeType.ALL)
+    private List<Income> incomes;
 
-    @OneToMany(mappedBy = "companyId",cascade = CascadeType.PERSIST,fetch = FetchType.EAGER)
-    private List<Expense> expenses = new ArrayList<Expense>();
+    @OneToMany(mappedBy = "company", fetch = FetchType.EAGER)
+    @Cascade(CascadeType.ALL)
+    private List<Expense> expenses;
 
-    @OneToMany(mappedBy = "supervisorId",cascade = CascadeType.PERSIST,fetch = FetchType.EAGER)
-    private List<SupervisorId> supervisorIds;
+    @OneToMany(mappedBy = "company",fetch = FetchType.EAGER)
+    @Cascade(CascadeType.ALL)
+    private List<Supervisor> supervisors;
+
 }

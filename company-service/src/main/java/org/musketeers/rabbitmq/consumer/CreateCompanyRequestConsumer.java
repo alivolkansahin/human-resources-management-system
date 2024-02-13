@@ -6,6 +6,7 @@ import org.musketeers.exception.ErrorType;
 import org.musketeers.rabbitmq.model.CreateCompanyRequestModel;
 import org.musketeers.rabbitmq.model.CreateCompanyResponseModel;
 import org.musketeers.repository.entity.Company;
+import org.musketeers.repository.entity.SupervisorId;
 import org.musketeers.service.CompanyService;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.stereotype.Service;
@@ -27,11 +28,14 @@ public class CreateCompanyRequestConsumer {
         Optional<Company> optionalCompany = companyService.findByCompanyName(model.getCompanyName());
         Company company = null;
         if(optionalCompany.isEmpty()) {
-            company = Company.builder().companyName(model.getCompanyName()).supervisorIds(Arrays.asList(model.getSupervisorId())).build();
+            company = Company.builder()
+                    .companyName(model.getCompanyName())
+                    .supervisorIds(Arrays.asList(SupervisorId.builder().supervisorId(model.getSupervisorId()).build()))
+                    .build();
             companyService.save(company);
         } else {
             company = optionalCompany.get();
-            company.getSupervisorIds().add(model.getSupervisorId());
+            company.getSupervisorIds().add(SupervisorId.builder().supervisorId(model.getSupervisorId()).build());
             companyService.update(company);
         }
         return CreateCompanyResponseModel.builder().companyId(company.getId()).build();

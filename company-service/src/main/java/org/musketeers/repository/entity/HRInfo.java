@@ -21,8 +21,6 @@ public class HRInfo extends BaseEntity{
     private String companyId;
     private String firstName;
     private String lastName;
-    // Volkan: title a gerek var mı bilemedim
-    private String title;
     private String email;
     private String phone;
 }

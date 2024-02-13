@@ -17,11 +17,11 @@ public class CompanyUpdateRequestDTO {
     private String companyId;
     private String companyLogo;
     private String establishmentDate;
-    private Address address;
+    private String address;
     private List<HRInfo> hrInfos;
     private List<Department> departments;
     private List<Holiday> holidays;
     private List<Income> incomes;
     private List<Expense> expenses;
-    private List<String> supervisorIds;
+    private List<SupervisorId> supervisorIds;
 }

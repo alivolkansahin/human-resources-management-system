@@ -39,9 +39,9 @@ public class CompanyController {
         return companyService.findByCompanyId(supervisorToken);
     }
 
-    @PostMapping(UPDATE)
-    public ResponseEntity<Boolean> updateCompany(@RequestBody CompanyUpdateRequestDTO dto){
-        return ResponseEntity.ok(companyService.updateCompany(dto));
+    @PutMapping(UPDATE + "-for-first-time")
+    public ResponseEntity<Boolean> updateCompanyForFirstTime(@RequestBody CompanyUpdateRequestDTO dto){
+        return ResponseEntity.ok(companyService.updateCompanyForFirstTime(dto));
     }
 
     @PostMapping(SOFT_DELETE)
@@ -56,26 +56,27 @@ public class CompanyController {
 
     @PostMapping(ADD_INCOME)
     public ResponseEntity<Boolean> addIncome(AddIncomeRequestDto dto){
-        return ResponseEntity.ok(incomeService.saveIncome(companyMapper.addIncomeRequestDtoToIncome(dto)));
+        return ResponseEntity.ok(incomeService.saveIncome(dto));
     }
 
     @PostMapping(ADD_EXPENSE)
     public ResponseEntity<Boolean> addExpense(AddExpenseRequestDto dto){
-        return ResponseEntity.ok(expenseService.saveExpense(companyMapper.addExpenseRequestDtoToExpense(dto)));
+        return ResponseEntity.ok(expenseService.saveExpense(dto));
     }
 
     @PostMapping(ADD_HOLIDAY)
     public ResponseEntity<Boolean> addHoliday(AddHolidayRequestDto dto){
-        return ResponseEntity.ok(holidayService.saveHoliday(companyMapper.addHolidayRequestDtoToHoliday(dto)));
+        return ResponseEntity.ok(holidayService.saveHoliday(dto));
     }
 
-    @PostMapping(ADD_HRINFO)
-    public ResponseEntity<Boolean> addHRInfo(AddHolidayRequestDto dto){
-        return ResponseEntity.ok(holidayService.saveHoliday(companyMapper.addHolidayRequestDtoToHoliday(dto)));
-    }
+//    @PostMapping(ADD_HRINFO)
+//    public ResponseEntity<Boolean> addHRInfo(AddHolidayRequestDto dto){
+//        return ResponseEntity.ok(holidayService.saveHoliday(companyMapper.addHolidayRequestDtoToHoliday(dto)));
+//    }
 
     @PostMapping(ADD_DEPARTMENT)
     public ResponseEntity<Boolean> addDepartment(AddDepartmentRequestDto dto){
-        return ResponseEntity.ok(departmentService.saveDepartment(companyMapper.addDepartmentRequestDtoToDepartment(dto)));
+        return ResponseEntity.ok(departmentService.saveDepartment(dto));
     }
+
 }

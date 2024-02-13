@@ -4,18 +4,17 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.musketeers.repository.entity.Personnel;
 
-import java.util.List;
-
-@AllArgsConstructor
 @NoArgsConstructor
+@AllArgsConstructor
 @Data
 @Builder
-public class AddDepartmentRequestDto {
-    private String companyId;
+public class DepartmentDto {
+
     private String name;
+
     private String shifts;
+
     private String breaks;
-    private List<Personnel> personnels;
+
 }

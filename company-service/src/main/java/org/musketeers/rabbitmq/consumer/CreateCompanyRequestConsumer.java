@@ -1,12 +1,10 @@
 package org.musketeers.rabbitmq.consumer;
 
 import lombok.RequiredArgsConstructor;
-import org.musketeers.exception.CompanyServiceException;
-import org.musketeers.exception.ErrorType;
 import org.musketeers.rabbitmq.model.CreateCompanyRequestModel;
 import org.musketeers.rabbitmq.model.CreateCompanyResponseModel;
 import org.musketeers.repository.entity.Company;
-import org.musketeers.repository.entity.SupervisorId;
+import org.musketeers.repository.entity.Supervisor;
 import org.musketeers.service.CompanyService;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.stereotype.Service;
@@ -30,14 +28,14 @@ public class CreateCompanyRequestConsumer {
         if(optionalCompany.isEmpty()) {
             company = Company.builder()
                     .companyName(model.getCompanyName())
-                    .supervisorIds(Arrays.asList(SupervisorId.builder().supervisorId(model.getSupervisorId()).build()))
                     .build();
             companyService.save(company);
+            company.setSupervisors(Arrays.asList(Supervisor.builder().company(company).supervisorId(model.getSupervisorId()).build()));
         } else {
             company = optionalCompany.get();
-            company.getSupervisorIds().add(SupervisorId.builder().supervisorId(model.getSupervisorId()).build());
-            companyService.update(company);
+            company.getSupervisors().add(Supervisor.builder().company(company).supervisorId(model.getSupervisorId()).build());
         }
+        companyService.update(company);
         return CreateCompanyResponseModel.builder().companyId(company.getId()).build();
     }
 

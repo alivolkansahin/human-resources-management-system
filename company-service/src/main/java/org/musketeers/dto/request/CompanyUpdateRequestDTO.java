@@ -4,7 +4,6 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.musketeers.repository.entity.*;
 
 import java.util.List;
 
@@ -13,15 +12,23 @@ import java.util.List;
 @Data
 @Builder
 public class CompanyUpdateRequestDTO {
+
     private String token;
-    private String companyId;
-    private String companyLogo;
+
     private String establishmentDate;
+
+    private String companyLogo;
+
     private String address;
-    private List<HRInfo> hrInfos;
-    private List<Department> departments;
-    private List<Holiday> holidays;
-    private List<Income> incomes;
-    private List<Expense> expenses;
-    private List<SupervisorId> supervisorIds;
+
+    private List<HRInfoDto> hrInfos;
+
+    private List<DepartmentDto> departments;
+
+    private List<HolidayDto> holidays;
+
+    private List<IncomeDto> incomes;
+
+    private List<ExpenseDto> expenses;
+
 }

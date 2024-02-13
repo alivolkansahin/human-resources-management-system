@@ -1,10 +1,11 @@
 package org.musketeers.repository.entity;
 
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
-
-import java.util.UUID;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -14,10 +15,16 @@ import java.util.UUID;
 @Entity
 @Table(name = "tbl_incomes")
 public class Income extends BaseEntity{
+
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private String id;
-    private String companyId;
+
+    @ManyToOne
+    private Company company;
+
     private String description;
+
     private Double amount;
+
 }

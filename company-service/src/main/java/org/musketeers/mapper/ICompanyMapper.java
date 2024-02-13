@@ -16,11 +16,11 @@ import org.musketeers.repository.entity.Income;
 public interface ICompanyMapper {
     ICompanyMapper INSTANCE = Mappers.getMapper(ICompanyMapper.class);
 
-    Income addIncomeRequestDtoToIncome (AddIncomeRequestDto dto);
+//    Income addIncomeRequestDtoToIncome (AddIncomeRequestDto dto);
 
-    Expense addExpenseRequestDtoToExpense(AddExpenseRequestDto dto);
+//    Expense addExpenseRequestDtoToExpense(AddExpenseRequestDto dto);
 
-    Holiday addHolidayRequestDtoToHoliday(AddHolidayRequestDto dto);
+//    Holiday addHolidayRequestDtoToHoliday(AddHolidayRequestDto dto);
 
-    Department addDepartmentRequestDtoToDepartment(AddDepartmentRequestDto dto);
+//    Department addDepartmentRequestDtoToDepartment(AddDepartmentRequestDto dto);
 }

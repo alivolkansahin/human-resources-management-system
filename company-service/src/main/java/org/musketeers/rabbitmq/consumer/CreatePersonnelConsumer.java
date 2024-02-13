@@ -22,6 +22,6 @@ public class CreatePersonnelConsumer {
     public void addPersonnelToDepartment(CreatePersonnelCompanyModel model) {
         Department department = departmentService.findById(model.getDepartmentId()).orElseThrow(() -> new CompanyServiceException(ErrorType.COMPANY_NOT_FOUND));// DEPARTMENT NOT FOUND olabilir.
         department.getEmployeeIds().add(EmployeeId.builder().employeeId(model.getPersonnelId()).build());
-        departmentService.save(department);
+        departmentService.update(department);
     }
 }

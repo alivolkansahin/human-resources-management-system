@@ -14,8 +14,8 @@ import java.util.UUID;
 public class HolidayService{
     private final HolidayRepository holidayRepository;
 
-    public ResponseEntity<Boolean>  saveHoliday(Holiday holiday){
+    public Boolean  saveHoliday(Holiday holiday){
         holidayRepository.save(holiday);
-        return ResponseEntity.ok(true);
+        return true;
     }
 }

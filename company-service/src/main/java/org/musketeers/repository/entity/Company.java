@@ -48,7 +48,6 @@ public class Company extends BaseEntity{
     @OneToMany(mappedBy = "companyId",cascade = CascadeType.PERSIST,fetch = FetchType.EAGER)
     private List<Expense> expenses = new ArrayList<Expense>();
 
-    // Volkan : bence buraya OneToMany ve Supervisor entity lazım, orada da id ve companyId tutulmalı. id supervisor servisinden gelcek, companyIdde burda tutuluyor.
-    @OneToMany
+    @OneToMany(mappedBy = "supervisorId",cascade = CascadeType.PERSIST,fetch = FetchType.EAGER)
     private List<SupervisorId> supervisorIds;
 }

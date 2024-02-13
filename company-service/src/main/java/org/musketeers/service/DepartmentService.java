@@ -17,8 +17,8 @@ public class DepartmentService extends ServiceManager<Department, String> {
         this.departmentRepository = departmentRepository;
     }
 
-    public ResponseEntity<Boolean> saveDepartment(Department department) {
+    public Boolean saveDepartment(Department department) {
         save(department);
-        return ResponseEntity.ok(true);
+        return true;
     }
 }

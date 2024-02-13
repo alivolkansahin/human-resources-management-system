@@ -17,8 +17,8 @@ public class ExpenseService extends ServiceManager<Expense, String> {
         this.expenseRepository = expenseRepository;
     }
 
-    public ResponseEntity<Boolean> saveExpense(Expense expense) {
+    public Boolean saveExpense(Expense expense) {
         save(expense);
-        return ResponseEntity.ok(true);
+        return true;
     }
 }

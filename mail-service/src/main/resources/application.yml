@@ -23,6 +23,7 @@ spring:
 mail-service-config:
   rabbitmq:
     activation-guest-queue: mailQueue  # consume yapılacak queue adı...
+    mail-queue-personnel: mailQueuePersonnel
 
 
 

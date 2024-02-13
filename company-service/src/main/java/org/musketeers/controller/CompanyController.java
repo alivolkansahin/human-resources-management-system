@@ -6,6 +6,7 @@ import static org.musketeers.constant.EndPoints.*;
 import org.musketeers.dto.request.CompanyUpdateRequestDTO;
 import org.musketeers.repository.entity.Company;
 import org.musketeers.service.CompanyService;
+import org.musketeers.service.IncomeService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -18,6 +19,7 @@ import java.util.Optional;
 public class CompanyController {
 
     private final CompanyService companyService;
+    private final IncomeService incomeService;
 
     @PostMapping(SAVE)
     public boolean save(@RequestBody  Company company) {
@@ -48,4 +50,9 @@ public class CompanyController {
     public ResponseEntity<Boolean> hardDelete(String companyName){
         return ResponseEntity.ok(companyService.hardDelete(companyName));
     }
+
+//    @PostMapping(ADD_INCOME)
+//    public ResponseEntity<Boolean> addIncome(){
+//        return ResponseEntity.ok(incomeService.saveIncome());
+//    }
 }

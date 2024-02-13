@@ -7,6 +7,7 @@ import org.musketeers.exception.ErrorType;
 import org.musketeers.rabbitmq.model.CreatePersonnelCompanyModel;
 import org.musketeers.repository.entity.Company;
 import org.musketeers.repository.entity.Department;
+import org.musketeers.repository.entity.EmployeeId;
 import org.musketeers.service.DepartmentService;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.stereotype.Service;
@@ -20,7 +21,7 @@ public class CreatePersonnelConsumer {
     @RabbitListener(queues = "${rabbitmq.create-personnel-company-queue}")
     public void addPersonnelToDepartment(CreatePersonnelCompanyModel model) {
         Department department = departmentService.findById(model.getDepartmentId()).orElseThrow(() -> new CompanyServiceException(ErrorType.COMPANY_NOT_FOUND));// DEPARTMENT NOT FOUND olabilir.
-        department.getEmployeeIds().add(model.getPersonnelId());
+        department.getEmployeeIds().add(EmployeeId.builder().employeeId(model.getPersonnelId()).build());
         departmentService.save(department);
     }
 }

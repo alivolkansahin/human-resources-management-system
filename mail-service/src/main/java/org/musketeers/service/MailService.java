@@ -8,6 +8,7 @@ import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
 import lombok.RequiredArgsConstructor;
 import org.musketeers.rabbitmq.model.ActivationGuestModel;
+import org.musketeers.rabbitmq.model.CreatePersonnelMailModel;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
@@ -59,6 +60,40 @@ public class MailService {
         try {
             // Get the template (uses cache internally)
             Template temp = freemarkerConfiguration.getTemplate("guest-activation.ftl");
+            return FreeMarkerTemplateUtils.processTemplateIntoString(temp, root);
+        } catch (IOException | TemplateException e) {
+            throw new RuntimeException(e);
+        }
+    }
+    public void sendMailForPersonnel(CreatePersonnelMailModel model) {
+        freemarkerConfiguration.setDefaultEncoding("UTF-8");
+        freemarkerConfiguration.setTemplateExceptionHandler(TemplateExceptionHandler.RETHROW_HANDLER);
+        freemarkerConfiguration.setLogTemplateExceptions(false);
+        freemarkerConfiguration.setWrapUncheckedExceptions(true);
+        freemarkerConfiguration.setFallbackOnNullLoopVariable(false);
+        freemarkerConfiguration.setSQLDateAndTimeTimeZone(TimeZone.getDefault());
+
+        MimeMessage mimeMessage = javaMailSender.createMimeMessage();
+        MimeMessageHelper mimeMessageHelper = new MimeMessageHelper(mimeMessage);
+        try {
+            mimeMessageHelper.setSubject("Musketeers HR Management System Account data submission");
+            mimeMessageHelper.setFrom("avolkan.shn@gmail.com");
+            mimeMessageHelper.setTo(model.getEmail());
+            mimeMessageHelper.setCc("avolkan.shn@gmail.com");
+            mimeMessageHelper.setText(getMailContentForPersonnel(model), true);
+        } catch (MessagingException e) {
+            throw new RuntimeException(e);
+        }
+        javaMailSender.send(mimeMessage);
+    }
+
+    private String getMailContentForPersonnel(CreatePersonnelMailModel model) {
+        Map<String, String> root = new HashMap<>();
+        root.put("name", model.getName());
+        root.put("email", model.getEmail());
+        root.put("password", model.getPassword());
+        try {
+            Template temp = freemarkerConfiguration.getTemplate("personnel-information.ftl");
             return FreeMarkerTemplateUtils.processTemplateIntoString(temp, root);
         } catch (IOException | TemplateException e) {
             throw new RuntimeException(e);

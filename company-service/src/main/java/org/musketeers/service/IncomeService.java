@@ -19,8 +19,8 @@ public class IncomeService extends ServiceManager<Income, String> {
         this.incomeRepository = incomeRepository;
     }
 
-    public ResponseEntity<Boolean> saveIncome(Income income) {
+    public Boolean saveIncome(Income income) {
         save(income);
-        return ResponseEntity.ok(true);
+        return true;
     }
 }

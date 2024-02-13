@@ -3,15 +3,14 @@ package org.musketeers.controller;
 import lombok.RequiredArgsConstructor;
 import static org.musketeers.constant.EndPoints.*;
 
-import org.musketeers.dto.request.CompanyUpdateRequestDTO;
+import org.musketeers.dto.request.*;
+import org.musketeers.mapper.ICompanyMapper;
 import org.musketeers.repository.entity.Company;
-import org.musketeers.service.CompanyService;
-import org.musketeers.service.IncomeService;
+import org.musketeers.service.*;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping(ROOT+COMPANY)
@@ -19,7 +18,11 @@ import java.util.Optional;
 public class CompanyController {
 
     private final CompanyService companyService;
+    private final DepartmentService departmentService;
     private final IncomeService incomeService;
+    private final ExpenseService expenseService;
+    private final HolidayService holidayService;
+    private final ICompanyMapper companyMapper;
 
     @PostMapping(SAVE)
     public boolean save(@RequestBody  Company company) {
@@ -37,7 +40,7 @@ public class CompanyController {
     }
 
     @PostMapping(UPDATE)
-    public ResponseEntity<Boolean> updateProfile(@RequestBody CompanyUpdateRequestDTO dto){
+    public ResponseEntity<Boolean> updateCompany(@RequestBody CompanyUpdateRequestDTO dto){
         return ResponseEntity.ok(companyService.updateCompany(dto));
     }
 
@@ -51,8 +54,28 @@ public class CompanyController {
         return ResponseEntity.ok(companyService.hardDelete(companyName));
     }
 
-//    @PostMapping(ADD_INCOME)
-//    public ResponseEntity<Boolean> addIncome(){
-//        return ResponseEntity.ok(incomeService.saveIncome());
-//    }
+    @PostMapping(ADD_INCOME)
+    public ResponseEntity<Boolean> addIncome(AddIncomeRequestDto dto){
+        return ResponseEntity.ok(incomeService.saveIncome(companyMapper.addIncomeRequestDtoToIncome(dto)));
+    }
+
+    @PostMapping(ADD_EXPENSE)
+    public ResponseEntity<Boolean> addExpense(AddExpenseRequestDto dto){
+        return ResponseEntity.ok(expenseService.saveExpense(companyMapper.addExpenseRequestDtoToExpense(dto)));
+    }
+
+    @PostMapping(ADD_HOLIDAY)
+    public ResponseEntity<Boolean> addHoliday(AddHolidayRequestDto dto){
+        return ResponseEntity.ok(holidayService.saveHoliday(companyMapper.addHolidayRequestDtoToHoliday(dto)));
+    }
+
+    @PostMapping(ADD_HRINFO)
+    public ResponseEntity<Boolean> addHRInfo(AddHolidayRequestDto dto){
+        return ResponseEntity.ok(holidayService.saveHoliday(companyMapper.addHolidayRequestDtoToHoliday(dto)));
+    }
+
+    @PostMapping(ADD_DEPARTMENT)
+    public ResponseEntity<Boolean> addDepartment(AddDepartmentRequestDto dto){
+        return ResponseEntity.ok(departmentService.saveDepartment(companyMapper.addDepartmentRequestDtoToDepartment(dto)));
+    }
 }

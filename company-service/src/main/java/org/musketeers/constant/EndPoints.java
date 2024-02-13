@@ -9,10 +9,15 @@ public class EndPoints {
 
     public static final String COMPANY="/company";
     public static final String DEPARTMENT="/department";
+    public static final String ADD_DEPARTMENT="/adddepartment";
     public static final String EXPENSE="/expense";
+    public static final String ADD_EXPENSE="/addexpense";
     public static final String HOLIDAY="/holiday";
+    public static final String ADD_HOLIDAY="/addholiday";
     public static final String HRINFO="/hrinfo";
+    public static final String ADD_HRINFO="/addhrinfo";
     public static final String INCOME="/income";
+    public static final String ADD_INCOME="/addincome";
 
     public static final String SAVE="/save";
     public static final String UPDATE="/update";

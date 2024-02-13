@@ -8,7 +8,7 @@ import lombok.*;
 @Data
 @Builder
 @Entity
-@Table(name = "tbl_incomes")
+@Table(name = "tbl_supervisorids")
 public class SupervisorId {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)

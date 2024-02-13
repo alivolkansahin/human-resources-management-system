@@ -22,6 +22,6 @@ public class Department extends BaseEntity{
     private String shifts;
     private String breaks;
 
-    @OneToMany
+    @OneToMany(mappedBy = "employeeId",cascade = CascadeType.PERSIST,fetch = FetchType.EAGER)
     private List<EmployeeId> employeeIds = new ArrayList<>();
 }

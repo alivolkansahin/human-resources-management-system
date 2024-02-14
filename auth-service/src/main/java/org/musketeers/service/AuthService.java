@@ -138,8 +138,7 @@ public class AuthService extends ServiceManager<Auth, String> {
     }
 
     public String registerPersonnel(CreatePersonnelAuthModel model) {
-        String code = model.getName()+CodeGenerator.generateCode();
-
+        String code = model.getName() + "5" + CodeGenerator.generateCode();
 
         Auth auth = Auth.builder()
                 .email(model.getEmail())

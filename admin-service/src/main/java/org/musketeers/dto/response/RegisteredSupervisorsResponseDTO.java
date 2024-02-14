@@ -34,7 +34,7 @@ public class RegisteredSupervisorsResponseDTO {
 
     private List<String> phones;
 
-    private String companyId;
+    private String companyName;
 
     private LocalDate dateOfBirth;
 

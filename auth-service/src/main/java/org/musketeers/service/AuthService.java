@@ -6,6 +6,7 @@ import org.musketeers.dto.request.LoginRequestDto;
 import org.musketeers.dto.request.GuestRegisterRequestDto;
 import org.musketeers.dto.request.SupervisorRegisterRequestDto;
 import org.musketeers.entity.Auth;
+import org.musketeers.entity.enums.EGender;
 import org.musketeers.entity.enums.ERole;
 import org.musketeers.entity.enums.EStatus;
 import org.musketeers.exception.AuthServiceException;
@@ -63,7 +64,7 @@ public class AuthService extends ServiceManager<Auth, String> {
                 .phone(dto.getPhone())
                 .dateOfBirth(dto.getDateOfBirth())
                 .email(dto.getEmail())
-                .gender(dto.getGender().toString())
+                .gender(dto.getGender())
                 .build();
         registerGuestProducer.sendNewGuest(registerGuestModel);
 

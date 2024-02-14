@@ -37,7 +37,7 @@ public class GuestRegisterRequestDto {
     @NotNull(message = "Date of birth cannot be left blank !")
     private LocalDate dateOfBirth;
     @NotNull(message = "Gender must not be null")
-    private EGender gender;
+    private String gender;
     @NotBlank(message = "phone cannot be left blank !")
     @Size(min = 11, max = 11, message = "Phone must be 11 characters long")
     private String phone;

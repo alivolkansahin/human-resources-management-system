@@ -14,6 +14,7 @@ import static org.musketeers.constant.EndPoints.*;
 
 @RestController
 @RequestMapping(ROOT + AUTH)
+@CrossOrigin
 public class AuthController {
     private final AuthService authService;
 

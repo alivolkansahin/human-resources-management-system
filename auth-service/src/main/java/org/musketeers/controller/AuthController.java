@@ -5,9 +5,12 @@ import jakarta.validation.Valid;
 import org.musketeers.dto.request.LoginRequestDto;
 import org.musketeers.dto.request.GuestRegisterRequestDto;
 import org.musketeers.dto.request.SupervisorRegisterRequestDto;
+import org.musketeers.entity.Auth;
 import org.musketeers.service.AuthService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 import static org.musketeers.constant.EndPoints.*;
 
@@ -40,5 +43,10 @@ public class AuthController {
     @PostMapping(LOGIN)
     public ResponseEntity<String> login(LoginRequestDto dto){
         return ResponseEntity.ok(authService.login(dto));
+    }
+
+    @GetMapping(GETALL + "registered")
+    public ResponseEntity<List<Auth>> getAllRegistered(){
+        return ResponseEntity.ok(authService.getAllRegistered());
     }
 }

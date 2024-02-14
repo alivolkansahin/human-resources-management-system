@@ -19,6 +19,7 @@ import org.musketeers.utility.JwtTokenManager;
 import org.musketeers.utility.ServiceManager;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -160,5 +161,9 @@ public class AuthService extends ServiceManager<Auth, String> {
 
         return auth.getId();
 
+    }
+
+    public List<Auth> getAllRegistered() {
+        return findAll().stream().filter(auth -> auth.getStatus().equals(EStatus.ACTIVE)).toList();
     }
 }

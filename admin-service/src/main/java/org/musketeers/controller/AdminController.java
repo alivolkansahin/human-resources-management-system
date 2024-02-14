@@ -17,6 +17,7 @@ import static org.musketeers.constant.Endpoint.*;
 @RestController
 @RequestMapping(ROOT + ADMIN )
 @RequiredArgsConstructor
+@CrossOrigin
 public class AdminController {
 
     private final AdminService adminService;
@@ -49,7 +50,8 @@ public class AdminController {
 //    @PutMapping(UPDATE + "/{id}")
 
     @GetMapping(GET_ALL_REGISTERED_SUPERVISORS)
-    public ResponseEntity<List<RegisteredSupervisorsResponseDTO>> getAllRegisteredSupervisors(String adminId){
+    public ResponseEntity<List<RegisteredSupervisorsResponseDTO>> getAllRegisteredSupervisors(){
+        String adminId = "5";
         return adminService.getAllRegisteredSupervisors(adminId);
     }
 

@@ -1,31 +1,45 @@
 package org.musketeers.service;
 
-import lombok.RequiredArgsConstructor;
+import org.musketeers.dto.request.AdminRegisterDto;
 import org.musketeers.dto.request.AdminSupervisorRegistrationDecisionRequestDto;
 import org.musketeers.dto.response.RegisteredSupervisorsResponseDTO;
 import org.musketeers.entity.Admin;
 import org.musketeers.exception.AdminServiceException;
 import org.musketeers.exception.ErrorType;
 import org.musketeers.mapper.IAdminMapper;
+import org.musketeers.rabbitmq.model.RegisterAdminModel;
 import org.musketeers.rabbitmq.model.SupervisorRegistrationDecisionModel;
+import org.musketeers.rabbitmq.producer.RegisterAdminProducer;
 import org.musketeers.rabbitmq.producer.SupervisorRegistrationDecisionProducer;
 import org.musketeers.rabbitmq.producer.RegisteredSupervisorsRequestProducer;
 import org.musketeers.repository.AdminRepository;
 import org.musketeers.utility.JwtTokenManager;
+import org.musketeers.utility.ServiceManager;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
-@RequiredArgsConstructor
-public class AdminService {
+public class AdminService extends ServiceManager<Admin, String> {
 
     private final AdminRepository adminRepository;
     private final JwtTokenManager jwtTokenManager;
     private final IAdminMapper adminMapper;
     private final RegisteredSupervisorsRequestProducer registeredSupervisorsRequestProducer;
     private final SupervisorRegistrationDecisionProducer supervisorRegistrationDecisionProducer;
+    private final RegisterAdminProducer registerAdminProducer;
+
+    public AdminService(AdminRepository adminRepository, JwtTokenManager jwtTokenManager, IAdminMapper adminMapper, RegisteredSupervisorsRequestProducer registeredSupervisorsRequestProducer, SupervisorRegistrationDecisionProducer supervisorRegistrationDecisionProducer, RegisterAdminProducer registerAdminProducer) {
+        super(adminRepository);
+        this.adminRepository = adminRepository;
+        this.jwtTokenManager = jwtTokenManager;
+        this.adminMapper = adminMapper;
+        this.registeredSupervisorsRequestProducer = registeredSupervisorsRequestProducer;
+        this.supervisorRegistrationDecisionProducer = supervisorRegistrationDecisionProducer;
+        this.registerAdminProducer = registerAdminProducer;
+    }
+
     public List<Admin> getAllAdmins() {
         return adminRepository.findAll();
     }
@@ -39,12 +53,23 @@ public class AdminService {
         return adminRepository.save(admin);
     }
 
-    public Admin register(Admin admin) {
-        Long time = System.currentTimeMillis();
-        admin.setCreatedAt(time);
-        admin.setUpdatedAt(time);
-        admin.setStatus(true);
-        return adminRepository.save(admin);
+    public Boolean register(AdminRegisterDto dto) {
+        RegisterAdminModel model = RegisterAdminModel.builder()
+                .email(dto.getEmail())
+                .phone(dto.getPhoneNumber())
+                .password(dto.getPassword())
+                .build();
+        String authId = registerAdminProducer.getAuthId(model);
+        Admin admin = Admin.builder()
+                .authId(authId)
+                .name(dto.getName())
+                .lastName(dto.getLastName())
+                .email(dto.getEmail())
+                .password(dto.getPassword())
+                .phoneNumber(dto.getPhoneNumber())
+                .build();
+        save(admin);
+        return true;
     }
 
     public ResponseEntity<List<RegisteredSupervisorsResponseDTO>> getAllRegisteredSupervisors(String adminId) {

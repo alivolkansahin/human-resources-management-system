@@ -24,7 +24,7 @@ public class RabbitMqConfig {
     @Value("${rabbitmq.mail-bindingKey}")
     private String mailBindingKey;
 
-    @Value(("${rabbitmq.register-guest-queue}"))
+    @Value("${rabbitmq.register-guest-queue}")
     private String registerGuestQueueName;
     @Value("${rabbitmq.register-guest-bindingKey}")
     private String registerGuestBindingKey;

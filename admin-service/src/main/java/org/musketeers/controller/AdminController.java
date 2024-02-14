@@ -2,6 +2,7 @@ package org.musketeers.controller;
 
 
 import lombok.RequiredArgsConstructor;
+import org.musketeers.dto.request.AdminRegisterDto;
 import org.musketeers.dto.request.AdminSupervisorRegistrationDecisionRequestDto;
 import org.musketeers.dto.response.RegisteredSupervisorsResponseDTO;
 import org.musketeers.entity.Admin;
@@ -35,10 +36,10 @@ public class AdminController {
         return ResponseEntity.ok(adminService.update(admin));
     }
 
-//    @PostMapping(REGISTER)
-//    public ResponseEntity<Admin> register(@RequestBody Admin admin){
-//        return ResponseEntity.ok(adminService.register(admin));
-//    }
+    @PostMapping("/register")
+    public ResponseEntity<Boolean> register(@RequestBody AdminRegisterDto dto){
+        return ResponseEntity.ok(adminService.register(dto));
+    }
 //
 //    @DeleteMapping(DELETE + "/{id}")
 //    public ResponseEntity<Boolean> softDeleteSupervisorById(@PathVariable String id) {

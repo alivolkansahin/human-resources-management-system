@@ -25,6 +25,8 @@ admin-service-config:
     admin-supervisor-registration-decision-exchange: adminSupervisorRegistrationDecisionExchange
     registration-decision-supervisor-queue: registrationDecisionSupervisorQueue
     registration-decision-auth-queue: registrationDecisionAuthQueue
+    admin-register-auth-queue: adminRegisterAuthQueue
+    admin-register-auth-binding-key: adminRegisterAuthBindingKey
 
 
 

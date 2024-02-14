@@ -45,7 +45,9 @@ rabbitmq:
 
   registration-decision-auth-queue: registrationDecisionAuthQueue
 
-  create-personnel-auth-queue: createPersonnelAuthQueue # Volkan: Personneldeki create'i dinleyip authid döndürecek kuyruk adını ekledim buraya.
+  create-personnel-auth-queue: createPersonnelAuthQueue
+
+  admin-register-auth-queue: adminRegisterAuthQueue
 
 
 #

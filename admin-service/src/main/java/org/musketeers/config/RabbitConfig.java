@@ -39,6 +39,12 @@ public class RabbitConfig {
     @Value("${admin-service-config.rabbitmq.registration-decision-auth-queue}")
     private String supervisorDecisionAuthQueue;
 
+    @Value("${admin-service-config.rabbitmq.admin-register-auth-queue}")
+    private String adminRegisterAuthQueue;
+
+    @Value("${admin-service-config.rabbitmq.admin-register-auth-binding-key}")
+    private String adminRegisterAuthBindingKey;
+
     @Bean
     DirectExchange exchange() {
         return new DirectExchange(exchangeName);
@@ -65,8 +71,18 @@ public class RabbitConfig {
     }
 
     @Bean
+    Queue adminRegisterAuthQueue(){
+        return new Queue(adminRegisterAuthQueue);
+    }
+
+    @Bean
     Binding bindingRegisterQueue(DirectExchange exchangeAdmin, Queue registerQueue){
         return BindingBuilder.bind(registerQueue).to(exchangeAdmin).with(bindingKey);
+    }
+
+    @Bean
+    Binding bindingAdminRegisterAuthQueue(DirectExchange exchangeAdmin, Queue adminRegisterAuthQueue){
+        return BindingBuilder.bind(adminRegisterAuthQueue).to(exchangeAdmin).with(adminRegisterAuthBindingKey);
     }
 
     @Bean

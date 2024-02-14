@@ -101,7 +101,7 @@ public class AuthService extends ServiceManager<Auth, String> {
                 .companyName(dto.getCompanyName())
                 .identityNumber(dto.getIdentityNumber())
                 .dateOfBirth(dto.getDateOfBirth())
-                .gender(dto.getGender().toString())
+                .gender(dto.getGender())
                 .build();
         registerSupervisorProducer.sendNewSupervisor(registerSupervisorModel);
         return "Successfully registered";

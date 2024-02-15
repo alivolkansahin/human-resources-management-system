@@ -1,6 +1,9 @@
-package org.musketeers.config.rabbitmq;
+package org.musketeers.config;
 
-import org.springframework.amqp.core.*;
+import org.springframework.amqp.core.Binding;
+import org.springframework.amqp.core.BindingBuilder;
+import org.springframework.amqp.core.DirectExchange;
+import org.springframework.amqp.core.Queue;
 import org.springframework.amqp.rabbit.connection.ConnectionFactory;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.amqp.support.converter.Jackson2JsonMessageConverter;
@@ -21,11 +24,17 @@ public class RabbitMQConfig {
     @Value("${personnel-service-config.rabbitmq.create-personnel-company-queue}")
     private String createPersonnelCompanyQueue;
 
+    @Value("${personnel-service-config.rabbitmq.get-company-id-supervisor-queue}")
+    private String getCompanyIdSupervisorQueue;
+
     @Value("${personnel-service-config.rabbitmq.create-personnel-auth-binding-key}")
     private String createPersonnelAuthBindingKey;
 
     @Value("${personnel-service-config.rabbitmq.create-personnel-company-binding-key}")
     private String createPersonnelCompanyBindingKey;
+
+    @Value("${personnel-service-config.rabbitmq.get-company-id-supervisor-binding-key}")
+    private String getCompanyIdSupervisorBindingKey;
 
     @Bean
     DirectExchange createPersonnelExchange() {
@@ -43,6 +52,11 @@ public class RabbitMQConfig {
     }
 
     @Bean
+    Queue getCompanyIdSupervisorQueue(){
+        return new Queue(getCompanyIdSupervisorQueue);
+    }
+
+    @Bean
     Binding bindingCreatePersonnelAuthQueue(DirectExchange createPersonnelExchange, Queue createPersonnelAuthQueue) {
         return BindingBuilder.bind(createPersonnelAuthQueue).to(createPersonnelExchange).with(createPersonnelAuthBindingKey);
     }
@@ -50,6 +64,11 @@ public class RabbitMQConfig {
     @Bean
     Binding bindingCreatePersonnelCompanyQueue(DirectExchange createPersonnelExchange, Queue createPersonnelCompanyQueue) {
         return BindingBuilder.bind(createPersonnelCompanyQueue).to(createPersonnelExchange).with(createPersonnelCompanyBindingKey);
+    }
+
+    @Bean
+    Binding bindingGetCompanyIdSupervisorQueue(DirectExchange createPersonnelExchange, Queue getCompanyIdSupervisorQueue) {
+        return BindingBuilder.bind(getCompanyIdSupervisorQueue).to(createPersonnelExchange).with(getCompanyIdSupervisorBindingKey);
     }
 
     @Bean

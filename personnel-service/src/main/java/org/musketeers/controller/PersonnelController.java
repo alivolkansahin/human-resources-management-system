@@ -3,6 +3,7 @@ package org.musketeers.controller;
 
 import lombok.RequiredArgsConstructor;
 import org.musketeers.dto.request.CreatePersonnelRequestDto;
+import org.musketeers.dto.request.GetPersonnelByCompanyRequestDto;
 import org.musketeers.entity.Personnel;
 import org.musketeers.service.PersonnelService;
 import org.springframework.http.ResponseEntity;
@@ -44,6 +45,11 @@ public class PersonnelController {
     @PutMapping(UPDATE)
     public ResponseEntity<Personnel> updatePersonnelById(@RequestBody Personnel personnel){
         return ResponseEntity.ok(personnelService.update(personnel));
+    }
+
+    @GetMapping(GET_ALL + "-by-company/{token}")
+    public ResponseEntity<List<Personnel>> getAllByCompanyId(@PathVariable String token) {
+        return ResponseEntity.ok(personnelService.getAllByCompanyId(token));
     }
 
 

@@ -26,6 +26,8 @@ personnel-service-config:
     create-personnel-auth-binding-key: createPersonnelAuthBindingKey
     create-personnel-company-queue: createPersonnelCompanyQueue
     create-personnel-company-binding-key: createPersonnelCompanyBindingKey
+    get-company-id-supervisor-queue: getCompanyIdSupervisorQueue
+    get-company-id-supervisor-binding-key: getCompanyIdSupervisorBindingKey
 
 
 

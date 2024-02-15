@@ -15,6 +15,7 @@ import java.util.List;
 @RestController
 @RequestMapping(ROOT+COMPANY)
 @RequiredArgsConstructor
+@CrossOrigin
 public class CompanyController {
 
     private final CompanyService companyService;
@@ -25,7 +26,7 @@ public class CompanyController {
     private final ICompanyMapper companyMapper;
 
     @PostMapping(SAVE)
-    public boolean save(@RequestBody  Company company) {
+    public boolean save(@RequestBody Company company) {
         return companyService.createCompany(company);
     }
 
@@ -55,17 +56,17 @@ public class CompanyController {
     }
 
     @PostMapping(ADD_INCOME)
-    public ResponseEntity<Boolean> addIncome(AddIncomeRequestDto dto){
+    public ResponseEntity<Boolean> addIncome(@RequestBody AddIncomeRequestDto dto){
         return ResponseEntity.ok(incomeService.saveIncome(dto));
     }
 
     @PostMapping(ADD_EXPENSE)
-    public ResponseEntity<Boolean> addExpense(AddExpenseRequestDto dto){
+    public ResponseEntity<Boolean> addExpense(@RequestBody AddExpenseRequestDto dto){
         return ResponseEntity.ok(expenseService.saveExpense(dto));
     }
 
     @PostMapping(ADD_HOLIDAY)
-    public ResponseEntity<Boolean> addHoliday(AddHolidayRequestDto dto){
+    public ResponseEntity<Boolean> addHoliday(@RequestBody AddHolidayRequestDto dto){
         return ResponseEntity.ok(holidayService.saveHoliday(dto));
     }
 
@@ -75,7 +76,7 @@ public class CompanyController {
 //    }
 
     @PostMapping(ADD_DEPARTMENT)
-    public ResponseEntity<Boolean> addDepartment(AddDepartmentRequestDto dto){
+    public ResponseEntity<Boolean> addDepartment(@RequestBody AddDepartmentRequestDto dto){
         return ResponseEntity.ok(departmentService.saveDepartment(dto));
     }
 

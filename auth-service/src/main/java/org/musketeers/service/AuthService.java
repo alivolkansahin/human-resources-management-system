@@ -5,6 +5,7 @@ import jakarta.transaction.Transactional;
 import org.musketeers.dto.request.LoginRequestDto;
 import org.musketeers.dto.request.GuestRegisterRequestDto;
 import org.musketeers.dto.request.SupervisorRegisterRequestDto;
+import org.musketeers.dto.response.GetAllActiveResponse;
 import org.musketeers.entity.Auth;
 import org.musketeers.entity.enums.EGender;
 import org.musketeers.entity.enums.ERole;
@@ -163,7 +164,15 @@ public class AuthService extends ServiceManager<Auth, String> {
 
     }
 
-    public List<Auth> getAllRegistered() {
-        return findAll().stream().filter(auth -> auth.getStatus().equals(EStatus.ACTIVE)).toList();
+    public List<GetAllActiveResponse> getAllActive() {
+        return findAll().stream()
+                .filter(auth -> auth.getStatus().equals(EStatus.ACTIVE))
+                .map(auth -> GetAllActiveResponse.builder()
+                        .email(auth.getEmail())
+                        .phone(auth.getPhone())
+                        .password(auth.getPassword())
+                        .role(auth.getRole().toString())
+                        .build())
+                .toList();
     }
 }

@@ -56,7 +56,7 @@ public class AdminController {
     }
 
     @PostMapping(HANDLE_SUPERVISOR_REGISTRATION)
-    public ResponseEntity<String> acceptSupervisorRegistration(AdminSupervisorRegistrationDecisionRequestDto dto){
+    public ResponseEntity<String> acceptSupervisorRegistration(@RequestBody AdminSupervisorRegistrationDecisionRequestDto dto){
         return ResponseEntity.ok(adminService.handleSupervisorRegistration(dto));
     }
 

@@ -14,6 +14,7 @@ import static org.musketeers.constant.Endpoint.*;
 @RestController
 @RequestMapping(ROOT + GUEST )
 @RequiredArgsConstructor
+@CrossOrigin
 public class GuestController {
 
     private final GuestService guestService;

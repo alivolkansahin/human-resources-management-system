@@ -6,6 +6,7 @@ import org.musketeers.dto.request.LoginRequestDto;
 import org.musketeers.dto.request.GuestRegisterRequestDto;
 import org.musketeers.dto.request.SupervisorRegisterRequestDto;
 import org.musketeers.dto.response.GetAllActiveResponse;
+import org.musketeers.dto.response.LoginResponseDto;
 import org.musketeers.entity.Auth;
 import org.musketeers.entity.enums.EGender;
 import org.musketeers.entity.enums.ERole;
@@ -126,18 +127,15 @@ public class AuthService extends ServiceManager<Auth, String> {
         return "updated successfully";
     }
 
-    public String login(LoginRequestDto dto) {
-        Optional<Auth> optionalAuth = repository.findOptionalByEmailOrPhone(dto.getIdentity(), dto.getIdentity());
-        if (optionalAuth.isEmpty()) throw new AuthServiceException(ErrorType.NOT_FOUND);
-        if (optionalAuth.get().getState().equals(false)) throw new AuthServiceException(ErrorType.ACCOUNT_DELETED);
-        if (!optionalAuth.get().getPassword().equals(dto.getPassword())) throw new AuthServiceException(ErrorType.INVALID_PASSWORD_OR_EMAIL);
-        if (!optionalAuth.get().getStatus().equals(EStatus.ACTIVE)) throw new AuthServiceException(ErrorType.ACCOUNT_NOT_ACTIVE);
+    public LoginResponseDto login(LoginRequestDto dto) {
+        Auth auth = repository.findOptionalByEmailOrPhone(dto.getIdentity(), dto.getIdentity()).orElseThrow(() -> new AuthServiceException(ErrorType.NOT_FOUND));
+        if (auth.getState().equals(false)) throw new AuthServiceException(ErrorType.ACCOUNT_DELETED);
+        if (!auth.getPassword().equals(dto.getPassword())) throw new AuthServiceException(ErrorType.INVALID_PASSWORD_OR_EMAIL);
+        if (!auth.getStatus().equals(EStatus.ACTIVE)) throw new AuthServiceException(ErrorType.ACCOUNT_NOT_ACTIVE);
 
-        Optional<String> token = tokenManager.createToken(optionalAuth.get().getId(), optionalAuth.get().getRole());
+        String token = tokenManager.createToken(auth.getId(), auth.getRole()).orElseThrow(() -> new AuthServiceException(ErrorType.TOKEN_NOT_CREATED));
 
-        if (token.isEmpty()) throw new AuthServiceException(ErrorType.TOKEN_NOT_CREATED);
-
-        return token.get();
+        return LoginResponseDto.builder().token(token).role(auth.getRole().toString()).build();
     }
 
     public String registerPersonnel(CreatePersonnelAuthModel model) {

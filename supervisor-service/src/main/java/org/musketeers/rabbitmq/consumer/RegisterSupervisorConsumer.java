@@ -32,7 +32,10 @@ public class RegisterSupervisorConsumer {
                 .gender(model.getGender().equalsIgnoreCase("MALE") ? Gender.MALE : Gender.FEMALE)
                 .identityNumber(model.getIdentityNumber())
                 .email(model.getEmail())
-                .image("https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ6SR5emlvKa5Trq207GwkpiamFuQFskm8zLniDY04frA&s") ///
+                .image(model.getGender().equalsIgnoreCase("MALE") ?
+                        "https://us.123rf.com/450wm/thesomeday123/thesomeday1231712/thesomeday123171200009/91087331-default-avatar-profile-icon-for-male-grey-photo-placeholder-illustrations-vector.jpg?ver=6"
+                        :
+                        "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ6SR5emlvKa5Trq207GwkpiamFuQFskm8zLniDY04frA&s") ///
                 .addresses(address)
                 .phones(phones)
                 .dateOfBirth(model.getDateOfBirth())

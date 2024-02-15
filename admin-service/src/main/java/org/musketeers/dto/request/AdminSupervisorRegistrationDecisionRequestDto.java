@@ -13,11 +13,10 @@ import lombok.NoArgsConstructor;
 @Builder
 public class AdminSupervisorRegistrationDecisionRequestDto {
 
-    //Annotation kontrolleri sonradan eklenecek...
     private String token;
 
     private String supervisorAuthId;
 
-    private Boolean decision;
+    private String decision;
 
 }

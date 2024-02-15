@@ -15,6 +15,7 @@ import static org.musketeers.constant.Endpoint.*;
 @RestController
 @RequestMapping(ROOT + PERSONNEL )
 @RequiredArgsConstructor
+@CrossOrigin
 public class PersonnelController {
 
     private final PersonnelService personnelService;

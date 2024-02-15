@@ -87,7 +87,7 @@ public class AdminService extends ServiceManager<Admin, String> {
     public String handleSupervisorRegistration(AdminSupervisorRegistrationDecisionRequestDto dto) {
         SupervisorRegistrationDecisionModel model = SupervisorRegistrationDecisionModel.builder()
                 .supervisorAuthId(dto.getSupervisorAuthId())
-                .decision(dto.getDecision())
+                .decision(dto.getDecision().equalsIgnoreCase("true"))
                 .build();
         supervisorRegistrationDecisionProducer.sendRegistrationDecision(model);
         return "Success";

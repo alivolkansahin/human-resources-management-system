@@ -14,6 +14,8 @@ import java.util.List;
 @Builder
 public class RegisteredSupervisorsResponseDTO {
 
+    private String id;
+
     private String authId;
 
     private String name;

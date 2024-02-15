@@ -14,6 +14,7 @@ import static org.musketeers.constant.Endpoint.*;
 @RestController
 @RequestMapping(ROOT + SUPERVISOR )
 @RequiredArgsConstructor
+@CrossOrigin
 public class SupervisorController {
 
     private final SupervisorService supervisorService;

@@ -7,10 +7,14 @@ spring:
     username: user
     password: user
   datasource:
-    driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://localhost:3306/hrsystem
-    username: devAvs
-    password: musketeers!123
+#    driver-class-name: com.mysql.cj.jdbc.Driver # ortak çalışma için gizlendi
+#    url: jdbc:mysql://localhost:3306/hrsystem
+#    username: devAvs
+#    password: musketeers!123
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://localhost:5432/AdminDBForProject
+    username: postgres
+    password: 1234
   jpa:
     hibernate:
       ddl-auto: create-drop

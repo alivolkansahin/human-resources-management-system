@@ -1,5 +1,6 @@
 package org.musketeers.repository.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
@@ -22,6 +23,7 @@ public class Department extends BaseEntity{
     private String id;
 
     @ManyToOne
+    @JsonIgnore
     private Company company;
 
     private String name;

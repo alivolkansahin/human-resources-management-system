@@ -54,8 +54,9 @@ public class AdminService extends ServiceManager<Admin, String> {
     }
 
     public Boolean register(AdminRegisterDto dto) {
+        String email = dto.getName() + "@admin.com";
         RegisterAdminModel model = RegisterAdminModel.builder()
-                .email(dto.getEmail())
+                .email(email)
                 .phone(dto.getPhoneNumber())
                 .password(dto.getPassword())
                 .build();
@@ -64,7 +65,7 @@ public class AdminService extends ServiceManager<Admin, String> {
                 .authId(authId)
                 .name(dto.getName())
                 .lastName(dto.getLastName())
-                .email(dto.getEmail())
+                .email(email)
                 .password(dto.getPassword())
                 .phoneNumber(dto.getPhoneNumber())
                 .build();

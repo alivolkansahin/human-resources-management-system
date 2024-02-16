@@ -35,9 +35,9 @@ public class CompanyController {
         return companyService.findAll();
     }
 
-    @GetMapping(FINDCOMPANYBYSUPERVISORTOKEN)
-    public Company findByCompanyId(String supervisorToken){
-        return companyService.findByCompanyId(supervisorToken);
+    @GetMapping(FINDCOMPANYBYSUPERVISORTOKEN + "/{token}")
+    public Company findByCompanyId(@PathVariable String token){
+        return companyService.findByCompanyId(token);
     }
 
     @PutMapping(UPDATE + "-for-first-time")

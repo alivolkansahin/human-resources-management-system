@@ -2,13 +2,12 @@ package org.musketeers.service;
 
 
 import jakarta.transaction.Transactional;
-import org.musketeers.dto.request.LoginRequestDto;
 import org.musketeers.dto.request.GuestRegisterRequestDto;
+import org.musketeers.dto.request.LoginRequestDto;
 import org.musketeers.dto.request.SupervisorRegisterRequestDto;
 import org.musketeers.dto.response.GetAllActiveResponse;
 import org.musketeers.dto.response.LoginResponseDto;
 import org.musketeers.entity.Auth;
-import org.musketeers.entity.enums.EGender;
 import org.musketeers.entity.enums.ERole;
 import org.musketeers.entity.enums.EStatus;
 import org.musketeers.exception.AuthServiceException;
@@ -21,6 +20,10 @@ import org.musketeers.utility.JwtTokenManager;
 import org.musketeers.utility.ServiceManager;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.List;
 import java.util.Optional;
 
@@ -124,7 +127,14 @@ public class AuthService extends ServiceManager<Auth, String> {
                 .id(auth.get().getId())
                 .build();
         registerGuestActivationProducer.changeGuestStatus(registerGuestActivationModel);
-        return "updated successfully";
+        Path activationSuccessHTMLPath = Paths.get("H:\\Program Files\\PROJECTS\\human-resources-management-system\\auth-service\\src\\main\\resources\\templates\\activation-success-page.html");
+        byte[] successfulPage = null;
+        try {
+            successfulPage = Files.readAllBytes(activationSuccessHTMLPath);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        return new String(successfulPage);
     }
 
     public LoginResponseDto login(LoginRequestDto dto) {

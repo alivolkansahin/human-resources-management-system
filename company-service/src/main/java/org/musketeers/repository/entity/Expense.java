@@ -1,5 +1,6 @@
 package org.musketeers.repository.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -21,6 +22,7 @@ public class Expense extends BaseEntity{
     private String id;
 
     @ManyToOne
+    @JsonIgnore
     private Company company;
 
     private String description;

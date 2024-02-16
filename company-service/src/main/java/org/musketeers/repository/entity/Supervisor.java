@@ -1,5 +1,6 @@
 package org.musketeers.repository.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -18,6 +19,7 @@ public class Supervisor {
     private String supervisorId;
 
     @ManyToOne
+    @JsonIgnore
     private Company company;
 
 }

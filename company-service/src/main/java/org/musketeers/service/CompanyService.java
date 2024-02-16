@@ -131,7 +131,7 @@ public class CompanyService extends ServiceManager<Company, String> {
         Optional<Company> optionalCompanyById = companyRepository.findOptionalById(companyIdFromSupervisor);
         if (optionalCompanyById.isPresent()){
             return optionalCompanyById.get();
-        }else {
+        } else {
             throw new CompanyServiceException(ErrorType.COMPANY_NOT_FOUND);
         }
     }

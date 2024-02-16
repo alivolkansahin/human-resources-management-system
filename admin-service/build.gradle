@@ -1,7 +1,8 @@
 dependencies {
 
     implementation libs.springBootJPA
-    implementation libs.mySQL
+//    implementation libs.mySQL // ortak çalışma için gizlendi
+    implementation libs.postgreSQL
     implementation libs.springBootAMQP
 /*
     // seçimlerini yap ve ekle

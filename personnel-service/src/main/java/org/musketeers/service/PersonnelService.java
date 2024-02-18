@@ -125,4 +125,25 @@ public class PersonnelService extends ServiceManager<Personnel, String> {
         });
         return personnelModelList;
     }
+
+    public void createPersonnelFromSupervisor(CreatePersonnelFromSupervisorModel model) {
+        Personnel personnel = convertModelToPersonnel(model);
+        save(personnel);
+    }
+
+    private Personnel convertModelToPersonnel(CreatePersonnelFromSupervisorModel model) {
+        return Personnel.builder()
+                .authId(model.getAuthId())
+                .name(model.getName())
+                .lastName(model.getLastName())
+                .gender(model.getGender().equalsIgnoreCase("male") ? Gender.MALE : Gender.FEMALE)
+                .identityNumber(model.getIdentityNumber())
+                .email(model.getEmail())
+                .image(model.getImage())
+                .addresses(Arrays.asList(model.getAddress()))
+                .phones(Arrays.asList(Phone.builder().phoneType(PhoneType.PERSONAL).phoneNumber(model.getPhone()).build()))
+                .companyId(model.getCompanyId())
+                .dateOfBirth(model.getDateOfBirth())
+                .build();
+    }
 }

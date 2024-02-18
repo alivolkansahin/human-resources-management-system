@@ -24,6 +24,12 @@ public class RabbitMQConfig {
     @Value("${supervisor-service-config.rabbitmq.supervisor-activation-company-binding-key}")
     private String supervisorActivationCompanyBindingKey;
 
+    @Value("${supervisor-service-config.rabbitmq.create-personnel-from-supervisor-queue}")
+    private String createPersonnelFromSupervisorQueue;
+
+    @Value("${supervisor-service-config.rabbitmq.create-personnel-from-supervisor-binding-key}")
+    private String createPersonnelFromSupervisorBindingKey;
+
     @Bean
     DirectExchange supervisorActivationExchange(){
         return new DirectExchange(supervisorActivationExchange);
@@ -35,8 +41,18 @@ public class RabbitMQConfig {
     }
 
     @Bean
+    Queue createPersonnelFromSupervisorQueue(){
+        return new Queue(createPersonnelFromSupervisorQueue);
+    }
+
+    @Bean
     public Binding bindingSupervisorActivationCompanyQueue(DirectExchange supervisorActivationExchange, Queue supervisorActivationCompanyQueue){
         return BindingBuilder.bind(supervisorActivationCompanyQueue).to(supervisorActivationExchange).with(supervisorActivationCompanyBindingKey);
+    }
+
+    @Bean
+    public Binding bindingCreatePersonnelFromSupervisorQueue(DirectExchange supervisorActivationExchange, Queue createPersonnelFromSupervisorQueue){
+        return BindingBuilder.bind(createPersonnelFromSupervisorQueue).to(supervisorActivationExchange).with(createPersonnelFromSupervisorBindingKey);
     }
 
     @Bean

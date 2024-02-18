@@ -30,6 +30,7 @@ personnel-service-config:
     get-company-id-supervisor-binding-key: getCompanyIdSupervisorBindingKey
     add-comment-personnel-queue: addCommentPersonnelQueue
     get-personnel-details-by-comment-personnel-queue: getPersonnelDetailsByCommentPersonnelQueue
+    create-personnel-from-supervisor-queue: createPersonnelFromSupervisorQueue
 
 
 

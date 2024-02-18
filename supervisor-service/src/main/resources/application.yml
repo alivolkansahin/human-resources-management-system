@@ -30,6 +30,8 @@ supervisor-service-config:
     get-company-id-from-supervisor-queue: getCompanyIdFromSupervisorQueue
     get-company-id-supervisor-queue: getCompanyIdSupervisorQueue
     get-company-supervisors-supervisor-queue: getCompanySupervisorsSupervisorQueue
+    create-personnel-from-supervisor-queue: createPersonnelFromSupervisorQueue
+    create-personnel-from-supervisor-binding-key: createPersonnelFromSupervisorBindingKey
 
 
 

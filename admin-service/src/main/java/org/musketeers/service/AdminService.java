@@ -1,17 +1,18 @@
 package org.musketeers.service;
 
+import org.musketeers.dto.request.AdminHandleCommentDecisionRequestDto;
 import org.musketeers.dto.request.AdminRegisterDto;
 import org.musketeers.dto.request.AdminSupervisorRegistrationDecisionRequestDto;
+import org.musketeers.dto.response.GetAllPendingCommentsResponseDto;
 import org.musketeers.dto.response.RegisteredSupervisorsResponseDTO;
 import org.musketeers.entity.Admin;
 import org.musketeers.exception.AdminServiceException;
 import org.musketeers.exception.ErrorType;
 import org.musketeers.mapper.IAdminMapper;
+import org.musketeers.rabbitmq.model.GetAllPendingCommentsResponseModel;
 import org.musketeers.rabbitmq.model.RegisterAdminModel;
 import org.musketeers.rabbitmq.model.SupervisorRegistrationDecisionModel;
-import org.musketeers.rabbitmq.producer.RegisterAdminProducer;
-import org.musketeers.rabbitmq.producer.SupervisorRegistrationDecisionProducer;
-import org.musketeers.rabbitmq.producer.RegisteredSupervisorsRequestProducer;
+import org.musketeers.rabbitmq.producer.*;
 import org.musketeers.repository.AdminRepository;
 import org.musketeers.utility.JwtTokenManager;
 import org.musketeers.utility.ServiceManager;
@@ -25,19 +26,22 @@ public class AdminService extends ServiceManager<Admin, String> {
 
     private final AdminRepository adminRepository;
     private final JwtTokenManager jwtTokenManager;
-    private final IAdminMapper adminMapper;
     private final RegisteredSupervisorsRequestProducer registeredSupervisorsRequestProducer;
     private final SupervisorRegistrationDecisionProducer supervisorRegistrationDecisionProducer;
     private final RegisterAdminProducer registerAdminProducer;
+    private final GetAllPendingCommentsRequestProducer getAllPendingCommentsRequestProducer;
 
-    public AdminService(AdminRepository adminRepository, JwtTokenManager jwtTokenManager, IAdminMapper adminMapper, RegisteredSupervisorsRequestProducer registeredSupervisorsRequestProducer, SupervisorRegistrationDecisionProducer supervisorRegistrationDecisionProducer, RegisterAdminProducer registerAdminProducer) {
+    private final CommentDecisionProducer commentDecisionProducer;
+
+    public AdminService(AdminRepository adminRepository, JwtTokenManager jwtTokenManager, RegisteredSupervisorsRequestProducer registeredSupervisorsRequestProducer, SupervisorRegistrationDecisionProducer supervisorRegistrationDecisionProducer, RegisterAdminProducer registerAdminProducer, GetAllPendingCommentsRequestProducer getAllPendingCommentsRequestProducer, CommentDecisionProducer commentDecisionProducer) {
         super(adminRepository);
         this.adminRepository = adminRepository;
         this.jwtTokenManager = jwtTokenManager;
-        this.adminMapper = adminMapper;
         this.registeredSupervisorsRequestProducer = registeredSupervisorsRequestProducer;
         this.supervisorRegistrationDecisionProducer = supervisorRegistrationDecisionProducer;
         this.registerAdminProducer = registerAdminProducer;
+        this.getAllPendingCommentsRequestProducer = getAllPendingCommentsRequestProducer;
+        this.commentDecisionProducer = commentDecisionProducer;
     }
 
     public List<Admin> getAllAdmins() {
@@ -94,4 +98,13 @@ public class AdminService extends ServiceManager<Admin, String> {
         return "Success";
     }
 
+    public List<GetAllPendingCommentsResponseDto> getAllPendingComments() {
+        List<GetAllPendingCommentsResponseModel> pendingCommentsModel = getAllPendingCommentsRequestProducer.getPendingComments();
+        return pendingCommentsModel.stream().map(IAdminMapper.INSTANCE::getAllPendingCommentsModelToDto).toList();
+    }
+
+    public Boolean handleCommentDecision(AdminHandleCommentDecisionRequestDto dto) {
+        commentDecisionProducer.sendCommentDecision(IAdminMapper.INSTANCE.commentDecisionDtoToModel(dto));
+        return true;
+    }
 }

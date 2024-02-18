@@ -21,13 +21,13 @@ public class RabbitConfig {
     *
     */
 
-    @Value("adminExchange")
+    @Value("${admin-service-config.rabbitmq.admin-exchange}")
     String exchangeName;
 
-    @Value("getSupervisorQueue")
+    @Value("${admin-service-config.rabbitmq.get-supervisor-queue}")
     String queueName;
 
-    @Value("getSupervisorBindingKey")
+    @Value("${admin-service-config.rabbitmq.get-supervisor-binding-key}")
     String bindingKey;
 
     @Value("${admin-service-config.rabbitmq.admin-supervisor-registration-decision-exchange}")
@@ -44,6 +44,18 @@ public class RabbitConfig {
 
     @Value("${admin-service-config.rabbitmq.admin-register-auth-binding-key}")
     private String adminRegisterAuthBindingKey;
+
+    @Value("${admin-service-config.rabbitmq.admin-get-all-pending-comments-comment-queue}")
+    private String adminGetAllPendingCommentsCommentQueue;
+
+    @Value("${admin-service-config.rabbitmq.admin-get-all-pending-comments-comment-binding-key}")
+    private String adminGetAllPendingCommentsCommentBindingKey;
+
+    @Value("${admin-service-config.rabbitmq.admin-handle-comment-decision-queue}")
+    private String adminHandleCommentDecisionQueue;
+
+    @Value("${admin-service-config.rabbitmq.admin-handle-comment-decision-binding-key}")
+    private String adminHandleCommentDecisionBindingKey;
 
     @Bean
     DirectExchange exchange() {
@@ -76,6 +88,15 @@ public class RabbitConfig {
     }
 
     @Bean
+    Queue adminGetAllPendingCommentsCommentQueue(){
+        return new Queue(adminGetAllPendingCommentsCommentQueue);
+    }
+    @Bean
+    Queue adminHandleCommentDecisionQueue(){
+        return new Queue(adminHandleCommentDecisionQueue);
+    }
+
+    @Bean
     Binding bindingRegisterQueue(DirectExchange exchangeAdmin, Queue registerQueue){
         return BindingBuilder.bind(registerQueue).to(exchangeAdmin).with(bindingKey);
     }
@@ -93,6 +114,16 @@ public class RabbitConfig {
     @Bean
     Binding bindingSuperVisorDecisionAuthQueue(FanoutExchange supervisorDecisionExchange, Queue supervisorDecisionAuthQueue) {
         return BindingBuilder.bind(supervisorDecisionAuthQueue).to(supervisorDecisionExchange);
+    }
+
+    @Bean
+    Binding bindingAdminGetAllPendingCommentsCommentQueue(DirectExchange exchangeAdmin, Queue adminGetAllPendingCommentsCommentQueue) {
+        return BindingBuilder.bind(adminGetAllPendingCommentsCommentQueue).to(exchangeAdmin).with(adminGetAllPendingCommentsCommentBindingKey);
+    }
+
+    @Bean
+    Binding bindingAdminHandleCommentDecisionQueue(DirectExchange exchangeAdmin, Queue adminHandleCommentDecisionQueue) {
+        return BindingBuilder.bind(adminHandleCommentDecisionQueue).to(exchangeAdmin).with(adminHandleCommentDecisionBindingKey);
     }
 
     @Bean

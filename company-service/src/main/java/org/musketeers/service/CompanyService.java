@@ -3,6 +3,7 @@ package org.musketeers.service;
 import org.musketeers.dto.request.CompanyUpdateRequestDTO;
 import org.musketeers.exception.CompanyServiceException;
 import org.musketeers.exception.ErrorType;
+import org.musketeers.rabbitmq.model.GetCompanyDetailsByCommentResponseModel;
 import org.musketeers.rabbitmq.producer.GetCompanyIdFromSupervisorProducer;
 import org.musketeers.repository.CompanyRepository;
 import org.musketeers.repository.entity.*;
@@ -134,5 +135,13 @@ public class CompanyService extends ServiceManager<Company, String> {
         } else {
             throw new CompanyServiceException(ErrorType.COMPANY_NOT_FOUND);
         }
+    }
+
+    public List<GetCompanyDetailsByCommentResponseModel> getCompanyInfoByCompanyIds(List<String> companyIds) {
+        List<Company> companies = companyRepository.findAllById(companyIds);
+        return companies.stream().map(company -> GetCompanyDetailsByCommentResponseModel.builder()
+                .companyName(company.getCompanyName())
+                .companyLogo(company.getCompanyLogo())
+                .build()).toList();
     }
 }

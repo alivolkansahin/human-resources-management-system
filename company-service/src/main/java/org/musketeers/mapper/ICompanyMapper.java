@@ -3,18 +3,18 @@ package org.musketeers.mapper;
 import org.mapstruct.Mapper;
 import org.mapstruct.ReportingPolicy;
 import org.mapstruct.factory.Mappers;
-import org.musketeers.dto.request.AddDepartmentRequestDto;
-import org.musketeers.dto.request.AddExpenseRequestDto;
-import org.musketeers.dto.request.AddHolidayRequestDto;
-import org.musketeers.dto.request.AddIncomeRequestDto;
-import org.musketeers.repository.entity.Department;
-import org.musketeers.repository.entity.Expense;
-import org.musketeers.repository.entity.Holiday;
-import org.musketeers.repository.entity.Income;
+import org.musketeers.dto.response.HRInfoResponseDto;
+import org.musketeers.dto.response.SupervisorInfoResponseDto;
+import org.musketeers.rabbitmq.model.GetCompanySupervisorResponseModel;
+import org.musketeers.repository.entity.HRInfo;
 
 @Mapper(componentModel = "spring",unmappedTargetPolicy = ReportingPolicy.IGNORE)
 public interface ICompanyMapper {
     ICompanyMapper INSTANCE = Mappers.getMapper(ICompanyMapper.class);
+
+    SupervisorInfoResponseDto supervisorModelToDto(GetCompanySupervisorResponseModel model);
+
+    HRInfoResponseDto hrInfosToDto(HRInfo hrInfo);
 
 //    Income addIncomeRequestDtoToIncome (AddIncomeRequestDto dto);
 

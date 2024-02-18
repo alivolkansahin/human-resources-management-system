@@ -25,4 +25,7 @@ public class EndPoints {
     public static final String HARD_DELETE="/harddelete";
     public static final String FINDALL="/findall";
     public static final String FINDCOMPANYBYSUPERVISORTOKEN="/findbysupervizortoken";
+    public static final String GET_COMPANY_SUMMARY_INFO_FOR_GUEST = "/get-company-summary-info-for-guest";
+    public static final String GET_COMPANY_DETAILED_INFO_FOR_GUEST = "/get-company-detailed-info-for-guest";
+
 }

@@ -30,4 +30,6 @@ rabbitmq:
   get-company-id-from-supervisor-binding-key: getCompanyIdFromSupervisorBindingKey
   create-personnel-company-queue: createPersonnelCompanyQueue
   get-company-details-by-comment-company-queue: getCompanyDetailsByCommentCompanyQueue
+  get-company-supervisors-supervisor-queue: getCompanySupervisorsSupervisorQueue
+  get-company-supervisors-supervisor-binding-key: getCompanySupervisorsSupervisorBindingKey
 

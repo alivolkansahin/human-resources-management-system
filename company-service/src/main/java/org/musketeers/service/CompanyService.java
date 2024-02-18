@@ -1,10 +1,15 @@
 package org.musketeers.service;
 
 import org.musketeers.dto.request.CompanyUpdateRequestDTO;
+import org.musketeers.dto.response.GetCompanyDetailedInfoResponseDto;
+import org.musketeers.dto.response.GetCompanySummaryInfoResponseDto;
 import org.musketeers.exception.CompanyServiceException;
 import org.musketeers.exception.ErrorType;
+import org.musketeers.mapper.ICompanyMapper;
 import org.musketeers.rabbitmq.model.GetCompanyDetailsByCommentResponseModel;
+import org.musketeers.rabbitmq.model.GetCompanySupervisorResponseModel;
 import org.musketeers.rabbitmq.producer.GetCompanyIdFromSupervisorProducer;
+import org.musketeers.rabbitmq.producer.GetCompanySupervisorRequestProducer;
 import org.musketeers.repository.CompanyRepository;
 import org.musketeers.repository.entity.*;
 import org.musketeers.repository.enums.EStatus;
@@ -24,11 +29,14 @@ public class CompanyService extends ServiceManager<Company, String> {
 
     private final GetCompanyIdFromSupervisorProducer getCompanyIdFromSupervisorProducer;
 
-    public CompanyService(CompanyRepository companyRepository, JwtTokenManager jwtTokenManager, GetCompanyIdFromSupervisorProducer getCompanyIdFromSupervisorProducer) {
+    private final GetCompanySupervisorRequestProducer getCompanySupervisorRequestProducer;
+
+    public CompanyService(CompanyRepository companyRepository, JwtTokenManager jwtTokenManager, GetCompanyIdFromSupervisorProducer getCompanyIdFromSupervisorProducer, GetCompanySupervisorRequestProducer getCompanySupervisorRequestProducer) {
         super(companyRepository);
         this.companyRepository = companyRepository;
         this.jwtTokenManager=jwtTokenManager;
         this.getCompanyIdFromSupervisorProducer = getCompanyIdFromSupervisorProducer;
+        this.getCompanySupervisorRequestProducer = getCompanySupervisorRequestProducer;
     }
 
     public boolean createCompany(Company company) {
@@ -143,5 +151,38 @@ public class CompanyService extends ServiceManager<Company, String> {
                 .companyName(company.getCompanyName())
                 .companyLogo(company.getCompanyLogo())
                 .build()).toList();
+    }
+
+    public List<GetCompanySummaryInfoResponseDto> getCompanySummaryInfo() {
+        return findAll().stream().map(company -> GetCompanySummaryInfoResponseDto.builder()
+                .id(company.getId())
+                .name(company.getCompanyName())
+                .logo(company.getCompanyLogo())
+                .establishmentDate(company.getEstablishmentDate())
+                .build()).toList();
+    }
+
+    public GetCompanyDetailedInfoResponseDto getCompanyDetailedInfoById(String companyId) {
+        Company company = findById(companyId).orElseThrow(() -> new CompanyServiceException(ErrorType.COMPANY_NOT_FOUND));
+        List<GetCompanySupervisorResponseModel> supervisorInfosModel = getCompanySupervisorSummaryInfoFromSupervisorService(company);
+        return prepareCompanyDetailedInfoResponseDto(company, supervisorInfosModel);
+    }
+
+    private List<GetCompanySupervisorResponseModel> getCompanySupervisorSummaryInfoFromSupervisorService(Company company) {
+        List<String> supervisorIds = company.getSupervisors().stream().map(Supervisor::getSupervisorId).toList();
+        return getCompanySupervisorRequestProducer.getCompanySupervisorInfo(supervisorIds);
+    }
+
+    private GetCompanyDetailedInfoResponseDto prepareCompanyDetailedInfoResponseDto(Company company, List<GetCompanySupervisorResponseModel> supervisorInfosModel) {
+        return GetCompanyDetailedInfoResponseDto.builder()
+                .companyName(company.getCompanyName())
+                .establishmentDate(company.getEstablishmentDate())
+                .companyLogo(company.getCompanyLogo())
+                .address(company.getAddress())
+                .hrInfos(company.getHrInfos().stream().map(ICompanyMapper.INSTANCE::hrInfosToDto).toList())
+                .departmentNames(company.getDepartments().stream().map(Department::getName).toList())
+                .personnelCount(company.getDepartments().stream().map(department -> department.getPersonnel().size()).reduce(0, Integer::sum))
+                .supervisors(supervisorInfosModel.stream().map(ICompanyMapper.INSTANCE::supervisorModelToDto).toList())
+                .build();
     }
 }

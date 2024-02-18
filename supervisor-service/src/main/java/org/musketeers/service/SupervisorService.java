@@ -6,6 +6,7 @@ import org.musketeers.exception.ErrorType;
 import org.musketeers.exception.SupervisorServiceException;
 import org.musketeers.rabbitmq.model.CreateCompanyRequestModel;
 import org.musketeers.rabbitmq.model.CreateCompanyResponseModel;
+import org.musketeers.rabbitmq.model.GetCompanySupervisorResponseModel;
 import org.musketeers.rabbitmq.producer.CreateCompanyProducer;
 import org.musketeers.repository.SupervisorRepository;
 import org.musketeers.utility.JwtTokenManager;
@@ -60,4 +61,14 @@ public class SupervisorService extends ServiceManager<Supervisor, String> {
         update(supervisor);
     }
 
+    public List<GetCompanySupervisorResponseModel> getSupervisorByIds(List<String> supervisorIds) {
+        List<Supervisor> supervisors = supervisorRepository.findAllById(supervisorIds);
+        return supervisors.stream().map(supervisor -> GetCompanySupervisorResponseModel.builder()
+                .name(supervisor.getName())
+                .lastName(supervisor.getLastName())
+                .gender(supervisor.getGender().toString())
+                .image(supervisor.getImage())
+                .dateOfBirth(supervisor.getDateOfBirth().toString())
+                .build()).toList();
+    }
 }

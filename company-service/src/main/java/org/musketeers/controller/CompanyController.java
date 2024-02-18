@@ -4,6 +4,8 @@ import lombok.RequiredArgsConstructor;
 import static org.musketeers.constant.EndPoints.*;
 
 import org.musketeers.dto.request.*;
+import org.musketeers.dto.response.GetCompanyDetailedInfoResponseDto;
+import org.musketeers.dto.response.GetCompanySummaryInfoResponseDto;
 import org.musketeers.mapper.ICompanyMapper;
 import org.musketeers.repository.entity.Company;
 import org.musketeers.service.*;
@@ -80,6 +82,16 @@ public class CompanyController {
     @PostMapping(ADD_DEPARTMENT)
     public ResponseEntity<Boolean> addDepartment(@RequestBody AddDepartmentRequestDto dto){
         return ResponseEntity.ok(departmentService.saveDepartment(dto));
+    }
+
+    @GetMapping(GET_COMPANY_SUMMARY_INFO_FOR_GUEST)
+    public ResponseEntity<List<GetCompanySummaryInfoResponseDto>> getCompanySummaryInfo(){
+        return ResponseEntity.ok(companyService.getCompanySummaryInfo());
+    }
+
+    @GetMapping(GET_COMPANY_DETAILED_INFO_FOR_GUEST + "/{companyId}")
+    public ResponseEntity<GetCompanyDetailedInfoResponseDto> getCompanyDetailedInfo(@PathVariable String companyId) {
+        return ResponseEntity.ok(companyService.getCompanyDetailedInfoById(companyId));
     }
 
 }

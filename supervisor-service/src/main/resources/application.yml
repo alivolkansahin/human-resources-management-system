@@ -29,7 +29,7 @@ supervisor-service-config:
     supervisor-activation-company-binding-key: supervisorActivationCompanyBindingKey
     get-company-id-from-supervisor-queue: getCompanyIdFromSupervisorQueue
     get-company-id-supervisor-queue: getCompanyIdSupervisorQueue
-
+    get-company-supervisors-supervisor-queue: getCompanySupervisorsSupervisorQueue
 
 
 

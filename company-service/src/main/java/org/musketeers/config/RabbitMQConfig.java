@@ -25,13 +25,20 @@ public class RabbitMQConfig {
     */
 
     @Value("${rabbitmq.exchange-name}")
-    String exchangeName;
+    private String exchangeName;
 
     @Value("${rabbitmq.get-company-id-from-supervisor-queue}")
-    String queueName;
+    private String queueName;
 
     @Value("${rabbitmq.get-company-id-from-supervisor-binding-key}")
-    String bindingKey;
+    private String bindingKey;
+
+    @Value("${rabbitmq.get-company-supervisors-supervisor-queue}")
+    private String getCompanySupervisorsSupervisorQueue;
+
+    @Value("${rabbitmq.get-company-supervisors-supervisor-binding-key}")
+    private String getCompanySupervisorsSupervisorBindingKey;
+
 
     @Bean
     DirectExchange exchange() {
@@ -41,9 +48,20 @@ public class RabbitMQConfig {
     Queue registerQueue(){
         return new Queue(queueName);
     }
+
+    @Bean
+    Queue getCompanySupervisorsSupervisorQueue(){
+        return new Queue(getCompanySupervisorsSupervisorQueue);
+    }
+
     @Bean
     Binding bindingRegisterQueue(DirectExchange exchangeAuth, Queue registerQueue){
         return BindingBuilder.bind(registerQueue).to(exchangeAuth).with(bindingKey);
+    }
+
+    @Bean
+    public Binding bindingGetCompanySupervisorsSupervisorQueue(DirectExchange exchange, Queue getCompanySupervisorsSupervisorQueue){
+        return BindingBuilder.bind(getCompanySupervisorsSupervisorQueue).to(exchange).with(getCompanySupervisorsSupervisorBindingKey);
     }
 
     @Bean

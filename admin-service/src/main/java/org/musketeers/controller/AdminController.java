@@ -2,8 +2,10 @@ package org.musketeers.controller;
 
 
 import lombok.RequiredArgsConstructor;
+import org.musketeers.dto.request.AdminHandleCommentDecisionRequestDto;
 import org.musketeers.dto.request.AdminRegisterDto;
 import org.musketeers.dto.request.AdminSupervisorRegistrationDecisionRequestDto;
+import org.musketeers.dto.response.GetAllPendingCommentsResponseDto;
 import org.musketeers.dto.response.RegisteredSupervisorsResponseDTO;
 import org.musketeers.entity.Admin;
 import org.musketeers.service.AdminService;
@@ -58,6 +60,16 @@ public class AdminController {
     @PostMapping(HANDLE_SUPERVISOR_REGISTRATION)
     public ResponseEntity<String> acceptSupervisorRegistration(@RequestBody AdminSupervisorRegistrationDecisionRequestDto dto){
         return ResponseEntity.ok(adminService.handleSupervisorRegistration(dto));
+    }
+
+    @GetMapping(GET_ALL_PENDING_COMMENTS)
+    public ResponseEntity<List<GetAllPendingCommentsResponseDto>> getAllPendingComments() {
+        return ResponseEntity.ok(adminService.getAllPendingComments());
+    }
+
+    @PostMapping(HANDLE_PENDING_COMMENT)
+    public ResponseEntity<Boolean> handleCommentDecision(@RequestBody AdminHandleCommentDecisionRequestDto dto) {
+        return ResponseEntity.ok(adminService.handleCommentDecision(dto));
     }
 
 

@@ -35,6 +35,8 @@ public class CompanyController {
         return companyService.findAll();
     }
 
+
+    // RESPONSE ENTITY VE RESPONSE DTO...
     @GetMapping(FINDCOMPANYBYSUPERVISORTOKEN + "/{token}")
     public Company findByCompanyId(@PathVariable String token){
         return companyService.findByCompanyId(token);

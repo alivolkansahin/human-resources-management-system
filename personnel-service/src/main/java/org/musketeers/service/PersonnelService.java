@@ -6,9 +6,9 @@ import org.musketeers.entity.Personnel;
 import org.musketeers.entity.Phone;
 import org.musketeers.entity.enums.Gender;
 import org.musketeers.entity.enums.PhoneType;
-import org.musketeers.rabbitmq.model.CreatePersonnelAuthModel;
-import org.musketeers.rabbitmq.model.CreatePersonnelCompanyModel;
-import org.musketeers.rabbitmq.model.GetCompanyIdFromSupervisorTokenModel;
+import org.musketeers.exception.ErrorType;
+import org.musketeers.exception.PersonnelServiceException;
+import org.musketeers.rabbitmq.model.*;
 import org.musketeers.rabbitmq.producer.CreatePersonnelProducer;
 import org.musketeers.rabbitmq.producer.GetCompanyIdFromSupervisorTokenProducer;
 import org.musketeers.repository.PersonnelRepository;
@@ -16,6 +16,7 @@ import org.musketeers.utility.JwtTokenManager;
 import org.musketeers.utility.ServiceManager;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -38,7 +39,7 @@ public class PersonnelService extends ServiceManager<Personnel, String> {
         this.getCompanyIdFromSupervisorTokenProducer = getCompanyIdFromSupervisorTokenProducer;
     }
 
-    public Personnel getPersonnelById(String id) {
+    public Personnel getPersonnelByToken(String id) { // İŞLEMLER LAZIM PERSONAL SAYFASI İÇİN
 //        jwtTokenManager.getClaimsFromToken(id).get(0);
         return findById(id);
     }
@@ -99,5 +100,29 @@ public class PersonnelService extends ServiceManager<Personnel, String> {
         GetCompanyIdFromSupervisorTokenModel model = GetCompanyIdFromSupervisorTokenModel.builder().token(token).build();
         String companyId = getCompanyIdFromSupervisorTokenProducer.getCompanyIdFromSupervisorToken(model);
         return personnelRepository.findAllByCompanyId(companyId);
+    }
+
+    public GetPersonnelIdAndCompanyIdByTokenResponseModel getPersonnelIdAndCompanyIdByToken(GetPersonnelIdAndCompanyIdByTokenRequestModel model) {
+        String authId = jwtTokenManager.getClaimsFromToken(model.getToken()).get(0);
+        Personnel personnel = personnelRepository.findOptionalByAuthId(authId).orElseThrow(() -> new PersonnelServiceException(ErrorType.PERSONNEL_NOT_FOUND));
+        return GetPersonnelIdAndCompanyIdByTokenResponseModel.builder()
+                .personnelId(personnel.getId())
+                .companyId(personnel.getCompanyId())
+                .build();
+    }
+
+    public List<GetPersonnelDetailsByCommentResponseModel> getPersonnelInfoByPersonnelId(List<String> personnelIds) {
+        List<Personnel> personnelList = personnelRepository.findAllById(personnelIds);
+        List<GetPersonnelDetailsByCommentResponseModel> personnelModelList = new ArrayList<>();
+        personnelList.forEach(personnel -> {
+            personnelModelList.add(GetPersonnelDetailsByCommentResponseModel.builder()
+                    .name(personnel.getName())
+                    .lastName(personnel.getLastName())
+                    .gender(personnel.getGender().toString())
+                    .image(personnel.getImage())
+                    .dateOfEmployment(personnel.getDateOfEmployment())
+                    .build());
+        });
+        return personnelModelList;
     }
 }

@@ -26,9 +26,9 @@ public class PersonnelController {
         return ResponseEntity.ok(personnelService.getAllPersonnel());
     }
 
-    @GetMapping(GET + "/{id}")
-    public ResponseEntity<Personnel> getPersonnelById(@PathVariable String id){
-        return ResponseEntity.ok((personnelService.getPersonnelById(id)));
+    @GetMapping(GET + "/{token}") // İŞLEMLER LAZIM PERSONAL SAYFASI İÇİN
+    public ResponseEntity<Personnel> getPersonnelById(@PathVariable String token){
+        return ResponseEntity.ok((personnelService.getPersonnelByToken(token)));
     }
 
     @PostMapping(CREATE)
@@ -51,13 +51,6 @@ public class PersonnelController {
     public ResponseEntity<List<Personnel>> getAllByCompanyId(@PathVariable String token) {
         return ResponseEntity.ok(personnelService.getAllByCompanyId(token));
     }
-
-
-
-
-
-
-
 
 
 

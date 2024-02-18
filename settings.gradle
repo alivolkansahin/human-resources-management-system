@@ -9,4 +9,5 @@ include 'personnel-service'
 include 'admin-service'
 include 'supervisor-service'
 include 'guest-service'
+include 'comment-service'
 

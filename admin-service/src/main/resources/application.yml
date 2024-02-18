@@ -26,12 +26,18 @@ admin-service-config:
     issuer: ${HR_SYSTEM_ISSUER}
     secret-key: ${HR_SYSTEM_KEY}
   rabbitmq:
+    admin-exchange: adminExchange #muhittin
+    get-supervisor-queue: getSupervisorQueue #muhittin
+    get-supervisor-binding-key: getSupervisorBindingKey #muhittin
     admin-supervisor-registration-decision-exchange: adminSupervisorRegistrationDecisionExchange
     registration-decision-supervisor-queue: registrationDecisionSupervisorQueue
     registration-decision-auth-queue: registrationDecisionAuthQueue
     admin-register-auth-queue: adminRegisterAuthQueue
     admin-register-auth-binding-key: adminRegisterAuthBindingKey
-
+    admin-get-all-pending-comments-comment-queue: adminGetAllPendingCommentsCommentQueue
+    admin-get-all-pending-comments-comment-binding-key: adminGetAllPendingCommentsCommentBindingKey
+    admin-handle-comment-decision-queue: adminHandleCommentDecisionQueue
+    admin-handle-comment-decision-binding-key: adminHandleCommentDecisionBindingKey
 
 
 

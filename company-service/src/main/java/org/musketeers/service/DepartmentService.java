@@ -33,4 +33,9 @@ public class DepartmentService extends ServiceManager<Department, String> {
         save(department);
         return true;
     }
+
+    public Department findByPersonnelId(String personnelId) {
+        return departmentRepository.findOptionalByPersonnelId(personnelId).orElseThrow(() -> new CompanyServiceException(ErrorType.COMPANY_NOT_FOUND)); // department not found...
+    }
+
 }

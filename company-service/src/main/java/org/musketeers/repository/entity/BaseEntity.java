@@ -15,7 +15,11 @@ import java.time.LocalDateTime;
 @MappedSuperclass
 @SuperBuilder
 public class BaseEntity {
+
     private LocalDateTime createdAt;
+
     private LocalDateTime updatedAt;
-    private boolean status;
+
+    @Builder.Default
+    private Boolean status = true;
 }

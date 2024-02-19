@@ -84,9 +84,9 @@ public class CompanyController {
         return ResponseEntity.ok(departmentService.saveDepartment(dto));
     }
 
-    @GetMapping(GET_COMPANY_SUMMARY_INFO_FOR_GUEST)
-    public ResponseEntity<List<GetCompanySummaryInfoResponseDto>> getCompanySummaryInfo(){
-        return ResponseEntity.ok(companyService.getCompanySummaryInfo());
+    @GetMapping(GET_COMPANY_SUMMARY_INFO_FOR_GUEST + "/{companyName}")
+    public ResponseEntity<List<GetCompanySummaryInfoResponseDto>> getCompanySummaryInfo(@PathVariable String companyName){
+        return ResponseEntity.ok(companyService.getCompanySummaryInfo(companyName));
     }
 
     @GetMapping(GET_COMPANY_DETAILED_INFO_FOR_GUEST + "/{companyId}")

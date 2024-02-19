@@ -27,6 +27,12 @@ public class RabbitMQConfig {
     @Value("${personnel-service-config.rabbitmq.get-company-id-supervisor-queue}")
     private String getCompanyIdSupervisorQueue;
 
+    @Value("${personnel-service-config.rabbitmq.get-company-details-by-personnel-queue}")
+    private String getCompanyDetailsByPersonnelQueue;
+
+    @Value("${personnel-service-config.rabbitmq.get-company-details-by-personnel-binding-key}")
+    private String getCompanyDetailsByPersonnelBindingKey;
+
     @Value("${personnel-service-config.rabbitmq.create-personnel-auth-binding-key}")
     private String createPersonnelAuthBindingKey;
 
@@ -55,6 +61,10 @@ public class RabbitMQConfig {
     Queue getCompanyIdSupervisorQueue(){
         return new Queue(getCompanyIdSupervisorQueue);
     }
+    @Bean
+    Queue getCompanyDetailsByPersonnelQueue(){
+        return new Queue(getCompanyDetailsByPersonnelQueue);
+    }
 
     @Bean
     Binding bindingCreatePersonnelAuthQueue(DirectExchange createPersonnelExchange, Queue createPersonnelAuthQueue) {
@@ -69,6 +79,10 @@ public class RabbitMQConfig {
     @Bean
     Binding bindingGetCompanyIdSupervisorQueue(DirectExchange createPersonnelExchange, Queue getCompanyIdSupervisorQueue) {
         return BindingBuilder.bind(getCompanyIdSupervisorQueue).to(createPersonnelExchange).with(getCompanyIdSupervisorBindingKey);
+    }
+    @Bean
+    Binding bindingGetCompanyDetailsByPersonnelQueue(DirectExchange createPersonnelExchange, Queue getCompanyDetailsByPersonnelQueue) {
+        return BindingBuilder.bind(getCompanyDetailsByPersonnelQueue).to(createPersonnelExchange).with(getCompanyDetailsByPersonnelBindingKey);
     }
 
     @Bean

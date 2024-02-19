@@ -20,6 +20,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Locale;
 
 @Service
 public class AdminService extends ServiceManager<Admin, String> {
@@ -58,7 +59,7 @@ public class AdminService extends ServiceManager<Admin, String> {
     }
 
     public Boolean register(AdminRegisterDto dto) {
-        String email = dto.getName() + "@admin.com";
+        String email = dto.getName().toLowerCase(Locale.ROOT) + "@admin.com";
         RegisterAdminModel model = RegisterAdminModel.builder()
                 .email(email)
                 .phone(dto.getPhoneNumber())

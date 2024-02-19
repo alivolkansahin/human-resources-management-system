@@ -7,6 +7,7 @@ import org.musketeers.exception.CompanyServiceException;
 import org.musketeers.exception.ErrorType;
 import org.musketeers.mapper.ICompanyMapper;
 import org.musketeers.rabbitmq.model.GetCompanyDetailsByCommentResponseModel;
+import org.musketeers.rabbitmq.model.GetCompanyDetailsByPersonnelResponseModel;
 import org.musketeers.rabbitmq.model.GetCompanySupervisorResponseModel;
 import org.musketeers.rabbitmq.producer.GetCompanyIdFromSupervisorProducer;
 import org.musketeers.rabbitmq.producer.GetCompanySupervisorRequestProducer;
@@ -15,6 +16,8 @@ import org.musketeers.repository.entity.*;
 import org.musketeers.repository.enums.EStatus;
 import org.musketeers.utility.JwtTokenManager;
 import org.musketeers.utility.ServiceManager;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -30,6 +33,18 @@ public class CompanyService extends ServiceManager<Company, String> {
     private final GetCompanyIdFromSupervisorProducer getCompanyIdFromSupervisorProducer;
 
     private final GetCompanySupervisorRequestProducer getCompanySupervisorRequestProducer;
+
+    // The dependencies of some of the beans in the application context form a cycle:
+    // Relying upon circular references is discouraged and they are prohibited by default. Update your application to remove the dependency cycle between beans.
+    // As a last resort, it may be possible to break the cycle automatically by setting spring.main.allow-circular-references to true.
+    // https://stackoverflow.com/questions/40695893/spring-security-circular-bean-dependency :
+    // You could replace constructor-based dependency injection with setter-based dependency injection to resolve the cycle, see Spring Framework Reference Documentation:
+    private DepartmentService departmentService;
+
+    @Autowired
+    public void setDepartmentService(@Lazy DepartmentService departmentService){
+        this.departmentService = departmentService;
+    }
 
     public CompanyService(CompanyRepository companyRepository, JwtTokenManager jwtTokenManager, GetCompanyIdFromSupervisorProducer getCompanyIdFromSupervisorProducer, GetCompanySupervisorRequestProducer getCompanySupervisorRequestProducer) {
         super(companyRepository);
@@ -147,19 +162,34 @@ public class CompanyService extends ServiceManager<Company, String> {
 
     public List<GetCompanyDetailsByCommentResponseModel> getCompanyInfoByCompanyIds(List<String> companyIds) {
         List<Company> companies = companyRepository.findAllById(companyIds);
-        return companies.stream().map(company -> GetCompanyDetailsByCommentResponseModel.builder()
-                .companyName(company.getCompanyName())
-                .companyLogo(company.getCompanyLogo())
-                .build()).toList();
+        return companies.stream()
+                .map(company -> GetCompanyDetailsByCommentResponseModel.builder()
+                    .companyName(company.getCompanyName())
+                    .companyLogo(company.getCompanyLogo())
+                    .build()).toList();
     }
 
-    public List<GetCompanySummaryInfoResponseDto> getCompanySummaryInfo() {
-        return findAll().stream().map(company -> GetCompanySummaryInfoResponseDto.builder()
-                .id(company.getId())
-                .name(company.getCompanyName())
-                .logo(company.getCompanyLogo())
-                .establishmentDate(company.getEstablishmentDate())
-                .build()).toList();
+    public List<GetCompanySummaryInfoResponseDto> getCompanySummaryInfo(String companyName) {
+        return companyName == null ? getAllCompaniesForGuest() : searchCompanyByNameForGuest(companyName);
+    }
+
+    private List<GetCompanySummaryInfoResponseDto> getAllCompaniesForGuest(){
+        return findAll().stream()
+                .map(company -> GetCompanySummaryInfoResponseDto.builder()
+                    .id(company.getId())
+                    .name(company.getCompanyName())
+                    .logo(company.getCompanyLogo())
+                    .establishmentDate(company.getEstablishmentDate())
+                    .build()).toList();
+    }
+    private List<GetCompanySummaryInfoResponseDto> searchCompanyByNameForGuest(String companyName) {
+        return companyRepository.findAllByCompanyNameLikeIgnoreCase("%" + companyName + "%").stream()
+                .map(company -> GetCompanySummaryInfoResponseDto.builder()
+                    .id(company.getId())
+                    .name(company.getCompanyName())
+                    .logo(company.getCompanyLogo())
+                    .establishmentDate(company.getEstablishmentDate())
+                    .build()).toList();
     }
 
     public GetCompanyDetailedInfoResponseDto getCompanyDetailedInfoById(String companyId) {
@@ -169,7 +199,9 @@ public class CompanyService extends ServiceManager<Company, String> {
     }
 
     private List<GetCompanySupervisorResponseModel> getCompanySupervisorSummaryInfoFromSupervisorService(Company company) {
-        List<String> supervisorIds = company.getSupervisors().stream().map(Supervisor::getSupervisorId).toList();
+        List<String> supervisorIds = company.getSupervisors().stream()
+                .map(Supervisor::getSupervisorId)
+                .toList();
         return getCompanySupervisorRequestProducer.getCompanySupervisorInfo(supervisorIds);
     }
 
@@ -179,10 +211,39 @@ public class CompanyService extends ServiceManager<Company, String> {
                 .establishmentDate(company.getEstablishmentDate())
                 .companyLogo(company.getCompanyLogo())
                 .address(company.getAddress())
-                .hrInfos(company.getHrInfos().stream().map(ICompanyMapper.INSTANCE::hrInfosToDto).toList())
-                .departmentNames(company.getDepartments().stream().map(Department::getName).toList())
-                .personnelCount(company.getDepartments().stream().map(department -> department.getPersonnel().size()).reduce(0, Integer::sum))
-                .supervisors(supervisorInfosModel.stream().map(ICompanyMapper.INSTANCE::supervisorModelToDto).toList())
+                .hrInfos(company.getHrInfos().stream()
+                        .map(ICompanyMapper.INSTANCE::hrInfosToDto)
+                        .toList())
+                .departmentNames(company.getDepartments().stream()
+                        .map(Department::getName)
+                        .toList())
+                .personnelCount(company.getDepartments().stream()
+                        .map(department -> department.getPersonnel().size())
+                        .reduce(0, Integer::sum))
+                .supervisors(supervisorInfosModel.stream()
+                        .map(ICompanyMapper.INSTANCE::supervisorModelToDto)
+                        .toList())
+                .build();
+    }
+
+    public GetCompanyDetailsByPersonnelResponseModel getCompanyDetailsByPersonnel(String personnelId) {
+        Department department = departmentService.findByPersonnelId(personnelId);
+        Company company = companyRepository.findOptionalByDepartmentsId(department.getId()).orElseThrow(() -> new CompanyServiceException(ErrorType.COMPANY_NOT_FOUND));
+        return prepareCompanyDetailsResponseModel(company, department);
+    }
+
+    private GetCompanyDetailsByPersonnelResponseModel prepareCompanyDetailsResponseModel(Company company, Department department) {
+        return GetCompanyDetailsByPersonnelResponseModel.builder()
+                .companyName(company.getCompanyName())
+                .departmentName(department.getName())
+                .shifts(department.getShifts())
+                .breaks(department.getBreaks())
+                .holidays(company.getHolidays().stream()
+                        .map(holiday -> holiday.getName() + "*" + holiday.getDuration())
+                        .toList())
+                .hrInfos(company.getHrInfos().stream()
+                        .map(hrInfo -> hrInfo.getFirstName()+"*"+hrInfo.getLastName()+"*"+hrInfo.getEmail()+"*"+hrInfo.getPhone())
+                        .toList())
                 .build();
     }
 }

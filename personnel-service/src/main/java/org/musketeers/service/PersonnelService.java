@@ -1,7 +1,7 @@
 package org.musketeers.service;
 
 import org.musketeers.dto.request.CreatePersonnelRequestDto;
-import org.musketeers.dto.request.GetPersonnelByCompanyRequestDto;
+import org.musketeers.dto.response.*;
 import org.musketeers.entity.Personnel;
 import org.musketeers.entity.Phone;
 import org.musketeers.entity.enums.Gender;
@@ -10,6 +10,7 @@ import org.musketeers.exception.ErrorType;
 import org.musketeers.exception.PersonnelServiceException;
 import org.musketeers.rabbitmq.model.*;
 import org.musketeers.rabbitmq.producer.CreatePersonnelProducer;
+import org.musketeers.rabbitmq.producer.GetCompanyDetailsByPersonnelRequestProducer;
 import org.musketeers.rabbitmq.producer.GetCompanyIdFromSupervisorTokenProducer;
 import org.musketeers.repository.PersonnelRepository;
 import org.musketeers.utility.JwtTokenManager;
@@ -31,17 +32,64 @@ public class PersonnelService extends ServiceManager<Personnel, String> {
 
     private final GetCompanyIdFromSupervisorTokenProducer getCompanyIdFromSupervisorTokenProducer;
 
-    public PersonnelService(PersonnelRepository personnelRepository, JwtTokenManager jwtTokenManager, CreatePersonnelProducer createPersonnelProducer, GetCompanyIdFromSupervisorTokenProducer getCompanyIdFromSupervisorTokenProducer) {
+    private final GetCompanyDetailsByPersonnelRequestProducer getCompanyDetailsByPersonnelRequestProducer;
+
+    public PersonnelService(PersonnelRepository personnelRepository, JwtTokenManager jwtTokenManager, CreatePersonnelProducer createPersonnelProducer, GetCompanyIdFromSupervisorTokenProducer getCompanyIdFromSupervisorTokenProducer, GetCompanyDetailsByPersonnelRequestProducer getCompanyDetailsByPersonnelRequestProducer) {
         super(personnelRepository);
         this.personnelRepository = personnelRepository;
         this.jwtTokenManager = jwtTokenManager;
         this.createPersonnelProducer = createPersonnelProducer;
         this.getCompanyIdFromSupervisorTokenProducer = getCompanyIdFromSupervisorTokenProducer;
+        this.getCompanyDetailsByPersonnelRequestProducer = getCompanyDetailsByPersonnelRequestProducer;
     }
 
-    public Personnel getPersonnelByToken(String id) { // İŞLEMLER LAZIM PERSONAL SAYFASI İÇİN
-//        jwtTokenManager.getClaimsFromToken(id).get(0);
-        return findById(id);
+    public GetPersonnelDetailsResponseDto getPersonnelDetailsByToken(String token) {
+        String authId = jwtTokenManager.getClaimsFromToken(token).get(0);
+        Personnel personnel = personnelRepository.findOptionalByAuthId(authId).orElseThrow(() -> new PersonnelServiceException(ErrorType.PERSONNEL_NOT_FOUND));
+        GetCompanyDetailsByPersonnelResponseModel companyDetailsResponseModel = GetCompanyDetailsByPersonnel(personnel);
+        return preparePersonnelDetailsResponseDtoFromModel(personnel, companyDetailsResponseModel);
+    }
+
+    private GetPersonnelDetailsResponseDto preparePersonnelDetailsResponseDtoFromModel(Personnel personnel, GetCompanyDetailsByPersonnelResponseModel model) {
+        return GetPersonnelDetailsResponseDto.builder()
+                .name(personnel.getName())
+                .lastName(personnel.getLastName())
+                .image(personnel.getImage())
+                .email(personnel.getEmail())
+                .phones(personnel.getPhones().stream().map(phone -> PhoneResponseDto.builder()
+                        .phoneType(phone.getPhoneType().toString())
+                        .phoneNumber(phone.getPhoneNumber())
+                        .build()).toList())
+                .addresses(personnel.getAddresses())
+                .companyName(model.getCompanyName())
+                .department(DepartmentResponseDto.builder()
+                        .name(model.getDepartmentName())
+                        .shifts(model.getShifts())
+                        .breaks(model.getBreaks())
+                        .build())
+                .companyHolidays(model.getHolidays().stream()
+                        .map(holidayString -> holidayString.split("*"))
+                        .map(holidayStringArray -> HolidayResponseDto.builder()
+                                .name(holidayStringArray[0])
+                                .duration(Integer.valueOf(holidayStringArray[1]))
+                                .build())
+                        .toList())
+                .hrInfos(model.getHrInfos().stream()
+                        .map(hrInfoString -> hrInfoString.split("*"))
+                        .map(hrInfoStringArray -> HRInfoResponseDto.builder()
+                                .firstName(hrInfoStringArray[0])
+                                .lastName(hrInfoStringArray[1])
+                                .email(hrInfoStringArray[2])
+                                .phone(hrInfoStringArray[3])
+                                .build())
+                        .toList())
+                .salary(personnel.getSalary())
+                .dayOff(personnel.getDayOff())
+                .build();
+    }
+
+    private GetCompanyDetailsByPersonnelResponseModel GetCompanyDetailsByPersonnel(Personnel personnel) {
+        return getCompanyDetailsByPersonnelRequestProducer.getCompanyDetailsByPersonnelFromCompanyService(personnel.getId());
     }
 
     public List<Personnel> getAllPersonnel() {
@@ -76,7 +124,10 @@ public class PersonnelService extends ServiceManager<Personnel, String> {
                 .gender(dto.getGender().equalsIgnoreCase("male") ? Gender.MALE : Gender.FEMALE)
                 .identityNumber(dto.getIdentityNumber())
                 .email(dto.getEmail())
-                .image(dto.getImage() != null ? dto.getImage() : (dto.getGender()).equalsIgnoreCase("male") ? "imagerkek" : "imagekadın") // BU KONTROL FRONTTA DA YAPILABİLİR
+                .image(dto.getImage() != null ? dto.getImage() : (dto.getGender()).equalsIgnoreCase("male") ?
+                        "https://us.123rf.com/450wm/thesomeday123/thesomeday1231712/thesomeday123171200009/91087331-default-avatar-profile-icon-for-male-grey-photo-placeholder-illustrations-vector.jpg?ver=6"
+                        :
+                        "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ6SR5emlvKa5Trq207GwkpiamFuQFskm8zLniDY04frA&s")
                 .addresses(Arrays.asList(dto.getAddress()))
                 .phones(Arrays.asList(Phone.builder().phoneType(PhoneType.PERSONAL).phoneNumber(dto.getPhone()).build()))
                 .companyId(dto.getCompanyId())

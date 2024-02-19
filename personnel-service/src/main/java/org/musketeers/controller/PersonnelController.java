@@ -4,6 +4,7 @@ package org.musketeers.controller;
 import lombok.RequiredArgsConstructor;
 import org.musketeers.dto.request.CreatePersonnelRequestDto;
 import org.musketeers.dto.request.GetPersonnelByCompanyRequestDto;
+import org.musketeers.dto.response.GetPersonnelDetailsResponseDto;
 import org.musketeers.entity.Personnel;
 import org.musketeers.service.PersonnelService;
 import org.springframework.http.ResponseEntity;
@@ -26,9 +27,9 @@ public class PersonnelController {
         return ResponseEntity.ok(personnelService.getAllPersonnel());
     }
 
-    @GetMapping(GET + "/{token}") // İŞLEMLER LAZIM PERSONAL SAYFASI İÇİN
-    public ResponseEntity<Personnel> getPersonnelById(@PathVariable String token){
-        return ResponseEntity.ok((personnelService.getPersonnelByToken(token)));
+    @GetMapping(GET + "/{token}")
+    public ResponseEntity<GetPersonnelDetailsResponseDto> getPersonnelDetailsByToken(@PathVariable String token){
+        return ResponseEntity.ok((personnelService.getPersonnelDetailsByToken(token)));
     }
 
     @PostMapping(CREATE)
@@ -51,7 +52,5 @@ public class PersonnelController {
     public ResponseEntity<List<Personnel>> getAllByCompanyId(@PathVariable String token) {
         return ResponseEntity.ok(personnelService.getAllByCompanyId(token));
     }
-
-
 
 }

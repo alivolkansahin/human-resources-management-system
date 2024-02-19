@@ -32,4 +32,5 @@ rabbitmq:
   get-company-details-by-comment-company-queue: getCompanyDetailsByCommentCompanyQueue
   get-company-supervisors-supervisor-queue: getCompanySupervisorsSupervisorQueue
   get-company-supervisors-supervisor-binding-key: getCompanySupervisorsSupervisorBindingKey
+  get-company-details-by-personnel-queue: getCompanyDetailsByPersonnelQueue
 

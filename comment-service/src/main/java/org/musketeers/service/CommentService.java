@@ -47,6 +47,7 @@ public class CommentService extends ServiceManager<Comment, String> {
                 .personnelId(responseModel.getPersonnelId())
                 .header(dto.getHeader())
                 .content(dto.getContent())
+                .rating(dto.getRating())
                 .build();
         save(comment);
         return true;
@@ -125,14 +126,6 @@ public class CommentService extends ServiceManager<Comment, String> {
     private void activate(Comment comment) {
         comment.setActivationStatus(EActivationStatus.ACTIVATED);
         update(comment);
-    }
-
-    public Boolean rateComment(RateCommentRequestDto dto) {
-        Comment comment = findById(dto.getCommentId());
-        // rabbitmq convertsendandreceive ile personnel servisten commenti yapan kişinin idsi çekilecek.
-        // commentin önceki ratingine göre mevcut bi algoritma dönülmeli, aynı zamanda ratersListesine de kişinin idsi eklenecek.
-        update(comment);
-        return true;
     }
 
     public Boolean softDeleteCommentById(String commentId) {

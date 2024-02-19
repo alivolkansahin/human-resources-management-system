@@ -30,11 +30,6 @@ public class CommentController {
         return ResponseEntity.ok(commentService.getAllCommentsByCompany(companyId));
     }
 
-    @PostMapping(RATE_COMMENT) // İÇİ DOLDURULACAK - MUHİTTİN REQUEST
-    public ResponseEntity<Boolean> rateComment(@RequestBody RateCommentRequestDto dto){
-        return ResponseEntity.ok(commentService.rateComment(dto));
-    }
-
     @DeleteMapping(DELETE + "/{commentId}") // for admin, security implementation required
     public ResponseEntity<Boolean> softDeleteComment(@PathVariable String commentId) {
         return ResponseEntity.ok(commentService.softDeleteCommentById(commentId));

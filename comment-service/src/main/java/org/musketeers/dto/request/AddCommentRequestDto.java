@@ -18,4 +18,6 @@ public class AddCommentRequestDto {
 
     private String content;
 
+    private Double rating;
+
 }

@@ -27,10 +27,7 @@ public class Comment extends BaseEntity {
 
     private String content;
 
-    @Builder.Default
-    private Double rating = 0d;
-
-    private List<String> ratersAuthIds;
+    private Double rating;
 
     @Builder.Default
     private EActivationStatus activationStatus = EActivationStatus.PENDING;

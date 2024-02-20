@@ -24,7 +24,7 @@ public enum ErrorType {
     INVALID_TOKEN_FORMAT(3001,"Geçersiz token formatı",HttpStatus.BAD_REQUEST),
     INVALID_TOKEN(3002,"Geçersiz token",HttpStatus.BAD_REQUEST),
 
-    INTERNAL_SERVER_ERROR(5002,"Parameter is incorrect" ,HttpStatus.BAD_REQUEST );
+    PARAMETER_NOT_VALID(5002,"Parameter is incorrect" ,HttpStatus.BAD_REQUEST );
 
     private int code;
     private String message;

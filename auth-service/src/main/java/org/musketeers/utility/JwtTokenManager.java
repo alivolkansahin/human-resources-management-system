@@ -54,7 +54,7 @@ public class JwtTokenManager {
         DecodedJWT decodedJWT = decodeToken(token);
         Optional<String> optionalId = Optional.ofNullable(decodedJWT.getClaim("id").asString());
         Optional<String> optionalRole = Optional.ofNullable(decodedJWT.getClaim("role").asString());
-        if(optionalId.isEmpty() || optionalRole.isEmpty()) throw new AuthServiceException(ErrorType.INVALID_TOKEN);
+        if(optionalId.isEmpty() || optionalRole.isEmpty()) throw new AuthServiceException(ErrorType.TOKEN_NOT_CREATED);
         return Arrays.asList(optionalId.get(), optionalRole.get());
     }
 

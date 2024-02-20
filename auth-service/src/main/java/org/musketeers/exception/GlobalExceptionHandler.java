@@ -42,7 +42,7 @@ public class GlobalExceptionHandler {
     }
 
     private ErrorMessage createError(ErrorType errorType, Exception ex){
-        System.out.println("Hata olustu: "+ex.getMessage());
+        System.out.println("Error: "+ex.getMessage());
         return ErrorMessage.builder()
                 .code(errorType)
                 .message(errorType.getMessage())

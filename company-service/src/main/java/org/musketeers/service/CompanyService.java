@@ -170,7 +170,7 @@ public class CompanyService extends ServiceManager<Company, String> {
     }
 
     public List<GetCompanySummaryInfoResponseDto> getCompanySummaryInfo(String companyName) {
-        return companyName == null ? getAllCompaniesForGuest() : searchCompanyByNameForGuest(companyName);
+        return companyName.equals("SEARCH_FIELD_EMPTY") ? getAllCompaniesForGuest() : searchCompanyByNameForGuest(companyName);
     }
 
     private List<GetCompanySummaryInfoResponseDto> getAllCompaniesForGuest(){

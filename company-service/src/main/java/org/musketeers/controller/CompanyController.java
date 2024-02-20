@@ -85,7 +85,7 @@ public class CompanyController {
     }
 
     @GetMapping(GET_COMPANY_SUMMARY_INFO_FOR_GUEST + "/{companyName}")
-    public ResponseEntity<List<GetCompanySummaryInfoResponseDto>> getCompanySummaryInfo(@PathVariable String companyName){
+    public ResponseEntity<List<GetCompanySummaryInfoResponseDto>> getCompanySummaryInfo(@PathVariable(required = false) String companyName){
         return ResponseEntity.ok(companyService.getCompanySummaryInfo(companyName));
     }
 

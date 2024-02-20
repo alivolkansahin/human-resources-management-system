@@ -16,7 +16,7 @@ public class GlobalExceptionHandler {
     @ResponseBody
     public ResponseEntity<ErrorMessage> handleRuntimeException(RuntimeException exception){
         return ResponseEntity.ok(ErrorMessage.builder()
-                        .code(ErrorType.INTERNAL_SERVER_ERROR)
+                        .code(ErrorType.PARAMETER_NOT_VALID)
                         .message("Runtime Error : "+exception.getMessage())
                 .build());
     }
@@ -51,7 +51,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ErrorMessage> handleAllExceptions(Exception exception) {
-        ErrorMessage errorMessage = createError(ErrorType.INTERNAL_SERVER_ERROR, exception);
+        ErrorMessage errorMessage = createError(ErrorType.PARAMETER_NOT_VALID, exception);
         errorMessage.addField(exception.getMessage());
 
         return ResponseEntity

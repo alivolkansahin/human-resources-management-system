@@ -44,13 +44,32 @@ public class PersonnelService extends ServiceManager<Personnel, String> {
     }
 
     public GetPersonnelDetailsResponseDto getPersonnelDetailsByToken(String token) {
-        String authId = jwtTokenManager.getClaimsFromToken(token).get(0);
-        Personnel personnel = personnelRepository.findOptionalByAuthId(authId).orElseThrow(() -> new PersonnelServiceException(ErrorType.PERSONNEL_NOT_FOUND));
-        GetCompanyDetailsByPersonnelResponseModel companyDetailsResponseModel = GetCompanyDetailsByPersonnel(personnel);
+        List<String> claimsFromToken = jwtTokenManager.getClaimsFromToken(token);
+        Personnel personnel = personnelRepository.findOptionalByAuthId(claimsFromToken.get(0)).orElseThrow(() -> new PersonnelServiceException(ErrorType.PERSONNEL_NOT_FOUND));
+        String isSupervisor = claimsFromToken.get(1).equals("SUPERVISOR") ? "true" : "false";
+        GetCompanyDetailsByPersonnelResponseModel companyDetailsResponseModel = GetCompanyDetailsByPersonnel(personnel, isSupervisor);
         return preparePersonnelDetailsResponseDtoFromModel(personnel, companyDetailsResponseModel);
     }
 
     private GetPersonnelDetailsResponseDto preparePersonnelDetailsResponseDtoFromModel(Personnel personnel, GetCompanyDetailsByPersonnelResponseModel model) {
+/*        List<List<String>> holidayList = model.getHolidays().stream().map(holiday -> Arrays.asList(holiday.split("\\*"))).toList();
+        List<HolidayResponseDto> holidayDtoList = holidayList.stream().map(holidayListItem -> HolidayResponseDto.builder()
+                        .name(holidayListItem.get(0))
+                        .duration(Integer.valueOf(holidayListItem.get(1)))
+                        .build())
+                .toList();
+        System.out.println("HOLIDAYDTO: " + holidayDtoList.toString());
+
+        List<List<String>> hrInfoList = model.getHrInfos().stream().map(hrInfo -> Arrays.asList(hrInfo.split("\\*"))).toList();
+        List<HRInfoResponseDto> hrInfoDtoList = hrInfoList.stream().map(hrInfoListItem -> HRInfoResponseDto.builder()
+                        .firstName(hrInfoListItem.get(0))
+                        .lastName(hrInfoListItem.get(1))
+                        .email(hrInfoListItem.get(2))
+                        .phone(hrInfoListItem.get(3))
+                        .build())
+                .toList();
+        System.out.println("HRINFODTO: " + hrInfoDtoList.toString());
+
         return GetPersonnelDetailsResponseDto.builder()
                 .name(personnel.getName())
                 .lastName(personnel.getLastName())
@@ -62,20 +81,46 @@ public class PersonnelService extends ServiceManager<Personnel, String> {
                         .build()).toList())
                 .addresses(personnel.getAddresses())
                 .companyName(model.getCompanyName())
+                .companyLogo(model.getCompanyLogo())
+                .department(DepartmentResponseDto.builder()
+                        .name(model.getDepartmentName())
+                        .shifts(model.getShifts())
+                        .breaks(model.getBreaks())
+                        .build())
+                .companyHolidays(holidayDtoList)
+                .hrInfos(hrInfoDtoList)
+                .dateOfBirth(personnel.getDateOfBirth())
+                .dateOfEmployment(personnel.getDateOfEmployment())
+                .salary(personnel.getSalary())
+                .dayOff(personnel.getDayOff())
+                .build();*/
+
+        return GetPersonnelDetailsResponseDto.builder()
+                .name(personnel.getName())
+                .lastName(personnel.getLastName())
+                .image(personnel.getImage())
+                .email(personnel.getEmail())
+                .phones(personnel.getPhones().stream().map(phone -> PhoneResponseDto.builder()
+                        .phoneType(phone.getPhoneType().toString())
+                        .phoneNumber(phone.getPhoneNumber())
+                        .build()).toList())
+                .addresses(personnel.getAddresses())
+                .companyName(model.getCompanyName())
+                .companyLogo(model.getCompanyLogo())
                 .department(DepartmentResponseDto.builder()
                         .name(model.getDepartmentName())
                         .shifts(model.getShifts())
                         .breaks(model.getBreaks())
                         .build())
                 .companyHolidays(model.getHolidays().stream()
-                        .map(holidayString -> holidayString.split("*"))
+                        .map(holidayString -> holidayString.split("\\*"))
                         .map(holidayStringArray -> HolidayResponseDto.builder()
                                 .name(holidayStringArray[0])
                                 .duration(Integer.valueOf(holidayStringArray[1]))
                                 .build())
                         .toList())
                 .hrInfos(model.getHrInfos().stream()
-                        .map(hrInfoString -> hrInfoString.split("*"))
+                        .map(hrInfoString -> hrInfoString.split("\\*"))
                         .map(hrInfoStringArray -> HRInfoResponseDto.builder()
                                 .firstName(hrInfoStringArray[0])
                                 .lastName(hrInfoStringArray[1])
@@ -83,13 +128,15 @@ public class PersonnelService extends ServiceManager<Personnel, String> {
                                 .phone(hrInfoStringArray[3])
                                 .build())
                         .toList())
+                .dateOfBirth(personnel.getDateOfBirth())
+                .dateOfEmployment(personnel.getDateOfEmployment())
                 .salary(personnel.getSalary())
                 .dayOff(personnel.getDayOff())
                 .build();
     }
 
-    private GetCompanyDetailsByPersonnelResponseModel GetCompanyDetailsByPersonnel(Personnel personnel) {
-        return getCompanyDetailsByPersonnelRequestProducer.getCompanyDetailsByPersonnelFromCompanyService(personnel.getId());
+    private GetCompanyDetailsByPersonnelResponseModel GetCompanyDetailsByPersonnel(Personnel personnel, String isSupervisor) {
+        return getCompanyDetailsByPersonnelRequestProducer.getCompanyDetailsByPersonnelFromCompanyService(List.of(personnel.getId(), personnel.getCompanyId(), isSupervisor));
     }
 
     public List<Personnel> getAllPersonnel() {

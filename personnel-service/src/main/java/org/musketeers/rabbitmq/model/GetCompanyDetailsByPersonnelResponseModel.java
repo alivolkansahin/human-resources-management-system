@@ -15,6 +15,8 @@ public class GetCompanyDetailsByPersonnelResponseModel {
 
     private String companyName;
 
+    private String companyLogo;
+
     private String departmentName;
 
     private String shifts;

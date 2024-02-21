@@ -5,6 +5,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @NoArgsConstructor
@@ -25,6 +26,8 @@ public class GetPersonnelDetailsResponseDto {
 
     private List<String> addresses;
 
+    private String companyLogo;
+
     private String companyName;
 
     private DepartmentResponseDto department;
@@ -32,6 +35,10 @@ public class GetPersonnelDetailsResponseDto {
     private List<HolidayResponseDto> companyHolidays;
 
     private List<HRInfoResponseDto> hrInfos;
+
+    private LocalDate dateOfBirth;
+
+    private LocalDate dateOfEmployment;
 
     private Double salary;
 

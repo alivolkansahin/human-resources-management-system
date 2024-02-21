@@ -6,6 +6,8 @@ import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 public class GetCompanyDetailsByPersonnelRequestProducer {
@@ -18,8 +20,8 @@ public class GetCompanyDetailsByPersonnelRequestProducer {
     @Value("${personnel-service-config.rabbitmq.get-company-details-by-personnel-binding-key}")
     private String bindingKey;
 
-    public GetCompanyDetailsByPersonnelResponseModel getCompanyDetailsByPersonnelFromCompanyService(String personnelId){
-        return (GetCompanyDetailsByPersonnelResponseModel) rabbitTemplate.convertSendAndReceive(exchange, bindingKey, personnelId);
+    public GetCompanyDetailsByPersonnelResponseModel getCompanyDetailsByPersonnelFromCompanyService(List<String> personnelInfos){
+        return (GetCompanyDetailsByPersonnelResponseModel) rabbitTemplate.convertSendAndReceive(exchange, bindingKey, personnelInfos);
     }
 
 }

@@ -6,8 +6,11 @@ import org.musketeers.exception.ErrorType;
 import org.musketeers.repository.DepartmentRepository;
 import org.musketeers.repository.entity.Company;
 import org.musketeers.repository.entity.Department;
+import org.musketeers.repository.entity.Personnel;
 import org.musketeers.utility.ServiceManager;
 import org.springframework.stereotype.Service;
+
+import java.util.Arrays;
 
 @Service
 public class DepartmentService extends ServiceManager<Department, String> {
@@ -34,8 +37,8 @@ public class DepartmentService extends ServiceManager<Department, String> {
         return true;
     }
 
-    public Department findByPersonnelId(String personnelId) {
-        return departmentRepository.findOptionalByPersonnelId(personnelId).orElseThrow(() -> new CompanyServiceException(ErrorType.COMPANY_NOT_FOUND)); // department not found...
-    }
+//    public Department findByPersonnelId(String personnelId) {
+//        return departmentRepository.findDepartmentByPersonnelId(personnelId).orElseThrow(() -> new CompanyServiceException(ErrorType.COMPANY_NOT_FOUND)); // department not found...
+//    }
 
 }

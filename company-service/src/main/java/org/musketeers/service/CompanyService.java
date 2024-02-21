@@ -18,9 +18,11 @@ import org.musketeers.utility.JwtTokenManager;
 import org.musketeers.utility.ServiceManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -41,17 +43,20 @@ public class CompanyService extends ServiceManager<Company, String> {
     // You could replace constructor-based dependency injection with setter-based dependency injection to resolve the cycle, see Spring Framework Reference Documentation:
     private DepartmentService departmentService;
 
+    private PersonnelService personnelService;
+
     @Autowired
     public void setDepartmentService(@Lazy DepartmentService departmentService){
         this.departmentService = departmentService;
     }
 
-    public CompanyService(CompanyRepository companyRepository, JwtTokenManager jwtTokenManager, GetCompanyIdFromSupervisorProducer getCompanyIdFromSupervisorProducer, GetCompanySupervisorRequestProducer getCompanySupervisorRequestProducer) {
+    public CompanyService(CompanyRepository companyRepository, JwtTokenManager jwtTokenManager, GetCompanyIdFromSupervisorProducer getCompanyIdFromSupervisorProducer, GetCompanySupervisorRequestProducer getCompanySupervisorRequestProducer, PersonnelService personnelService) {
         super(companyRepository);
         this.companyRepository = companyRepository;
         this.jwtTokenManager=jwtTokenManager;
         this.getCompanyIdFromSupervisorProducer = getCompanyIdFromSupervisorProducer;
         this.getCompanySupervisorRequestProducer = getCompanySupervisorRequestProducer;
+        this.personnelService = personnelService;
     }
 
     public boolean createCompany(Company company) {
@@ -226,20 +231,39 @@ public class CompanyService extends ServiceManager<Company, String> {
                 .build();
     }
 
-    public GetCompanyDetailsByPersonnelResponseModel getCompanyDetailsByPersonnel(String personnelId) {
-        Department department = departmentService.findByPersonnelId(personnelId);
-        Company company = companyRepository.findOptionalByDepartmentsId(department.getId()).orElseThrow(() -> new CompanyServiceException(ErrorType.COMPANY_NOT_FOUND));
-        return prepareCompanyDetailsResponseModel(company, department);
+    public GetCompanyDetailsByPersonnelResponseModel getCompanyDetailsByPersonnel(List<String> personnelInfos) {
+        Company company = findById(personnelInfos.get(1)).orElseThrow(() -> new CompanyServiceException(ErrorType.COMPANY_NOT_FOUND));
+        if (personnelInfos.get(2).equals("true")) return prepareCompanyDetailsResponseModelForSupervisor(company);
+        Personnel personnel = personnelService.findByPersonnelId(personnelInfos.get(0));
+        Department department = departmentService.findById(personnel.getDepartment().getId()).orElseThrow(() -> new CompanyServiceException(ErrorType.COMPANY_NOT_FOUND)); // department not found
+        return prepareCompanyDetailsResponseModelForPersonnel(company, department);
     }
 
-    private GetCompanyDetailsByPersonnelResponseModel prepareCompanyDetailsResponseModel(Company company, Department department) {
+    private GetCompanyDetailsByPersonnelResponseModel prepareCompanyDetailsResponseModelForPersonnel(Company company, Department department) {
         return GetCompanyDetailsByPersonnelResponseModel.builder()
                 .companyName(company.getCompanyName())
+                .companyLogo(company.getCompanyLogo())
                 .departmentName(department.getName())
                 .shifts(department.getShifts())
                 .breaks(department.getBreaks())
                 .holidays(company.getHolidays().stream()
                         .map(holiday -> holiday.getName() + "*" + holiday.getDuration())
+                        .toList())
+                .hrInfos(company.getHrInfos().stream()
+                        .map(hrInfo -> hrInfo.getFirstName()+"*"+hrInfo.getLastName()+"*"+hrInfo.getEmail()+"*"+hrInfo.getPhone())
+                        .toList())
+                .build();
+    }
+
+    private GetCompanyDetailsByPersonnelResponseModel prepareCompanyDetailsResponseModelForSupervisor(Company company) {
+        return GetCompanyDetailsByPersonnelResponseModel.builder()
+                .companyName(company.getCompanyName())
+                .companyLogo(company.getCompanyLogo())
+                .departmentName("")
+                .shifts("")
+                .breaks("")
+                .holidays(company.getHolidays().stream()
+                        .map(holiday -> holiday.getName() + "*" + holiday.getDuration().toString())
                         .toList())
                 .hrInfos(company.getHrInfos().stream()
                         .map(hrInfo -> hrInfo.getFirstName()+"*"+hrInfo.getLastName()+"*"+hrInfo.getEmail()+"*"+hrInfo.getPhone())

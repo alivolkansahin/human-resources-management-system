@@ -31,6 +31,8 @@ public class GetAllPendingCommentsResponseDto {
 
     private String content;
 
+    private Double rating;
+
     private String creationDate;
 
 }

@@ -34,6 +34,8 @@ public class GetAllPendingCommentsResponseModel {
 
     private String content;
 
+    private Double rating;
+
     private String creationDate;
 
 }

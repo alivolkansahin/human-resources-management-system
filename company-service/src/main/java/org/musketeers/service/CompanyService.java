@@ -22,6 +22,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
@@ -166,7 +167,8 @@ public class CompanyService extends ServiceManager<Company, String> {
     }
 
     public List<GetCompanyDetailsByCommentResponseModel> getCompanyInfoByCompanyIds(List<String> companyIds) {
-        List<Company> companies = companyRepository.findAllById(companyIds);
+        List<Company> companies = new ArrayList<>();
+        companyIds.forEach(companyId -> companies.add(findById(companyId).get()));
         return companies.stream()
                 .map(company -> GetCompanyDetailsByCommentResponseModel.builder()
                     .companyName(company.getCompanyName())

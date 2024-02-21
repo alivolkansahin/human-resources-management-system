@@ -172,7 +172,8 @@ public class PersonnelService extends ServiceManager<Personnel, String> {
     }
 
     public List<GetPersonnelDetailsByCommentResponseModel> getPersonnelInfoByPersonnelId(List<String> personnelIds) {
-        List<Personnel> personnelList = personnelRepository.findAllById(personnelIds);
+        List<Personnel> personnelList = new ArrayList<>();
+        personnelIds.forEach(personnelId -> personnelList.add(findById(personnelId)));
         List<GetPersonnelDetailsByCommentResponseModel> personnelModelList = new ArrayList<>();
         personnelList.forEach(personnel -> {
             personnelModelList.add(GetPersonnelDetailsByCommentResponseModel.builder()

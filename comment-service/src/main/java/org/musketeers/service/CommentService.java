@@ -64,6 +64,7 @@ public class CommentService extends ServiceManager<Comment, String> {
 
     private List<GetPersonnelDetailsByCommentResponseModel> getPersonnelDetailsFromPersonnelService(List<Comment> comments) {
         List<String> personnelList = comments.stream().map(Comment::getPersonnelId).toList();
+        System.out.println("commentler personnel id list: " + personnelList);
         return getPersonnelDetailsByCommentRequestProducer.getPersonnelInfo(personnelList);
     }
 
@@ -84,9 +85,12 @@ public class CommentService extends ServiceManager<Comment, String> {
 
     public List<GetAllPendingCommentsResponseModel> getAllPendingComments() {
         List<Comment> pendingComments = commentRepository.findAllByActivationStatusOrderByCreatedAt(EActivationStatus.PENDING);
+        System.out.println("PENDING-COMMENTLAR: " + pendingComments.toString());
         if(pendingComments.isEmpty()) return Collections.emptyList();
         List<GetPersonnelDetailsByCommentResponseModel> personnelDetailsResponseModel = getPersonnelDetailsFromPersonnelService(pendingComments);
+        System.out.println("PersonnelDetailsResponseMODELLLLL : " + personnelDetailsResponseModel.toString());
         List<GetCompanyDetailsByCommentResponseModel> companyDetailsResponseModel = getCompanyDetailsFromCompanyService(pendingComments);
+        System.out.println("companyDetailsResponseModelMODELLLLL : " + companyDetailsResponseModel.toString());
         return prepareResponseModelForPendingCommentsByCompanyFromModel(pendingComments, personnelDetailsResponseModel, companyDetailsResponseModel);
     }
 
@@ -97,7 +101,7 @@ public class CommentService extends ServiceManager<Comment, String> {
 
     private List<GetAllPendingCommentsResponseModel> prepareResponseModelForPendingCommentsByCompanyFromModel(List<Comment> comments, List<GetPersonnelDetailsByCommentResponseModel> personnelDetailsResponseModel, List<GetCompanyDetailsByCommentResponseModel> companyDetailsResponseModel) {
         List<GetAllPendingCommentsResponseModel> responseModel = new ArrayList<>();
-        for (int i = 0; i < personnelDetailsResponseModel.size(); i++) {
+        for (int i = 0; i < comments.size(); i++) {
             responseModel.add(GetAllPendingCommentsResponseModel.builder()
                     .commentId(comments.get(i).getId())
                     .companyName(companyDetailsResponseModel.get(i).getCompanyName())
@@ -110,6 +114,7 @@ public class CommentService extends ServiceManager<Comment, String> {
                     .personnelDateOfEmployment(LocalDate.now().toString()) //// YORUMU GERİ AÇACAKSIN !!!!!!!!!!!!!!!!!!!!!!!!!!!!!
                     .header(comments.get(i).getHeader())
                     .content(comments.get(i).getContent())
+                    .rating(comments.get(i).getRating())
                     .creationDate(Instant.ofEpochMilli(comments.get(i).getCreatedAt()).atZone(ZoneId.systemDefault()).toLocalDate().toString())
                     .build());
         }

@@ -15,6 +15,7 @@ import org.musketeers.utility.ServiceManager;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
+import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -105,12 +106,14 @@ public class CommentService extends ServiceManager<Comment, String> {
                     .personnelLastName(personnelDetailsResponseModel.get(i).getLastName())
                     .personnelGender(personnelDetailsResponseModel.get(i).getGender())
                     .personnelImage(personnelDetailsResponseModel.get(i).getImage())
-                    .personnelDateOfEmployment(personnelDetailsResponseModel.get(i).getDateOfEmployment())
+//                    .personnelDateOfEmployment(personnelDetailsResponseModel.get(i).getDateOfEmployment())
+                    .personnelDateOfEmployment(LocalDate.now().toString()) //// YORUMU GERİ AÇACAKSIN !!!!!!!!!!!!!!!!!!!!!!!!!!!!!
                     .header(comments.get(i).getHeader())
                     .content(comments.get(i).getContent())
                     .creationDate(Instant.ofEpochMilli(comments.get(i).getCreatedAt()).atZone(ZoneId.systemDefault()).toLocalDate().toString())
                     .build());
         }
+        System.out.println("ResponseModel: " + responseModel.toString());
         return responseModel;
     }
 

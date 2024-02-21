@@ -49,6 +49,8 @@ rabbitmq:
 
   admin-register-auth-queue: adminRegisterAuthQueue
 
+  update-personnel-by-id-auth-queue: updatePersonnelByIdAuthQueue
+
 
 #
 #  active-status-queue: activeStatusQueue

@@ -42,6 +42,18 @@ public class RabbitMQConfig {
     @Value("${personnel-service-config.rabbitmq.get-company-id-supervisor-binding-key}")
     private String getCompanyIdSupervisorBindingKey;
 
+    @Value("${personnel-service-config.rabbitmq.update-personnel-by-id-auth-queue}")
+    private String updatePersonnelByIdAuthQueue;
+
+    @Value("${personnel-service-config.rabbitmq.update-personnel-by-id-auth-binding-key}")
+    private String updatePersonnelByIdAuthBindingKey;
+
+    @Value("${personnel-service-config.rabbitmq.update-personnel-by-id-supervisor-queue}")
+    private String updatePersonnelByIdSupervisorQueue;
+
+    @Value("${personnel-service-config.rabbitmq.update-personnel-by-id-supervisor-binding-key}")
+    private String updatePersonnelByIdSupervisorBindingKey;
+
     @Bean
     DirectExchange createPersonnelExchange() {
         return new DirectExchange(createPersonnelExchange);
@@ -67,6 +79,16 @@ public class RabbitMQConfig {
     }
 
     @Bean
+    Queue updatePersonnelByIdAuthQueue(){
+        return new Queue(updatePersonnelByIdAuthQueue);
+    }
+
+    @Bean
+    Queue updatePersonnelByIdSupervisorQueue(){
+        return new Queue(updatePersonnelByIdSupervisorQueue);
+    }
+
+    @Bean
     Binding bindingCreatePersonnelAuthQueue(DirectExchange createPersonnelExchange, Queue createPersonnelAuthQueue) {
         return BindingBuilder.bind(createPersonnelAuthQueue).to(createPersonnelExchange).with(createPersonnelAuthBindingKey);
     }
@@ -84,6 +106,17 @@ public class RabbitMQConfig {
     Binding bindingGetCompanyDetailsByPersonnelQueue(DirectExchange createPersonnelExchange, Queue getCompanyDetailsByPersonnelQueue) {
         return BindingBuilder.bind(getCompanyDetailsByPersonnelQueue).to(createPersonnelExchange).with(getCompanyDetailsByPersonnelBindingKey);
     }
+
+    @Bean
+    public Binding bindingUpdatePersonnelByIdAuthQueue(DirectExchange createPersonnelExchange, Queue updatePersonnelByIdAuthQueue){
+        return BindingBuilder.bind(updatePersonnelByIdAuthQueue).to(createPersonnelExchange).with(updatePersonnelByIdAuthBindingKey);
+    }
+
+    @Bean
+    public Binding bindingUpdatePersonnelByIdSupervisorQueue(DirectExchange createPersonnelExchange, Queue updatePersonnelByIdSupervisorQueue){
+        return BindingBuilder.bind(updatePersonnelByIdSupervisorQueue).to(createPersonnelExchange).with(updatePersonnelByIdSupervisorBindingKey);
+    }
+
 
     @Bean
     MessageConverter messageConverter(){

@@ -1,13 +1,12 @@
 package org.musketeers.service;
 
+import org.musketeers.entity.Phone;
 import org.musketeers.entity.Supervisor;
 import org.musketeers.entity.enums.ActivationStatus;
+import org.musketeers.entity.enums.PhoneType;
 import org.musketeers.exception.ErrorType;
 import org.musketeers.exception.SupervisorServiceException;
-import org.musketeers.rabbitmq.model.CreateCompanyRequestModel;
-import org.musketeers.rabbitmq.model.CreateCompanyResponseModel;
-import org.musketeers.rabbitmq.model.CreatePersonnelFromSupervisorModel;
-import org.musketeers.rabbitmq.model.GetCompanySupervisorResponseModel;
+import org.musketeers.rabbitmq.model.*;
 import org.musketeers.rabbitmq.producer.CreateCompanyProducer;
 import org.musketeers.rabbitmq.producer.CreatePersonnelFromSupervisorProducer;
 import org.musketeers.repository.SupervisorRepository;
@@ -93,5 +92,16 @@ public class SupervisorService extends ServiceManager<Supervisor, String> {
                 .image(supervisor.getImage())
                 .dateOfBirth(supervisor.getDateOfBirth().toString())
                 .build()).toList();
+    }
+
+    public void updateSupervisorInfo(UpdateSupervisorModel model) {
+        Supervisor supervisor = supervisorRepository.findOptionalByAuthId(model.getAuthId()).orElseThrow(() -> new SupervisorServiceException(ErrorType.SUPERVISOR_NOT_FOUND));
+        supervisor.setName(model.getName());
+        supervisor.setLastName(model.getLastName());
+        supervisor.setEmail(model.getEmail());
+        Phone personalPhone = Phone.builder().phoneType(PhoneType.PERSONAL).phoneNumber(model.getPhones().get(0)).build();
+        Phone workPhone = Phone.builder().phoneType(PhoneType.WORK).phoneNumber(model.getPhones().get(1)).build();
+        supervisor.setPhones(List.of(personalPhone, workPhone));
+        update(supervisor);
     }
 }

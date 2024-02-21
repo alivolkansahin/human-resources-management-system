@@ -40,10 +40,10 @@ public class SupervisorController {
     }
 
 //    @PutMapping(UPDATE + "/{id}")
-    @PutMapping(UPDATE)
-    public ResponseEntity<Supervisor> updateSupervisorById(@RequestBody Supervisor supervisor){
-        return ResponseEntity.ok(supervisorService.update(supervisor));
-    }
+//    @PutMapping(UPDATE)
+//    public ResponseEntity<Supervisor> updateSupervisorById(@RequestBody Supervisor supervisor){
+//        return ResponseEntity.ok(supervisorService.update(supervisor));
+//    }
 
 
 

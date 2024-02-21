@@ -183,4 +183,12 @@ public class AuthService extends ServiceManager<Auth, String> {
                         .build())
                 .toList();
     }
+
+    public Boolean updatePersonnel(UpdatePersonnelRequestModel model) {
+        Auth auth = findById(model.getAuthId()).orElseThrow(() -> new AuthServiceException(ErrorType.NOT_FOUND));
+        if(!auth.getEmail().equals(model.getEmail())) auth.setEmail(model.getEmail());
+        if(!auth.getPhone().equals(model.getPhone())) auth.setPhone(model.getPhone());
+        update(auth);
+        return true;
+    }
 }

@@ -28,7 +28,7 @@ public class GetAllPendingCommentsResponseModel {
 
     private String personnelImage;
 
-    private LocalDate personnelDateOfEmployment;
+    private String personnelDateOfEmployment;
 
     private String header;
 

@@ -33,6 +33,10 @@ personnel-service-config:
     create-personnel-from-supervisor-queue: createPersonnelFromSupervisorQueue
     get-company-details-by-personnel-queue: getCompanyDetailsByPersonnelQueue
     get-company-details-by-personnel-binding-key: getCompanyDetailsByPersonnelBindingKey
+    update-personnel-by-id-auth-queue: updatePersonnelByIdAuthQueue
+    update-personnel-by-id-auth-binding-key: updatePersonnelByIdAuthBindingKey
+    update-personnel-by-id-supervisor-queue: updatePersonnelByIdSupervisorQueue
+    update-personnel-by-id-supervisor-binding-key: updatePersonnelByIdSupervisorBindingKey
 
 
 

@@ -1,6 +1,7 @@
 package org.musketeers.service;
 
 import org.musketeers.dto.request.CreatePersonnelRequestDto;
+import org.musketeers.dto.request.UpdatePersonnelRequestDto;
 import org.musketeers.dto.response.*;
 import org.musketeers.entity.Personnel;
 import org.musketeers.entity.Phone;
@@ -9,9 +10,7 @@ import org.musketeers.entity.enums.PhoneType;
 import org.musketeers.exception.ErrorType;
 import org.musketeers.exception.PersonnelServiceException;
 import org.musketeers.rabbitmq.model.*;
-import org.musketeers.rabbitmq.producer.CreatePersonnelProducer;
-import org.musketeers.rabbitmq.producer.GetCompanyDetailsByPersonnelRequestProducer;
-import org.musketeers.rabbitmq.producer.GetCompanyIdFromSupervisorTokenProducer;
+import org.musketeers.rabbitmq.producer.*;
 import org.musketeers.repository.PersonnelRepository;
 import org.musketeers.utility.JwtTokenManager;
 import org.musketeers.utility.ServiceManager;
@@ -34,13 +33,19 @@ public class PersonnelService extends ServiceManager<Personnel, String> {
 
     private final GetCompanyDetailsByPersonnelRequestProducer getCompanyDetailsByPersonnelRequestProducer;
 
-    public PersonnelService(PersonnelRepository personnelRepository, JwtTokenManager jwtTokenManager, CreatePersonnelProducer createPersonnelProducer, GetCompanyIdFromSupervisorTokenProducer getCompanyIdFromSupervisorTokenProducer, GetCompanyDetailsByPersonnelRequestProducer getCompanyDetailsByPersonnelRequestProducer) {
+    private final UpdatePersonnelRequestProducer updatePersonnelRequestProducer;
+
+    private final UpdateSupervisorProducer updateSupervisorProducer;
+
+    public PersonnelService(PersonnelRepository personnelRepository, JwtTokenManager jwtTokenManager, CreatePersonnelProducer createPersonnelProducer, GetCompanyIdFromSupervisorTokenProducer getCompanyIdFromSupervisorTokenProducer, GetCompanyDetailsByPersonnelRequestProducer getCompanyDetailsByPersonnelRequestProducer, UpdatePersonnelRequestProducer updatePersonnelRequestProducer, UpdateSupervisorProducer updateSupervisorProducer) {
         super(personnelRepository);
         this.personnelRepository = personnelRepository;
         this.jwtTokenManager = jwtTokenManager;
         this.createPersonnelProducer = createPersonnelProducer;
         this.getCompanyIdFromSupervisorTokenProducer = getCompanyIdFromSupervisorTokenProducer;
         this.getCompanyDetailsByPersonnelRequestProducer = getCompanyDetailsByPersonnelRequestProducer;
+        this.updatePersonnelRequestProducer = updatePersonnelRequestProducer;
+        this.updateSupervisorProducer = updateSupervisorProducer;
     }
 
     public GetPersonnelDetailsResponseDto getPersonnelDetailsByToken(String token) {
@@ -52,49 +57,6 @@ public class PersonnelService extends ServiceManager<Personnel, String> {
     }
 
     private GetPersonnelDetailsResponseDto preparePersonnelDetailsResponseDtoFromModel(Personnel personnel, GetCompanyDetailsByPersonnelResponseModel model) {
-/*        List<List<String>> holidayList = model.getHolidays().stream().map(holiday -> Arrays.asList(holiday.split("\\*"))).toList();
-        List<HolidayResponseDto> holidayDtoList = holidayList.stream().map(holidayListItem -> HolidayResponseDto.builder()
-                        .name(holidayListItem.get(0))
-                        .duration(Integer.valueOf(holidayListItem.get(1)))
-                        .build())
-                .toList();
-        System.out.println("HOLIDAYDTO: " + holidayDtoList.toString());
-
-        List<List<String>> hrInfoList = model.getHrInfos().stream().map(hrInfo -> Arrays.asList(hrInfo.split("\\*"))).toList();
-        List<HRInfoResponseDto> hrInfoDtoList = hrInfoList.stream().map(hrInfoListItem -> HRInfoResponseDto.builder()
-                        .firstName(hrInfoListItem.get(0))
-                        .lastName(hrInfoListItem.get(1))
-                        .email(hrInfoListItem.get(2))
-                        .phone(hrInfoListItem.get(3))
-                        .build())
-                .toList();
-        System.out.println("HRINFODTO: " + hrInfoDtoList.toString());
-
-        return GetPersonnelDetailsResponseDto.builder()
-                .name(personnel.getName())
-                .lastName(personnel.getLastName())
-                .image(personnel.getImage())
-                .email(personnel.getEmail())
-                .phones(personnel.getPhones().stream().map(phone -> PhoneResponseDto.builder()
-                        .phoneType(phone.getPhoneType().toString())
-                        .phoneNumber(phone.getPhoneNumber())
-                        .build()).toList())
-                .addresses(personnel.getAddresses())
-                .companyName(model.getCompanyName())
-                .companyLogo(model.getCompanyLogo())
-                .department(DepartmentResponseDto.builder()
-                        .name(model.getDepartmentName())
-                        .shifts(model.getShifts())
-                        .breaks(model.getBreaks())
-                        .build())
-                .companyHolidays(holidayDtoList)
-                .hrInfos(hrInfoDtoList)
-                .dateOfBirth(personnel.getDateOfBirth())
-                .dateOfEmployment(personnel.getDateOfEmployment())
-                .salary(personnel.getSalary())
-                .dayOff(personnel.getDayOff())
-                .build();*/
-
         return GetPersonnelDetailsResponseDto.builder()
                 .name(personnel.getName())
                 .lastName(personnel.getLastName())
@@ -243,5 +205,42 @@ public class PersonnelService extends ServiceManager<Personnel, String> {
                 .companyId(model.getCompanyId())
                 .dateOfBirth(model.getDateOfBirth())
                 .build();
+    }
+
+    public Boolean updatePersonnelById(UpdatePersonnelRequestDto dto) {
+        List<String> authIdAndRole = jwtTokenManager.getClaimsFromToken(dto.getToken());
+        Personnel personnel = personnelRepository.findOptionalByAuthId(authIdAndRole.get(0)).orElseThrow(() -> new PersonnelServiceException(ErrorType.PERSONNEL_NOT_FOUND));
+        UpdatePersonnelRequestModel requestModelForAuth = UpdatePersonnelRequestModel.builder()
+                .authId(authIdAndRole.get(0))
+                .phone(dto.getPhones().get(0))
+                .email(dto.getEmail())
+                .build();
+        updatePersonnelRequestProducer.updateAuthService(requestModelForAuth).orElseThrow(()-> new PersonnelServiceException(ErrorType.EMAIL_ALREADY_EXISTS));
+        preparePersonnelForUpdate(personnel, dto);
+        update(personnel);
+        if(authIdAndRole.get(1).equalsIgnoreCase("SUPERVISOR")) sendUpdateRequestToSupervisorService(authIdAndRole.get(0), personnel);
+        return true;
+    }
+
+    private void sendUpdateRequestToSupervisorService(String authId, Personnel personnel) {
+        UpdateSupervisorModel requestModelForSupervisor = UpdateSupervisorModel.builder()
+                .authId(authId)
+                .name(personnel.getName())
+                .lastName(personnel.getLastName())
+                .email(personnel.getEmail())
+                .phones(personnel.getPhones().stream()
+                        .map(Phone::getPhoneNumber)
+                        .toList())
+                .build();
+        updateSupervisorProducer.updateSupervisorService(requestModelForSupervisor);
+    }
+
+    private void preparePersonnelForUpdate(Personnel personnel, UpdatePersonnelRequestDto dto) {
+        personnel.setName(dto.getName());
+        personnel.setLastName(dto.getLastName());
+        personnel.setEmail(dto.getEmail());
+        Phone personalPhone = Phone.builder().phoneType(PhoneType.PERSONAL).phoneNumber(dto.getPhones().get(0)).build();
+        Phone workPhone = Phone.builder().phoneType(PhoneType.WORK).phoneNumber(dto.getPhones().get(1)).build();
+        personnel.setPhones(List.of(personalPhone, workPhone));
     }
 }

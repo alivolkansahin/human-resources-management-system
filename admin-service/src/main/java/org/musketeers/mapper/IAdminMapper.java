@@ -17,7 +17,6 @@ public interface IAdminMapper {
 
     RegisteredSupervisorsResponseDTO supervisorModelToDto(GetSupervisorResponseModel model);
 
-    @Mapping(target = "personnelDateOfEmployment", expression = "java(model.getPersonnelDateOfEmployment().toString())")
     GetAllPendingCommentsResponseDto getAllPendingCommentsModelToDto(GetAllPendingCommentsResponseModel model);
 
     @Mapping(target = "decision", expression = "java(dto.getDecision().equalsIgnoreCase(\"true\"))")

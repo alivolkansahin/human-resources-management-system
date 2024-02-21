@@ -19,7 +19,6 @@ public class GetCompanyIdFromSupervisorTokenConsumer {
     @RabbitListener(queues = "${supervisor-service-config.rabbitmq.get-company-id-supervisor-queue}")
     public String sendSupervisorsCompanyId(GetCompanyIdFromSupervisorTokenModel model){
         String authId = jwtTokenManager.getClaimsFromToken(model.getToken()).get(0);
-        System.out.println("Gelen AUTHID : " + authId);
         Supervisor supervisor = supervisorService.getSupervisorByAuthId(authId);
         return supervisor.getCompanyId();
     }

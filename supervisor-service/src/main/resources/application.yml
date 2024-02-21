@@ -32,6 +32,7 @@ supervisor-service-config:
     get-company-supervisors-supervisor-queue: getCompanySupervisorsSupervisorQueue
     create-personnel-from-supervisor-queue: createPersonnelFromSupervisorQueue
     create-personnel-from-supervisor-binding-key: createPersonnelFromSupervisorBindingKey
+    update-personnel-by-id-supervisor-queue: updatePersonnelByIdSupervisorQueue
 
 
 

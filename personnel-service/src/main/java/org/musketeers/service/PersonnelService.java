@@ -133,10 +133,7 @@ public class PersonnelService extends ServiceManager<Personnel, String> {
                 .gender(dto.getGender().equalsIgnoreCase("male") ? Gender.MALE : Gender.FEMALE)
                 .identityNumber(dto.getIdentityNumber())
                 .email(dto.getEmail())
-                .image(dto.getImage() != null ? dto.getImage() : (dto.getGender()).equalsIgnoreCase("male") ?
-                        "https://us.123rf.com/450wm/thesomeday123/thesomeday1231712/thesomeday123171200009/91087331-default-avatar-profile-icon-for-male-grey-photo-placeholder-illustrations-vector.jpg?ver=6"
-                        :
-                        "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ6SR5emlvKa5Trq207GwkpiamFuQFskm8zLniDY04frA&s")
+                .image(dto.getImage())
                 .addresses(Arrays.asList(dto.getAddress()))
                 .phones(Arrays.asList(Phone.builder().phoneType(PhoneType.PERSONAL).phoneNumber(dto.getPhone()).build()))
                 .companyId(dto.getCompanyId())

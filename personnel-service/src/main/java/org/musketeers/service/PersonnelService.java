@@ -213,9 +213,13 @@ public class PersonnelService extends ServiceManager<Personnel, String> {
                 .phone(dto.getPhones().get(0))
                 .email(dto.getEmail())
                 .build();
+        System.out.println("BURAYA GELDİ 1111");
         updatePersonnelRequestProducer.updateAuthService(requestModelForAuth).orElseThrow(()-> new PersonnelServiceException(ErrorType.EMAIL_ALREADY_EXISTS));
+        System.out.println("BURAYA GELDİ 2222");
         preparePersonnelForUpdate(personnel, dto);
+        System.out.println("BURAYA GELDİ 3333");
         update(personnel);
+        System.out.println("BURAYA GELDİ 4444");
         if(authIdAndRole.get(1).equalsIgnoreCase("SUPERVISOR")) sendUpdateRequestToSupervisorService(authIdAndRole.get(0), personnel);
         return true;
     }
@@ -238,7 +242,11 @@ public class PersonnelService extends ServiceManager<Personnel, String> {
         personnel.setLastName(dto.getLastName());
         personnel.setEmail(dto.getEmail());
         Phone personalPhone = Phone.builder().phoneType(PhoneType.PERSONAL).phoneNumber(dto.getPhones().get(0)).build();
-        Phone workPhone = Phone.builder().phoneType(PhoneType.WORK).phoneNumber(dto.getPhones().get(1)).build();
-        personnel.setPhones(List.of(personalPhone, workPhone));
+        if(dto.getPhones().size() > 1) {
+            Phone workPhone = Phone.builder().phoneType(PhoneType.WORK).phoneNumber(dto.getPhones().get(1)).build();
+            personnel.setPhones(List.of(personalPhone, workPhone));
+        } else {
+            personnel.setPhones(List.of(personalPhone));
+        }
     }
 }

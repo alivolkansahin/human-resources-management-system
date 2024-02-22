@@ -100,8 +100,12 @@ public class SupervisorService extends ServiceManager<Supervisor, String> {
         supervisor.setLastName(model.getLastName());
         supervisor.setEmail(model.getEmail());
         Phone personalPhone = Phone.builder().phoneType(PhoneType.PERSONAL).phoneNumber(model.getPhones().get(0)).build();
-        Phone workPhone = Phone.builder().phoneType(PhoneType.WORK).phoneNumber(model.getPhones().get(1)).build();
-        supervisor.setPhones(List.of(personalPhone, workPhone));
+        if(model.getPhones().size() > 1) {
+            Phone workPhone = Phone.builder().phoneType(PhoneType.WORK).phoneNumber(model.getPhones().get(1)).build();
+            supervisor.setPhones(List.of(personalPhone, workPhone));
+        } else {
+            supervisor.setPhones(List.of(personalPhone));
+        }
         update(supervisor);
     }
 }

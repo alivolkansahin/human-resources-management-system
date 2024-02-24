@@ -44,7 +44,7 @@ public class CompanyService extends ServiceManager<Company, String> {
     // You could replace constructor-based dependency injection with setter-based dependency injection to resolve the cycle, see Spring Framework Reference Documentation:
     private DepartmentService departmentService;
 
-    private PersonnelService personnelService;
+    private final PersonnelService personnelService;
 
     @Autowired
     public void setDepartmentService(@Lazy DepartmentService departmentService){

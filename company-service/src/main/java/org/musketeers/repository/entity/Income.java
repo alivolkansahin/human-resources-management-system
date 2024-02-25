@@ -8,6 +8,8 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 
+import java.time.LocalDate;
+
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
@@ -15,7 +17,7 @@ import lombok.experimental.SuperBuilder;
 @SuperBuilder
 @Entity
 @Table(name = "tbl_incomes")
-public class Income extends BaseEntity{
+public class Income extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
@@ -28,5 +30,7 @@ public class Income extends BaseEntity{
     private String description;
 
     private Double amount;
+
+    private LocalDate incomeDate;
 
 }

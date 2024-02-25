@@ -46,6 +46,24 @@ public class RabbitMqConfig {
     @Value("${rabbitmq.mail-bindingKey-personnel}")
     private String mailPersonnelBindingKey;
 
+    @Value("${rabbitmq.company-status-check-queue}")
+    private String companyStatusCheckQueue;
+
+    @Value("${rabbitmq.company-status-check-bindingKey}")
+    private String companyStatusCheckBindingKey;
+
+    @Value("${rabbitmq.get-company-id-for-user-login-queue}")
+    private String getCompanyIdForUserLoginQueue;
+
+    @Value("${rabbitmq.get-company-id-for-user-login-bindingKey}")
+    private String getCompanyIdForUserLoginBindingKey;
+
+    @Value("${rabbitmq.search-for-company-name-queue}")
+    private String searchForCompanyNameQueue;
+
+    @Value("${rabbitmq.search-for-company-name-bindingKey}")
+    private String searchForCompanyNameBindingKey;
+
 
     @Bean
     DirectExchange exchangeAuth(){
@@ -101,6 +119,33 @@ public class RabbitMqConfig {
     @Bean
     public Binding bindingRegisterSupervisor(Queue registerSupervisorQueue, DirectExchange exchangeAuth){
         return BindingBuilder.bind(registerSupervisorQueue).to(exchangeAuth).with(registerSupervisorBindingKey);
+    }
+
+    @Bean
+    Queue getCompanyIdForUserLoginQueue(){
+        return new Queue(getCompanyIdForUserLoginQueue);
+    }
+    @Bean
+    public Binding bindingCompanyIdForUserLogin(Queue getCompanyIdForUserLoginQueue, DirectExchange exchangeAuth){
+        return BindingBuilder.bind(getCompanyIdForUserLoginQueue).to(exchangeAuth).with(getCompanyIdForUserLoginBindingKey);
+    }
+
+    @Bean
+    Queue companyStatusCheckQueue(){
+        return new Queue(companyStatusCheckQueue);
+    }
+    @Bean
+    public Binding bindingCompanyStatusCheck(Queue companyStatusCheckQueue, DirectExchange exchangeAuth){
+        return BindingBuilder.bind(companyStatusCheckQueue).to(exchangeAuth).with(companyStatusCheckBindingKey);
+    }
+
+    @Bean
+    Queue searchForCompanyNameQueue(){
+        return new Queue(searchForCompanyNameQueue);
+    }
+    @Bean
+    public Binding bindingSearchForCompanyName(Queue searchForCompanyNameQueue, DirectExchange exchangeAuth){
+        return BindingBuilder.bind(searchForCompanyNameQueue).to(exchangeAuth).with(searchForCompanyNameBindingKey);
     }
 
 

@@ -75,7 +75,10 @@ public class CommentService extends ServiceManager<Comment, String> {
                     .personnel(ICommentMapper.INSTANCE.personnelDetailsModelToDto(personnelDetailsResponseModel.get(i)))
                     .header(comments.get(i).getHeader())
                     .content(comments.get(i).getContent())
-                    .creationDate(Instant.ofEpochMilli(comments.get(i).getCreatedAt()).atZone(ZoneId.systemDefault()).toLocalDate().toString())
+                    .creationDate(Instant.ofEpochMilli(comments.get(i).getCreatedAt())
+                            .atZone(ZoneId.systemDefault())
+                            .toLocalDate()
+                            .toString())
                     .rating(comments.get(i).getRating())
                     .build());
         }
@@ -106,12 +109,15 @@ public class CommentService extends ServiceManager<Comment, String> {
                     .personnelLastName(personnelDetailsResponseModel.get(i).getLastName())
                     .personnelGender(personnelDetailsResponseModel.get(i).getGender())
                     .personnelImage(personnelDetailsResponseModel.get(i).getImage())
-//                    .personnelDateOfEmployment(personnelDetailsResponseModel.get(i).getDateOfEmployment())
-                    .personnelDateOfEmployment(LocalDate.now().toString()) //// YORUMU GERİ AÇACAKSIN !!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                    .personnelDateOfEmployment(personnelDetailsResponseModel.get(i).getDateOfEmployment().toString())
+//                    .personnelDateOfEmployment(LocalDate.now().toString())
                     .header(comments.get(i).getHeader())
                     .content(comments.get(i).getContent())
                     .rating(comments.get(i).getRating())
-                    .creationDate(Instant.ofEpochMilli(comments.get(i).getCreatedAt()).atZone(ZoneId.systemDefault()).toLocalDate().toString())
+                    .creationDate(Instant.ofEpochMilli(comments.get(i).getCreatedAt())
+                            .atZone(ZoneId.systemDefault())
+                            .toLocalDate()
+                            .toString())
                     .build());
         }
         return responseModel;

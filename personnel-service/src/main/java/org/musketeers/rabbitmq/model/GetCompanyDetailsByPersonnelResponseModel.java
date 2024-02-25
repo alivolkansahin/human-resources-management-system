@@ -19,9 +19,9 @@ public class GetCompanyDetailsByPersonnelResponseModel {
 
     private String departmentName;
 
-    private String shifts;
+    private String shiftHour;
 
-    private String breaks;
+    private String breakHour;
 
     private List<String> holidays;
 

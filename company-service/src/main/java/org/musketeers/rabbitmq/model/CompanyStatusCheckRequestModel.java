@@ -1,4 +1,4 @@
-package org.musketeers.dto.request;
+package org.musketeers.rabbitmq.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -9,12 +9,10 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Data
 @Builder
-public class DepartmentDto {
+public class CompanyStatusCheckRequestModel {
 
-    private String name;
+    private String companyId;
 
-    private String shifts;
-
-    private String breaks;
+    private Long currentTime;
 
 }

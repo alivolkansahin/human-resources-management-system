@@ -3,7 +3,7 @@ package org.musketeers.entity;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
 import org.musketeers.entity.enums.ActivationStatus;
-import org.musketeers.entity.enums.Gender;
+import org.musketeers.entity.enums.EGender;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
@@ -27,7 +27,7 @@ public class Supervisor extends BaseEntity {
 
     private String lastName;
 
-    private Gender gender;
+    private EGender EGender;
 
     private String identityNumber;
 
@@ -47,5 +47,15 @@ public class Supervisor extends BaseEntity {
 
     @Builder.Default
     private ActivationStatus activationStatus = ActivationStatus.PENDING;
+
+    private Boolean isCompanyFirstRegistration;
+
+    private String contractName;
+
+    private Integer contractDuration;
+
+    private Double contractCost;
+
+    private String contractCurrency;
 
 }

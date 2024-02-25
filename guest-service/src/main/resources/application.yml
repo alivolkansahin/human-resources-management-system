@@ -23,6 +23,7 @@ guest-service-config:
   rabbitmq:
     register-guest-queue: registerGuestQueue
     register-guest-activation-queue: registerGuestActivationQueue
+    expiration-timeout: 5000
 
 
 

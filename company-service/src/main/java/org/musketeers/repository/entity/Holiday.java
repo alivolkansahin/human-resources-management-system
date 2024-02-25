@@ -7,13 +7,15 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 
+import java.time.LocalDate;
+
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
 @SuperBuilder
 @Entity
 @Table(name = "tbl_holidays")
-public class Holiday{
+public class Holiday {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
@@ -25,6 +27,8 @@ public class Holiday{
 
     private String name;
 
-    private Integer duration;
+    private LocalDate startDate;
+
+    private LocalDate endDate;
 
 }

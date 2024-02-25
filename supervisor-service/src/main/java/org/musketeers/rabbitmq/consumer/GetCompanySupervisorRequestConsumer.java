@@ -1,8 +1,10 @@
 package org.musketeers.rabbitmq.consumer;
 
 import lombok.RequiredArgsConstructor;
+import org.musketeers.exception.SupervisorServiceException;
 import org.musketeers.rabbitmq.model.GetCompanySupervisorResponseModel;
 import org.musketeers.service.SupervisorService;
+import org.springframework.amqp.AmqpRejectAndDontRequeueException;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.stereotype.Service;
 
@@ -16,7 +18,11 @@ public class GetCompanySupervisorRequestConsumer {
 
     @RabbitListener(queues = "${supervisor-service-config.rabbitmq.get-company-supervisors-supervisor-queue}")
     public List<GetCompanySupervisorResponseModel> getCompanySupervisors(List<String> supervisorIds) {
-        return supervisorService.getSupervisorByIds(supervisorIds);
+        try {
+            return supervisorService.getSupervisorByIds(supervisorIds);
+        } catch (SupervisorServiceException ex) {
+            throw new AmqpRejectAndDontRequeueException(ex);
+        }
     }
 
 }

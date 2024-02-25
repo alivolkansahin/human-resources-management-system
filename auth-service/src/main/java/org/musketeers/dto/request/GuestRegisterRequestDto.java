@@ -5,7 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.musketeers.entity.enums.EGender;
+
 import java.time.LocalDate;
 
 @NoArgsConstructor

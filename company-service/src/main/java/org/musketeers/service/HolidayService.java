@@ -25,7 +25,8 @@ public class HolidayService {
         Holiday holiday = Holiday.builder()
                 .company(company)
                 .name(dto.getName())
-                .duration(dto.getDuration())
+                .startDate(dto.getStartDate())
+                .endDate(dto.getEndDate())
                 .build();
         holidayRepository.save(holiday);
         return true;

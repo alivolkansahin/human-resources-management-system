@@ -28,9 +28,9 @@ public class Department extends BaseEntity{
 
     private String name;
 
-    private String shifts;
+    private String shiftHour;
 
-    private String breaks;
+    private String breakHour;
 
     @OneToMany(mappedBy = "department", fetch = FetchType.EAGER)
     @Cascade(CascadeType.ALL)

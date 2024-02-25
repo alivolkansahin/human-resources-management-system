@@ -42,4 +42,14 @@ public class GetSupervisorResponseModel {
 
     private String activationStatus;
 
+    private Boolean isCompanyFirstRegistration;
+
+    private String contractName;
+
+    private Integer contractDuration;
+
+    private Double contractCost;
+
+    private String contractCurrency;
+
 }

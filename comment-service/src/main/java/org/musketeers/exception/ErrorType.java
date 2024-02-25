@@ -8,7 +8,8 @@ import org.springframework.http.HttpStatus;
 @AllArgsConstructor
 public enum ErrorType {
     COMMENT_NOT_FOUND(5001, "Comment not found with this id!", HttpStatus.NOT_FOUND),       // 404
-    INVALID_TOKEN(5004, "Invalid token!", HttpStatus.UNAUTHORIZED);                         // 401
+    INVALID_TOKEN(5004, "Invalid token!", HttpStatus.UNAUTHORIZED),
+    SERVICE_NOT_RESPONDING(5010, "Your request cannot be processed at the moment", HttpStatus.SERVICE_UNAVAILABLE);                      // 401
 
     private int code;
     private String message;

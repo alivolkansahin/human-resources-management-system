@@ -19,18 +19,7 @@ public class RegisterGuestConsumer {
 
     @RabbitListener(queues = "${guest-service-config.rabbitmq.register-guest-queue}")
     public void createGuestFromQueue(RegisterGuestModel model) {
-        Guest guest = Guest.builder()
-                .authId(model.getAuthid())
-                .name(model.getName())
-                .lastName(model.getSurName())
-                .gender(model.getGender().equalsIgnoreCase("MALE") ? Gender.MALE : Gender.FEMALE)
-                .identityNumber(model.getIdentityNumber())
-                .email(model.getEmail())
-                .image("asd")
-                .phone(Phone.builder().phoneType(PhoneType.PERSONAL).phoneNumber(model.getPhone()).build())
-                .dateOfBirth(model.getDateOfBirth())
-                .build();
-        guestService.save(guest);
+        guestService.createGuest(model);
     }
 
 }

@@ -2,6 +2,8 @@ package org.musketeers.rabbitmq.producer;
 
 
 import lombok.RequiredArgsConstructor;
+import org.musketeers.exception.ErrorType;
+import org.musketeers.exception.PersonnelServiceException;
 import org.musketeers.rabbitmq.model.CreatePersonnelAuthModel;
 import org.musketeers.rabbitmq.model.CreatePersonnelCompanyModel;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
@@ -23,8 +25,19 @@ public class CreatePersonnelProducer {
     @Value("${personnel-service-config.rabbitmq.create-personnel-company-binding-key}")
     private String companyBindingKey;
 
+    @Value("${personnel-service-config.rabbitmq.expiration-timeout}")
+    private String expirationTimeout;
+
     public String sendPersonnelInfoToAuth(CreatePersonnelAuthModel model){
-        return (String) rabbitTemplate.convertSendAndReceive(directExchange, authBindingKey, model);
+        Object response = rabbitTemplate.convertSendAndReceive(directExchange, authBindingKey, model, message -> {
+            message.getMessageProperties().setExpiration(expirationTimeout);
+            return message;
+        });
+        if(response != null) {
+            return (String) response;
+        } else {
+            throw new PersonnelServiceException(ErrorType.SERVICE_NOT_RESPONDING);
+        }
     }
 
     public void sendPersonnelInfoToCompany(CreatePersonnelCompanyModel model){

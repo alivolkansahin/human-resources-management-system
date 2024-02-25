@@ -8,6 +8,8 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 
+import java.time.LocalDate;
+
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
@@ -28,5 +30,7 @@ public class Expense extends BaseEntity{
     private String description;
 
     private Double amount;
+
+    private LocalDate expenseDate;
 
 }

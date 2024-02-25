@@ -15,7 +15,7 @@ import java.util.List;
 public class AddDepartmentRequestDto {
     private String companyId;
     private String name;
-    private String shifts;
-    private String breaks;
+    private String shiftHour;
+    private String breakHour;
     private List<Personnel> personnels;
 }

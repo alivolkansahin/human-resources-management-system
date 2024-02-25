@@ -21,7 +21,7 @@ public class SupervisorController {
 
     @GetMapping(GET_ALL)
     public ResponseEntity<List<Supervisor>> getAllSupervisors(){
-        return ResponseEntity.ok(supervisorService.getAllSupervisors());
+        return ResponseEntity.ok(supervisorService.findAll());
     }
 
     @GetMapping(GET + "/{id}")

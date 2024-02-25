@@ -5,7 +5,7 @@ import org.musketeers.dto.request.UpdatePersonnelRequestDto;
 import org.musketeers.dto.response.*;
 import org.musketeers.entity.Personnel;
 import org.musketeers.entity.Phone;
-import org.musketeers.entity.enums.Gender;
+import org.musketeers.entity.enums.EGender;
 import org.musketeers.entity.enums.PhoneType;
 import org.musketeers.exception.ErrorType;
 import org.musketeers.exception.PersonnelServiceException;
@@ -71,14 +71,15 @@ public class PersonnelService extends ServiceManager<Personnel, String> {
                 .companyLogo(model.getCompanyLogo())
                 .department(DepartmentResponseDto.builder()
                         .name(model.getDepartmentName())
-                        .shifts(model.getShifts())
-                        .breaks(model.getBreaks())
+                        .shiftHour(model.getShiftHour())
+                        .breakHour(model.getBreakHour())
                         .build())
                 .companyHolidays(model.getHolidays().stream()
                         .map(holidayString -> holidayString.split("\\*"))
                         .map(holidayStringArray -> HolidayResponseDto.builder()
                                 .name(holidayStringArray[0])
-                                .duration(Integer.valueOf(holidayStringArray[1]))
+                                .startTime(holidayStringArray[1])
+                                .endTime(holidayStringArray[2])
                                 .build())
                         .toList())
                 .hrInfos(model.getHrInfos().stream()
@@ -88,12 +89,14 @@ public class PersonnelService extends ServiceManager<Personnel, String> {
                                 .lastName(hrInfoStringArray[1])
                                 .email(hrInfoStringArray[2])
                                 .phone(hrInfoStringArray[3])
+                                .image(hrInfoStringArray[4])
                                 .build())
                         .toList())
                 .dateOfBirth(personnel.getDateOfBirth())
                 .dateOfEmployment(personnel.getDateOfEmployment())
                 .salary(personnel.getSalary())
                 .dayOff(personnel.getDayOff())
+                .advanceQuota(personnel.getAdvanceQuota())
                 .build();
     }
 
@@ -130,18 +133,22 @@ public class PersonnelService extends ServiceManager<Personnel, String> {
                 .authId(authId)
                 .name(dto.getName())
                 .lastName(dto.getLastName())
-                .gender(dto.getGender().equalsIgnoreCase("male") ? Gender.MALE : Gender.FEMALE)
+                .EGender(EGender.valueOf(dto.getGender()))
                 .identityNumber(dto.getIdentityNumber())
                 .email(dto.getEmail())
                 .image(dto.getImage())
                 .addresses(Arrays.asList(dto.getAddress()))
-                .phones(Arrays.asList(Phone.builder().phoneType(PhoneType.PERSONAL).phoneNumber(dto.getPhone()).build()))
+                .phones(Arrays.asList(Phone.builder()
+                        .phoneType(PhoneType.PERSONAL)
+                        .phoneNumber(dto.getPhone())
+                        .build()))
                 .companyId(dto.getCompanyId())
                 .departmentId(dto.getDepartmentId())
                 .position(dto.getPosition())
                 .dateOfEmployment(dto.getDateOfEmployment())
                 .dateOfBirth(dto.getDateOfBirth())
                 .salary(dto.getSalary())
+                .advanceQuota(dto.getSalary())
                 .build();
     }
 
@@ -176,7 +183,7 @@ public class PersonnelService extends ServiceManager<Personnel, String> {
             personnelModelList.add(GetPersonnelDetailsByCommentResponseModel.builder()
                     .name(personnel.getName())
                     .lastName(personnel.getLastName())
-                    .gender(personnel.getGender().toString())
+                    .gender(personnel.getEGender().toString())
                     .image(personnel.getImage())
                     .dateOfEmployment(personnel.getDateOfEmployment())
                     .build());
@@ -185,21 +192,24 @@ public class PersonnelService extends ServiceManager<Personnel, String> {
     }
 
     public void createPersonnelFromSupervisor(CreatePersonnelFromSupervisorModel model) {
-        Personnel personnel = convertModelToPersonnel(model);
+        Personnel personnel = convertSupervisorModelToPersonnel(model);
         save(personnel);
     }
 
-    private Personnel convertModelToPersonnel(CreatePersonnelFromSupervisorModel model) {
+    private Personnel convertSupervisorModelToPersonnel(CreatePersonnelFromSupervisorModel model) {
         return Personnel.builder()
                 .authId(model.getAuthId())
                 .name(model.getName())
                 .lastName(model.getLastName())
-                .gender(model.getGender().equalsIgnoreCase("male") ? Gender.MALE : Gender.FEMALE)
+                .EGender(EGender.valueOf(model.getGender()))
                 .identityNumber(model.getIdentityNumber())
                 .email(model.getEmail())
                 .image(model.getImage())
                 .addresses(Arrays.asList(model.getAddress()))
-                .phones(Arrays.asList(Phone.builder().phoneType(PhoneType.PERSONAL).phoneNumber(model.getPhone()).build()))
+                .phones(Arrays.asList(Phone.builder()
+                        .phoneType(PhoneType.PERSONAL)
+                        .phoneNumber(model.getPhone())
+                        .build()))
                 .companyId(model.getCompanyId())
                 .dateOfBirth(model.getDateOfBirth())
                 .build();
@@ -213,13 +223,10 @@ public class PersonnelService extends ServiceManager<Personnel, String> {
                 .phone(dto.getPhones().get(0))
                 .email(dto.getEmail())
                 .build();
-        System.out.println("BURAYA GELDİ 1111");
-        updatePersonnelRequestProducer.updateAuthService(requestModelForAuth).orElseThrow(()-> new PersonnelServiceException(ErrorType.EMAIL_ALREADY_EXISTS));
-        System.out.println("BURAYA GELDİ 2222");
+        // BURAYA BAKILACAK...
+        if(!updatePersonnelRequestProducer.updateAuthService(requestModelForAuth)) return false;
         preparePersonnelForUpdate(personnel, dto);
-        System.out.println("BURAYA GELDİ 3333");
         update(personnel);
-        System.out.println("BURAYA GELDİ 4444");
         if(authIdAndRole.get(1).equalsIgnoreCase("SUPERVISOR")) sendUpdateRequestToSupervisorService(authIdAndRole.get(0), personnel);
         return true;
     }
@@ -241,12 +248,22 @@ public class PersonnelService extends ServiceManager<Personnel, String> {
         personnel.setName(dto.getName());
         personnel.setLastName(dto.getLastName());
         personnel.setEmail(dto.getEmail());
-        Phone personalPhone = Phone.builder().phoneType(PhoneType.PERSONAL).phoneNumber(dto.getPhones().get(0)).build();
+        List<Phone> personnelPhones = new ArrayList<>();
+        personnelPhones.add(Phone.builder()
+                .phoneType(PhoneType.PERSONAL)
+                .phoneNumber(dto.getPhones().get(0))
+                .build());
         if(dto.getPhones().size() > 1) {
-            Phone workPhone = Phone.builder().phoneType(PhoneType.WORK).phoneNumber(dto.getPhones().get(1)).build();
-            personnel.setPhones(List.of(personalPhone, workPhone));
-        } else {
-            personnel.setPhones(List.of(personalPhone));
+            personnelPhones.add(Phone.builder()
+                    .phoneType(PhoneType.WORK)
+                    .phoneNumber(dto.getPhones().get(1))
+                    .build());
         }
+        personnel.setPhones(personnelPhones);
+    }
+
+    public String getCompanyIdFromAuthId(String authId) {
+        Personnel personnel = personnelRepository.findOptionalByAuthId(authId).orElseThrow(() -> new PersonnelServiceException(ErrorType.PERSONNEL_NOT_FOUND));
+        return personnel.getCompanyId();
     }
 }

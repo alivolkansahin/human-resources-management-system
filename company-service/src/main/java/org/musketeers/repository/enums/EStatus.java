@@ -1,5 +1,7 @@
 package org.musketeers.repository.enums;
 
 public enum EStatus {
-    PENDING,ACTIVE
+    PENDING,
+    ACTIVE,
+    PASSIVE;
 }

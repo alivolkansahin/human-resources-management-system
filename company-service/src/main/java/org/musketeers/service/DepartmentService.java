@@ -3,6 +3,7 @@ package org.musketeers.service;
 import org.musketeers.dto.request.AddDepartmentRequestDto;
 import org.musketeers.exception.CompanyServiceException;
 import org.musketeers.exception.ErrorType;
+import org.musketeers.rabbitmq.model.CreatePersonnelCompanyModel;
 import org.musketeers.repository.DepartmentRepository;
 import org.musketeers.repository.entity.Company;
 import org.musketeers.repository.entity.Department;
@@ -29,16 +30,18 @@ public class DepartmentService extends ServiceManager<Department, String> {
         Department department = Department.builder()
                 .company(company)
                 .name(dto.getName())
-                .shifts(dto.getShifts())
-                .breaks(dto.getBreaks())
+                .shiftHour(dto.getShiftHour())
+                .breakHour(dto.getBreakHour())
                 .personnel(dto.getPersonnels())
                 .build();
         save(department);
         return true;
     }
 
-//    public Department findByPersonnelId(String personnelId) {
-//        return departmentRepository.findDepartmentByPersonnelId(personnelId).orElseThrow(() -> new CompanyServiceException(ErrorType.COMPANY_NOT_FOUND)); // department not found...
-//    }
+    public void addPersonnelToDepartment(CreatePersonnelCompanyModel model) {
+        Department department = findById(model.getDepartmentId()).orElseThrow(() -> new CompanyServiceException(ErrorType.COMPANY_NOT_FOUND));// DEPARTMENT NOT FOUND olabilir.
+        department.getPersonnel().add(Personnel.builder().department(department).personnelId(model.getPersonnelId()).build());
+        update(department);
+    }
 
 }

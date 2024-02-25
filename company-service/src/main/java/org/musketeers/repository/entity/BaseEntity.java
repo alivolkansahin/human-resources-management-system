@@ -16,9 +16,9 @@ import java.time.LocalDateTime;
 @SuperBuilder
 public class BaseEntity {
 
-    private LocalDateTime createdAt;
+    private Long createdAt;
 
-    private LocalDateTime updatedAt;
+    private Long updatedAt;
 
     @Builder.Default
     private Boolean status = true;

@@ -20,15 +20,6 @@ public class SupervisorRegistrationDecisionConsumer {
     }
     @RabbitListener(queues = "${rabbitmq.registration-decision-auth-queue}")
     public void handleAdminDecisionForSupervisorRegistration(SupervisorRegistrationDecisionModel model) {
-        Optional<Auth> auth = authService.findById(model.getSupervisorAuthId());
-        if (auth.isEmpty()) {
-            throw new AuthServiceException(ErrorType.NOT_FOUND);
-        }
-        if (auth.get().getStatus().equals(EStatus.ACTIVE)) return;
-        if (model.getDecision()){
-            authService.activateSupervisor(auth.get());
-        }else{
-            authService.delete(auth.get());
-        }
+        authService.handleAdminDecisionForSupervisorRegistration(model);
     }
-    }
+}

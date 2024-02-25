@@ -13,8 +13,8 @@ public class DepartmentResponseDto {
 
     private String name;
 
-    private String shifts;
+    private String shiftHour;
 
-    private String breaks;
+    private String breakHour;
 
 }

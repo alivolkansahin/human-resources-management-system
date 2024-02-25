@@ -1,7 +1,9 @@
 package org.musketeers.rabbitmq.consumer;
 
+import org.musketeers.exception.AuthServiceException;
 import org.musketeers.rabbitmq.model.CreatePersonnelAuthModel;
 import org.musketeers.service.AuthService;
+import org.springframework.amqp.AmqpRejectAndDontRequeueException;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.stereotype.Service;
 
@@ -14,6 +16,10 @@ public class CreatePersonnelConsumer {
     }
     @RabbitListener(queues = "${rabbitmq.create-personnel-auth-queue}")
     public String registerPersonnel(CreatePersonnelAuthModel model) {
-       return authService.registerPersonnel(model);
+        try {
+            return authService.registerPersonnel(model);
+        } catch (AuthServiceException ex){
+            throw new AmqpRejectAndDontRequeueException(ex);
+        }
     }
 }

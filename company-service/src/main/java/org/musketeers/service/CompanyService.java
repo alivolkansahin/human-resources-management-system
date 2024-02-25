@@ -6,14 +6,15 @@ import org.musketeers.dto.response.GetCompanySummaryInfoResponseDto;
 import org.musketeers.exception.CompanyServiceException;
 import org.musketeers.exception.ErrorType;
 import org.musketeers.mapper.ICompanyMapper;
-import org.musketeers.rabbitmq.model.GetCompanyDetailsByCommentResponseModel;
-import org.musketeers.rabbitmq.model.GetCompanyDetailsByPersonnelResponseModel;
-import org.musketeers.rabbitmq.model.GetCompanySupervisorResponseModel;
+import org.musketeers.rabbitmq.model.*;
 import org.musketeers.rabbitmq.producer.GetCompanyIdFromSupervisorProducer;
 import org.musketeers.rabbitmq.producer.GetCompanySupervisorRequestProducer;
 import org.musketeers.repository.CompanyRepository;
 import org.musketeers.repository.entity.*;
+import org.musketeers.repository.enums.ECurrency;
+import org.musketeers.repository.enums.EGender;
 import org.musketeers.repository.enums.EStatus;
+import org.musketeers.repository.enums.ETurkishHoliday;
 import org.musketeers.utility.JwtTokenManager;
 import org.musketeers.utility.ServiceManager;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,11 +22,11 @@ import org.springframework.context.annotation.Lazy;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Service;
 
+import java.time.Instant;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
+import java.time.ZoneId;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -77,11 +78,25 @@ public class CompanyService extends ServiceManager<Company, String> {
         Company company = findByCompanyId(dto.getToken());
         if(company.getCompanyStatus().equals(EStatus.ACTIVE)) return false;
         Company updatedCompany = getUpdatedCompany(dto,company);
+        addTurkishHolidaysToCompany(updatedCompany);
         update(updatedCompany);
         return true;
     }
 
+    private void addTurkishHolidaysToCompany(Company company) {
+        List<Holiday> companyHolidays = company.getHolidays();
+        for (ETurkishHoliday turkishHoliday : ETurkishHoliday.values()) {
+            companyHolidays.add(Holiday.builder()
+                    .company(company)
+                    .name(turkishHoliday.getName())
+                    .startDate(turkishHoliday.getStartDate())
+                    .endDate(turkishHoliday.getEndDate())
+                    .build());
+        }
+    }
+
     private Company getUpdatedCompany(CompanyUpdateRequestDTO dto,Company company) {
+        Long time = System.currentTimeMillis();
         company.setEstablishmentDate(dto.getEstablishmentDate());
         company.setCompanyLogo(dto.getCompanyLogo());
         company.setCompanyStatus(EStatus.ACTIVE);
@@ -93,25 +108,28 @@ public class CompanyService extends ServiceManager<Company, String> {
                         .lastName(hrInfoDto.getLastName())
                         .email(hrInfoDto.getEmail())
                         .phone(hrInfoDto.getPhone())
-                        .createdAt(LocalDateTime.now())
-                        .updatedAt(LocalDateTime.now())
+                        .gender(EGender.valueOf(hrInfoDto.getGender()))
+                        .image(hrInfoDto.getGender().equals("MALE") ? "https://i.imgur.com/ltRBj9D.png" : "https://i.imgur.com/BNXkMgI.png")
+                        .createdAt(time)
+                        .updatedAt(time)
                         .build())
                 .collect(Collectors.toList()));
         company.setDepartments(dto.getDepartments().stream()
                 .map(departmentDto -> Department.builder()
                         .company(company)
                         .name(departmentDto.getName())
-                        .shifts(departmentDto.getShifts())
-                        .breaks(departmentDto.getBreaks())
-                        .createdAt(LocalDateTime.now())
-                        .updatedAt(LocalDateTime.now())
+                        .shiftHour(departmentDto.getShiftHour())
+                        .breakHour(departmentDto.getBreakHour())
+                        .createdAt(time)
+                        .updatedAt(time)
                         .build())
                 .collect(Collectors.toList()));
         company.setHolidays(dto.getHolidays().stream()
                 .map(holidayDto -> Holiday.builder()
                         .company(company)
                         .name(holidayDto.getName())
-                        .duration(holidayDto.getDuration())
+                        .startDate(holidayDto.getStartDate())
+                        .endDate(holidayDto.getEndDate())
                         .build())
                 .collect(Collectors.toList()));
         company.setIncomes(dto.getIncomes().stream()
@@ -119,8 +137,9 @@ public class CompanyService extends ServiceManager<Company, String> {
                         .company(company)
                         .description(incomeDto.getDescription())
                         .amount(incomeDto.getAmount())
-                        .createdAt(LocalDateTime.now())
-                        .updatedAt(LocalDateTime.now())
+                        .incomeDate(incomeDto.getIncomeDate())
+                        .createdAt(time)
+                        .updatedAt(time)
                         .build())
                 .collect(Collectors.toList()));
         company.setExpenses(dto.getExpenses().stream()
@@ -128,8 +147,9 @@ public class CompanyService extends ServiceManager<Company, String> {
                         .company(company)
                         .description(expenseDto.getDescription())
                         .amount(expenseDto.getAmount())
-                        .createdAt(LocalDateTime.now())
-                        .updatedAt(LocalDateTime.now())
+                        .expenseDate(expenseDto.getExpenseDate())
+                        .createdAt(time)
+                        .updatedAt(time)
                         .build())
                 .collect(Collectors.toList()));
         return company;
@@ -158,12 +178,7 @@ public class CompanyService extends ServiceManager<Company, String> {
     public Company findByCompanyId(String supervisorToken) {
         List<String> claimsFromToken = jwtTokenManager.getClaimsFromToken(supervisorToken);
         String companyIdFromSupervisor = getCompanyIdFromSupervisorProducer.getCompanyIdFromSupervisor(claimsFromToken.get(0));
-        Optional<Company> optionalCompanyById = companyRepository.findOptionalById(companyIdFromSupervisor);
-        if (optionalCompanyById.isPresent()){
-            return optionalCompanyById.get();
-        } else {
-            throw new CompanyServiceException(ErrorType.COMPANY_NOT_FOUND);
-        }
+        return companyRepository.findOptionalById(companyIdFromSupervisor).orElseThrow(() -> new CompanyServiceException(ErrorType.COMPANY_NOT_FOUND));
     }
 
     public List<GetCompanyDetailsByCommentResponseModel> getCompanyInfoByCompanyIds(List<String> companyIds) {
@@ -246,13 +261,13 @@ public class CompanyService extends ServiceManager<Company, String> {
                 .companyName(company.getCompanyName())
                 .companyLogo(company.getCompanyLogo())
                 .departmentName(department.getName())
-                .shifts(department.getShifts())
-                .breaks(department.getBreaks())
+                .shiftHour(department.getShiftHour())
+                .breakHour(department.getBreakHour())
                 .holidays(company.getHolidays().stream()
-                        .map(holiday -> holiday.getName() + "*" + holiday.getDuration())
+                        .map(holiday -> holiday.getName() + "*" + holiday.getStartDate() + "*" + holiday.getEndDate())
                         .toList())
                 .hrInfos(company.getHrInfos().stream()
-                        .map(hrInfo -> hrInfo.getFirstName()+"*"+hrInfo.getLastName()+"*"+hrInfo.getEmail()+"*"+hrInfo.getPhone())
+                        .map(hrInfo -> hrInfo.getFirstName() + "*" + hrInfo.getLastName() + "*" + hrInfo.getEmail() + "*" +hrInfo.getPhone() + "*" + hrInfo.getImage())
                         .toList())
                 .build();
     }
@@ -262,14 +277,72 @@ public class CompanyService extends ServiceManager<Company, String> {
                 .companyName(company.getCompanyName())
                 .companyLogo(company.getCompanyLogo())
                 .departmentName("")
-                .shifts("")
-                .breaks("")
+                .shiftHour("")
+                .breakHour("")
                 .holidays(company.getHolidays().stream()
-                        .map(holiday -> holiday.getName() + "*" + holiday.getDuration().toString())
+                        .map(holiday -> holiday.getName() + "*" + holiday.getStartDate() + "*" + holiday.getEndDate())
                         .toList())
                 .hrInfos(company.getHrInfos().stream()
-                        .map(hrInfo -> hrInfo.getFirstName()+"*"+hrInfo.getLastName()+"*"+hrInfo.getEmail()+"*"+hrInfo.getPhone())
+                        .map(hrInfo -> hrInfo.getFirstName() + "*" + hrInfo.getLastName() + "*" + hrInfo.getEmail() + "*" +hrInfo.getPhone() + "*" + hrInfo.getImage())
                         .toList())
                 .build();
     }
+
+    public CreateCompanyResponseModel createCompanyWithApprovedSupervisor(CreateCompanyRequestModel model) {
+        Optional<Company> optionalCompany = findByCompanyName(model.getCompanyName());
+        Company company = null;
+        if(optionalCompany.isEmpty()) {
+            company = createCompanyWithFirstSupervisor(model);
+        } else {
+            company = optionalCompany.get();
+            company.getSupervisors().add(Supervisor.builder()
+                    .company(company)
+                    .supervisorId(model.getSupervisorId())
+                    .build());
+        }
+        update(company);
+        return CreateCompanyResponseModel.builder().companyId(company.getId()).build();
+    }
+
+    private Company createCompanyWithFirstSupervisor(CreateCompanyRequestModel model) {
+        Company company = Company.builder()
+                .companyName(model.getCompanyName())
+                .build();
+        save(company);
+        company.setSupervisors(Arrays.asList(Supervisor.builder()
+                .company(company)
+                .supervisorId(model.getSupervisorId())
+                .build()));
+        company.setContract(Contract.builder()
+                .name(model.getCompanyName())
+                .startDate(Instant.ofEpochMilli(company.getCreatedAt())
+                        .atZone(ZoneId.systemDefault())
+                        .toLocalDate())
+                .endDate(Instant.ofEpochMilli(company.getCreatedAt())
+                        .atZone(ZoneId.systemDefault())
+                        .toLocalDate()
+                        .plusDays(model.getContractDuration()))
+                .cost(model.getContractCost())
+                .currency(ECurrency.valueOf(model.getContractCurrency()))
+                .build());
+        return company;
+    }
+
+    public Boolean checkCompanyStatus(CompanyStatusCheckRequestModel model) {
+        Company company = findById(model.getCompanyId()).orElseThrow(() -> new CompanyServiceException(ErrorType.COMPANY_NOT_FOUND));
+        if(!company.getCompanyStatus().equals(EStatus.ACTIVE)) return false;
+        LocalDate contractEndDate = company.getContract().getEndDate();
+        LocalDate checkDate = Instant.ofEpochMilli(model.getCurrentTime()).atZone(ZoneId.systemDefault()).toLocalDate();
+        if(checkDate.isAfter(contractEndDate)) {
+            company.setCompanyStatus(EStatus.PASSIVE);
+            update(company);
+            return false;
+        }
+        return true;
+    }
+
+    public Boolean searchCompanyName(String companyName) {
+        return findByCompanyName(companyName).isPresent();
+    }
 }
+

@@ -1,6 +1,8 @@
 package org.musketeers.rabbitmq.producer;
 
 import lombok.RequiredArgsConstructor;
+import org.musketeers.exception.ErrorType;
+import org.musketeers.exception.SupervisorServiceException;
 import org.musketeers.rabbitmq.model.CreateCompanyRequestModel;
 import org.musketeers.rabbitmq.model.CreateCompanyResponseModel;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
@@ -19,8 +21,19 @@ public class CreateCompanyProducer {
     @Value("${supervisor-service-config.rabbitmq.supervisor-activation-company-binding-key}")
     private String bindingKey;
 
+    @Value("${supervisor-service-config.rabbitmq.expiration-timeout}")
+    private String expirationTimeout;
+
     public CreateCompanyResponseModel createCompanyAndReturn(CreateCompanyRequestModel model){
-        return (CreateCompanyResponseModel) rabbitTemplate.convertSendAndReceive(directExchange,bindingKey,model);
+        Object response = rabbitTemplate.convertSendAndReceive(directExchange,bindingKey,model, message -> {
+            message.getMessageProperties().setExpiration(expirationTimeout);
+            return message;
+        });
+        if(response != null) {
+            return (CreateCompanyResponseModel) response;
+        } else {
+            throw new SupervisorServiceException(ErrorType.SERVICE_NOT_RESPONDING);
+        }
     }
 
 }

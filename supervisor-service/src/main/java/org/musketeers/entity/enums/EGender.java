@@ -1,6 +1,6 @@
 package org.musketeers.entity.enums;
 
-public enum Gender {
+public enum EGender {
 
     MALE,
 

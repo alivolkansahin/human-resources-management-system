@@ -18,7 +18,7 @@ public class UpdatePersonnelRequestConsumer {
     public Boolean updatePersonnelInAuthService(UpdatePersonnelRequestModel model) {
         try {
             return authService.updatePersonnel(model);
-        } catch (Exception ex){
+        } catch (AuthServiceException ex){
             throw new AmqpRejectAndDontRequeueException(ex);
         }
     }

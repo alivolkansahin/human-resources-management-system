@@ -5,7 +5,6 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.musketeers.entity.enums.EGender;
 
 import java.time.LocalDate;
 
@@ -40,4 +39,10 @@ public class SupervisorRegisterRequestDto {
     private String phone;
     @NotBlank(message = "CompanyName cannot be left blank !")
     private String companyName;
+
+    private Boolean isCompanyFirstRegistration;
+    private String contractName;
+    private Integer contractDuration;
+    private Double contractCost;
+    private String contractCurrency;
 }

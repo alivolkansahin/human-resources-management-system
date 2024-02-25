@@ -22,13 +22,13 @@ public class RabbitConfig {
     */
 
     @Value("${admin-service-config.rabbitmq.admin-exchange}")
-    String exchangeName;
+    private String exchangeName;
 
     @Value("${admin-service-config.rabbitmq.get-supervisor-queue}")
-    String queueName;
+    private String queueName;
 
     @Value("${admin-service-config.rabbitmq.get-supervisor-binding-key}")
-    String bindingKey;
+    private String bindingKey;
 
     @Value("${admin-service-config.rabbitmq.admin-supervisor-registration-decision-exchange}")
     private String supervisorDecisionExchange;

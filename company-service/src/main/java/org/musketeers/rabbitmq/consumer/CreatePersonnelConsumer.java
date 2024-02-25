@@ -19,8 +19,6 @@ public class CreatePersonnelConsumer {
 
     @RabbitListener(queues = "${rabbitmq.create-personnel-company-queue}")
     public void addPersonnelToDepartment(CreatePersonnelCompanyModel model) {
-        Department department = departmentService.findById(model.getDepartmentId()).orElseThrow(() -> new CompanyServiceException(ErrorType.COMPANY_NOT_FOUND));// DEPARTMENT NOT FOUND olabilir.
-        department.getPersonnel().add(Personnel.builder().department(department).personnelId(model.getPersonnelId()).build());
-        departmentService.update(department);
+        departmentService.addPersonnelToDepartment(model);
     }
 }

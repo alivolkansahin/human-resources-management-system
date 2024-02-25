@@ -9,14 +9,12 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Data
 @Builder
-public class HRInfoDto {
+public class DepartmentRequestDto {
 
-    private String firstName;
+    private String name;
 
-    private String lastName;
+    private String shiftHour;
 
-    private String email;
-
-    private String phone;
+    private String breakHour;
 
 }

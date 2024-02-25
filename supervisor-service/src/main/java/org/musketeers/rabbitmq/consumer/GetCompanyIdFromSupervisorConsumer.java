@@ -2,7 +2,9 @@ package org.musketeers.rabbitmq.consumer;
 
 import lombok.RequiredArgsConstructor;
 import org.musketeers.entity.Supervisor;
+import org.musketeers.exception.SupervisorServiceException;
 import org.musketeers.service.SupervisorService;
+import org.springframework.amqp.AmqpRejectAndDontRequeueException;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.stereotype.Service;
 
@@ -14,8 +16,11 @@ public class GetCompanyIdFromSupervisorConsumer {
 
     @RabbitListener(queues = "${supervisor-service-config.rabbitmq.get-company-id-from-supervisor-queue}")
     public String sendSupervisorsCompanyId(String authId){
-        Supervisor supervisor = supervisorService.getSupervisorByAuthId(authId);
-        return supervisor.getCompanyId();
+        try {
+            return supervisorService.sendSupervisorsCompanyId(authId);
+        } catch (SupervisorServiceException ex) {
+            throw new AmqpRejectAndDontRequeueException(ex);
+        }
     }
 
 

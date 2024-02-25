@@ -44,4 +44,6 @@ public class GetPersonnelDetailsResponseDto {
 
     private Double dayOff;
 
+    private Double advanceQuota;
+
 }

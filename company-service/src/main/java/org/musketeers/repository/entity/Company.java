@@ -22,6 +22,7 @@ public class Company extends BaseEntity{
     @GeneratedValue(strategy = GenerationType.UUID)
     private String id;
 
+    @Column(unique = true)
     private String companyName;
 
     private String establishmentDate;
@@ -57,5 +58,9 @@ public class Company extends BaseEntity{
     @OneToMany(mappedBy = "company",fetch = FetchType.EAGER)
     @Cascade(CascadeType.ALL)
     private List<Supervisor> supervisors;
+
+    @OneToOne
+    @Cascade(CascadeType.ALL)
+    private Contract contract;
 
 }

@@ -51,10 +51,9 @@ public class AdminController {
 
 //    @PutMapping(UPDATE + "/{id}")
 
-    @GetMapping(GET_ALL_REGISTERED_SUPERVISORS)
-    public ResponseEntity<List<RegisteredSupervisorsResponseDTO>> getAllRegisteredSupervisors(){
-        String adminId = "5";
-        return adminService.getAllRegisteredSupervisors(adminId);
+    @GetMapping(GET_ALL_PENDING_SUPERVISORS)
+    public ResponseEntity<List<RegisteredSupervisorsResponseDTO>> getAllPendingSupervisors(){
+        return adminService.getAllPendingSupervisors();
     }
 
     @PostMapping(HANDLE_SUPERVISOR_REGISTRATION)

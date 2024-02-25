@@ -1,6 +1,8 @@
 package org.musketeers.rabbitmq.producer;
 
 import lombok.RequiredArgsConstructor;
+import org.musketeers.exception.CompanyServiceException;
+import org.musketeers.exception.ErrorType;
 import org.musketeers.rabbitmq.model.GetCompanySupervisorResponseModel;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Value;
@@ -20,8 +22,19 @@ public class GetCompanySupervisorRequestProducer {
     @Value("${rabbitmq.get-company-supervisors-supervisor-binding-key}")
     private String bindingKey;
 
+    @Value("${rabbitmq.expiration-timeout}")
+    private String expirationTimeout;
+
     public List<GetCompanySupervisorResponseModel> getCompanySupervisorInfo(List<String> supervisorIds) {
-        return (List<GetCompanySupervisorResponseModel>) rabbitTemplate.convertSendAndReceive(exchangeName, bindingKey, supervisorIds);
+        Object response = rabbitTemplate.convertSendAndReceive(exchangeName, bindingKey, supervisorIds, message -> {
+            message.getMessageProperties().setExpiration(expirationTimeout);
+            return message;
+        });
+        if(response != null) {
+            return (List<GetCompanySupervisorResponseModel>) response;
+        } else {
+            throw new CompanyServiceException(ErrorType.SERVICE_NOT_RESPONDING);
+        }
     }
 
 }

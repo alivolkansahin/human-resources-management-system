@@ -18,7 +18,7 @@ public class ServiceManager<T extends BaseEntity,ID> implements IService<T,ID> {
 
     @Override
     public T save(T t) {
-        LocalDateTime time = LocalDateTime.now();
+        Long time = System.currentTimeMillis();
         t.setCreatedAt(time);
         t.setUpdatedAt(time);
         t.setStatus(true);
@@ -28,7 +28,7 @@ public class ServiceManager<T extends BaseEntity,ID> implements IService<T,ID> {
     @Override
     public Iterable<T> saveAll(Iterable<T> t) {
         t.forEach(x-> {
-            LocalDateTime time = LocalDateTime.now();
+            Long time = System.currentTimeMillis();
             x.setStatus(true);
             x.setCreatedAt(time);
             x.setUpdatedAt(time);
@@ -38,7 +38,7 @@ public class ServiceManager<T extends BaseEntity,ID> implements IService<T,ID> {
 
     @Override
     public T update(T t) {
-        t.setUpdatedAt(LocalDateTime.now());
+        t.setUpdatedAt(System.currentTimeMillis());
         return jpaRepository.save(t);
     }
 

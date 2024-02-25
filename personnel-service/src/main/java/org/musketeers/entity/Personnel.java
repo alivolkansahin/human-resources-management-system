@@ -2,7 +2,7 @@ package org.musketeers.entity;
 
 import lombok.*;
 import lombok.experimental.SuperBuilder;
-import org.musketeers.entity.enums.Gender;
+import org.musketeers.entity.enums.EGender;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
@@ -26,7 +26,7 @@ public class Personnel extends BaseEntity {
 
     private String lastName;
 
-    private Gender gender;
+    private EGender EGender;
 
     private String identityNumber;
 
@@ -52,5 +52,7 @@ public class Personnel extends BaseEntity {
 
     @Builder.Default
     private Double dayOff = 14d;
+
+    private Double advanceQuota;
 
 }

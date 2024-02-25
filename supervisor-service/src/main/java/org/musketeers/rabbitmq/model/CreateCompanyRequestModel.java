@@ -15,4 +15,12 @@ public class CreateCompanyRequestModel {
 
     private String companyName;
 
+    private String contractName;
+
+    private Integer contractDuration;
+
+    private Double contractCost;
+
+    private String contractCurrency;
+
 }

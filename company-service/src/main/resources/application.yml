@@ -33,4 +33,7 @@ rabbitmq:
   get-company-supervisors-supervisor-queue: getCompanySupervisorsSupervisorQueue
   get-company-supervisors-supervisor-binding-key: getCompanySupervisorsSupervisorBindingKey
   get-company-details-by-personnel-queue: getCompanyDetailsByPersonnelQueue
+  company-status-check-queue: companyStatusCheckQueue
+  search-for-company-name-queue: searchForCompanyNameQueue
+  expiration-timeout: 5000
 

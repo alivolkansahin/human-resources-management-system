@@ -22,4 +22,9 @@ public class RegisterSupervisorModel {
     private String gender;
     private String phone;
     private String companyName;
+    private Boolean isCompanyFirstRegistration;
+    private String contractName;
+    private Integer contractDuration;
+    private Double contractCost;
+    private String contractCurrency;
 }

@@ -19,4 +19,6 @@ public class HRInfoResponseDto {
 
     private String phone;
 
+    private String image;
+
 }

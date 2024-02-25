@@ -18,12 +18,12 @@ import org.musketeers.repository.IAuthRepository;
 import org.musketeers.utility.CodeGenerator;
 import org.musketeers.utility.JwtTokenManager;
 import org.musketeers.utility.ServiceManager;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Service;
+import org.springframework.util.FileCopyUtils;
 
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
+import java.io.InputStream;
 import java.util.List;
 import java.util.Optional;
 
@@ -35,10 +35,12 @@ public class AuthService extends ServiceManager<Auth, String> {
     private final RegisterGuestProducer registerGuestProducer;
     private final RegisterSupervisorProducer registerSupervisorProducer;
     private final RegisterGuestActivationProducer registerGuestActivationProducer;
-
     private final PersonnelMailSendProducer personnelMailSendProducer;
+    private final GetCompanyIdForLoginRequestProducer getCompanyIdForLoginRequestProducer;
+    private final CompanyStatusCheckRequestProducer companyStatusCheckRequestProducer;
+    private final SearchForCompanyNameRequestProducer searchForCompanyNameRequestProducer;
 
-    public AuthService(IAuthRepository repository, JwtTokenManager tokenManager, MailSenderForGuestProducer mailSenderProducerForGuest, RegisterGuestProducer registerGuestProducer, RegisterSupervisorProducer registerSupervisorProducer, RegisterGuestActivationProducer registerGuestActivationProducer, PersonnelMailSendProducer personnelMailSendProducer) {
+    public AuthService(IAuthRepository repository, JwtTokenManager tokenManager, MailSenderForGuestProducer mailSenderProducerForGuest, RegisterGuestProducer registerGuestProducer, RegisterSupervisorProducer registerSupervisorProducer, RegisterGuestActivationProducer registerGuestActivationProducer, PersonnelMailSendProducer personnelMailSendProducer, GetCompanyIdForLoginRequestProducer getCompanyIdForLoginRequestProducer, CompanyStatusCheckRequestProducer companyStatusCheckRequestProducer, SearchForCompanyNameRequestProducer searchForCompanyNameRequestProducer) {
         super(repository);
         this.repository = repository;
         this.tokenManager = tokenManager;
@@ -47,6 +49,9 @@ public class AuthService extends ServiceManager<Auth, String> {
         this.registerSupervisorProducer = registerSupervisorProducer;
         this.registerGuestActivationProducer = registerGuestActivationProducer;
         this.personnelMailSendProducer = personnelMailSendProducer;
+        this.getCompanyIdForLoginRequestProducer = getCompanyIdForLoginRequestProducer;
+        this.companyStatusCheckRequestProducer = companyStatusCheckRequestProducer;
+        this.searchForCompanyNameRequestProducer = searchForCompanyNameRequestProducer;
     }
 
     @Transactional
@@ -97,7 +102,20 @@ public class AuthService extends ServiceManager<Auth, String> {
                 .build();
         save(auth);
 
-        RegisterSupervisorModel registerSupervisorModel = RegisterSupervisorModel.builder()
+        RegisterSupervisorModel registerSupervisorModel = null;
+        if(dto.getIsCompanyFirstRegistration()) {
+            registerSupervisorModel = prepareSupervisorModelIfFirstRegistrationTrue(auth, dto);
+        } else {
+            Boolean isCompanyFound = searchForCompanyNameRequestProducer.searchForCompanyName(dto.getCompanyName());
+            if(!isCompanyFound) throw new AuthServiceException(ErrorType.COMPANY_NOT_FOUND);
+            registerSupervisorModel = prepareSupervisorModelIfFirstRegistrationFalse(auth, dto);
+        }
+        registerSupervisorProducer.sendNewSupervisor(registerSupervisorModel);
+        return "Successfully registered";
+    }
+
+    private RegisterSupervisorModel prepareSupervisorModelIfFirstRegistrationTrue(Auth auth, SupervisorRegisterRequestDto dto) {
+        return RegisterSupervisorModel.builder()
                 .authid(auth.getId())
                 .name(dto.getName())
                 .surName(dto.getSurName())
@@ -108,9 +126,28 @@ public class AuthService extends ServiceManager<Auth, String> {
                 .identityNumber(dto.getIdentityNumber())
                 .dateOfBirth(dto.getDateOfBirth())
                 .gender(dto.getGender())
+                .isCompanyFirstRegistration(dto.getIsCompanyFirstRegistration())
+                .contractName(dto.getContractName())
+                .contractDuration(dto.getContractDuration())
+                .contractCost(dto.getContractCost())
+                .contractCurrency(dto.getContractCurrency())
                 .build();
-        registerSupervisorProducer.sendNewSupervisor(registerSupervisorModel);
-        return "Successfully registered";
+    }
+
+    private RegisterSupervisorModel prepareSupervisorModelIfFirstRegistrationFalse(Auth auth, SupervisorRegisterRequestDto dto) {
+        return RegisterSupervisorModel.builder()
+                .authid(auth.getId())
+                .name(dto.getName())
+                .surName(dto.getSurName())
+                .email(dto.getEmail())
+                .phone(dto.getPhone())
+                .address(dto.getAddress())
+                .companyName(dto.getCompanyName())
+                .identityNumber(dto.getIdentityNumber())
+                .dateOfBirth(dto.getDateOfBirth())
+                .gender(dto.getGender())
+                .isCompanyFirstRegistration(dto.getIsCompanyFirstRegistration())
+                .build();
     }
 
     public void activateSupervisor(Auth auth){
@@ -127,14 +164,16 @@ public class AuthService extends ServiceManager<Auth, String> {
                 .id(auth.get().getId())
                 .build();
         registerGuestActivationProducer.changeGuestStatus(registerGuestActivationModel);
-        Path activationSuccessHTMLPath = Paths.get("H:\\Program Files\\PROJECTS\\human-resources-management-system\\auth-service\\src\\main\\resources\\templates\\activation-success-page.html");
-        byte[] successfulPage = null;
+//        Path activationSuccessHTMLPath = Paths.get("H:\\Program Files\\PROJECTS\\human-resources-management-system\\auth-service\\src\\main\\resources\\templates\\activation-success-page.html");
         try {
-            successfulPage = Files.readAllBytes(activationSuccessHTMLPath);
+            ClassPathResource classPathResource = new ClassPathResource("templates/activation-success-page.html");
+            InputStream inputStream = classPathResource.getInputStream();
+//            byte [] successfulPage = Files.readAllBytes(activationSuccessHTMLPath);
+            byte[] successfulPage = FileCopyUtils.copyToByteArray(inputStream);
+            return new String(successfulPage);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-        return new String(successfulPage);
     }
 
     public LoginResponseDto login(LoginRequestDto dto) {
@@ -142,14 +181,27 @@ public class AuthService extends ServiceManager<Auth, String> {
         if (auth.getState().equals(false)) throw new AuthServiceException(ErrorType.ACCOUNT_DELETED);
         if (!auth.getPassword().equals(dto.getPassword())) throw new AuthServiceException(ErrorType.INVALID_PASSWORD_OR_EMAIL);
         if (!auth.getStatus().equals(EStatus.ACTIVE)) throw new AuthServiceException(ErrorType.ACCOUNT_NOT_ACTIVE);
-
+        if(auth.getRole().equals(ERole.PERSONNEL) || auth.getRole().equals(ERole.SUPERVISOR)) {
+            loginCompanyStatusCheck(auth);
+        }
         String token = tokenManager.createToken(auth.getId(), auth.getRole()).orElseThrow(() -> new AuthServiceException(ErrorType.TOKEN_NOT_CREATED));
-
         return LoginResponseDto.builder().token(token).role(auth.getRole().toString()).build();
     }
 
+    private void loginCompanyStatusCheck(Auth auth) {
+        String companyId = getCompanyIdForLoginRequestProducer.getCompanyIdFromUser(auth.getId());
+        Boolean isCompanyContractActive = companyStatusCheckRequestProducer.isCompanyContractActive(CompanyStatusCheckRequestModel.builder()
+                .companyId(companyId)
+                .currentTime(System.currentTimeMillis())
+                .build());
+        if(!isCompanyContractActive) throw new AuthServiceException(ErrorType.COMPANY_CONTRACT_EXPIRED);
+    }
+
     public String registerPersonnel(CreatePersonnelAuthModel model) {
-        String code = model.getName() + "5" + CodeGenerator.generateCode();
+        String code;
+        do {
+            code = model.getName() + CodeGenerator.generateCode();
+        } while (!code.matches(".*\\d.*"));
 
         Auth auth = Auth.builder()
                 .email(model.getEmail())
@@ -186,9 +238,37 @@ public class AuthService extends ServiceManager<Auth, String> {
 
     public Boolean updatePersonnel(UpdatePersonnelRequestModel model) {
         Auth auth = findById(model.getAuthId()).orElseThrow(() -> new AuthServiceException(ErrorType.NOT_FOUND));
-        if(!auth.getEmail().equals(model.getEmail())) auth.setEmail(model.getEmail());
-        if(!auth.getPhone().equals(model.getPhone())) auth.setPhone(model.getPhone());
+        if(!auth.getEmail().equals(model.getEmail())) {
+            if(repository.existsByEmail(model.getEmail())) return false;
+            auth.setEmail(model.getEmail());
+        }
+        if(!auth.getPhone().equals(model.getPhone())) {
+            if (repository.existsByPhone(model.getPhone())) return false;
+            auth.setPhone(model.getPhone());
+        }
         update(auth);
         return true;
+    }
+
+    public String registerAdmin(RegisterAdminModel model) {
+        Auth auth = Auth.builder()
+                .email(model.getEmail())
+                .password(model.getPassword())
+                .phone(model.getPhone())
+                .status(EStatus.ACTIVE)
+                .role(ERole.ADMIN)
+                .build();
+        save(auth);
+        return auth.getId();
+    }
+
+    public void handleAdminDecisionForSupervisorRegistration(SupervisorRegistrationDecisionModel model) {
+        Auth auth = findById(model.getSupervisorAuthId()).orElseThrow(() -> new AuthServiceException(ErrorType.NOT_FOUND));
+        if (auth.getStatus().equals(EStatus.ACTIVE)) return;
+        if (model.getDecision()){
+            activateSupervisor(auth);
+        } else {
+            delete(auth);
+        }
     }
 }

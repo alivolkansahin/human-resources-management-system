@@ -7,6 +7,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
+import org.musketeers.repository.enums.EGender;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -32,5 +33,9 @@ public class HRInfo extends BaseEntity{
     private String email;
 
     private String phone;
+
+    private EGender gender;
+
+    private String image;
 
 }

@@ -5,6 +5,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDate;
+
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
@@ -13,5 +15,6 @@ public class AddHolidayRequestDto {
 
     private String companyId;
     private String name;
-    private Integer duration;
+    private LocalDate startDate;
+    private LocalDate endDate;
 }

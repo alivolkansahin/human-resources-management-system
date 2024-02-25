@@ -18,7 +18,7 @@ public abstract class Endpoint {
 
     public static final String UPDATE = "/update";
 
-    public static final String GET_ALL_REGISTERED_SUPERVISORS = "/getallregisteredsupervisors";
+    public static final String GET_ALL_PENDING_SUPERVISORS = "/get-all-pending-supervisors";
 
     public static final String HANDLE_SUPERVISOR_REGISTRATION = "/handle-supervisor-registration";
 

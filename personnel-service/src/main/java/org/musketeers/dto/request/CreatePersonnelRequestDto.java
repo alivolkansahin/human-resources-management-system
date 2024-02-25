@@ -29,11 +29,11 @@ public class CreatePersonnelRequestDto {
 
     private String phone;
 
-    private String companyId; //fronttan company bilgilerinden gelcek
+    private String companyId;
 
-    private String departmentId; // fronttan company bilgilerinden gelcek.
+    private String departmentId;
 
-    private String position; // fronttan company bilgilerinden gelcek
+    private String position;
 
     private LocalDate dateOfEmployment;
 

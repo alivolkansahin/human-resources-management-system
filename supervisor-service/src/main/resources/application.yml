@@ -33,6 +33,7 @@ supervisor-service-config:
     create-personnel-from-supervisor-queue: createPersonnelFromSupervisorQueue
     create-personnel-from-supervisor-binding-key: createPersonnelFromSupervisorBindingKey
     update-personnel-by-id-supervisor-queue: updatePersonnelByIdSupervisorQueue
+    expiration-timeout: 5000
 
 
 

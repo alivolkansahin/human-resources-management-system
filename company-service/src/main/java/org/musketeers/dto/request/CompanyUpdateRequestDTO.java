@@ -21,14 +21,14 @@ public class CompanyUpdateRequestDTO {
 
     private String address;
 
-    private List<HRInfoDto> hrInfos;
+    private List<HRInfoRequestDto> hrInfos;
 
-    private List<DepartmentDto> departments;
+    private List<DepartmentRequestDto> departments;
 
-    private List<HolidayDto> holidays;
+    private List<HolidayRequestDto> holidays;
 
-    private List<IncomeDto> incomes;
+    private List<IncomeRequestDto> incomes;
 
-    private List<ExpenseDto> expenses;
+    private List<ExpenseRequestDto> expenses;
 
 }

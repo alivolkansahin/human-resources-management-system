@@ -10,6 +10,7 @@ import org.musketeers.exception.AdminServiceException;
 import org.musketeers.exception.ErrorType;
 import org.musketeers.mapper.IAdminMapper;
 import org.musketeers.rabbitmq.model.GetAllPendingCommentsResponseModel;
+import org.musketeers.rabbitmq.model.GetSupervisorResponseModel;
 import org.musketeers.rabbitmq.model.RegisterAdminModel;
 import org.musketeers.rabbitmq.model.SupervisorRegistrationDecisionModel;
 import org.musketeers.rabbitmq.producer.*;
@@ -19,6 +20,7 @@ import org.musketeers.utility.ServiceManager;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
@@ -78,16 +80,13 @@ public class AdminService extends ServiceManager<Admin, String> {
         return true;
     }
 
-    public ResponseEntity<List<RegisteredSupervisorsResponseDTO>> getAllRegisteredSupervisors(String adminId) {
-        // Volkan: 52-53e gerek yok, company mikroservisindeki servis katmanındaki updateCompany methodunda güzelce açıklamıştım neyin nasıl olacağını, ona göre düzenlenecek buralar...
-        //Optional<String> token = jwtTokenManager.createToken(adminId);
-        //if (token.isPresent()){
-            List<RegisteredSupervisorsResponseDTO> dtoList = registeredSupervisorsRequestProducer.convertSendAndReceive(adminId);
-            return ResponseEntity.ok(dtoList);
-       // }else {
-       //    throw new AdminServiceException(ErrorType.ADMIN_NOT_FOUND);
-      // }
-
+    public ResponseEntity<List<RegisteredSupervisorsResponseDTO>> getAllPendingSupervisors() {
+        List<GetSupervisorResponseModel> getSupervisorResponseModels = registeredSupervisorsRequestProducer.convertSendAndReceive();
+        List<RegisteredSupervisorsResponseDTO> dtoList = new ArrayList<>();
+        getSupervisorResponseModels.forEach((model) -> {
+            dtoList.add(IAdminMapper.INSTANCE.supervisorModelToDto(model));
+        });
+        return ResponseEntity.ok(dtoList);
     }
 
     public String handleSupervisorRegistration(AdminSupervisorRegistrationDecisionRequestDto dto) {

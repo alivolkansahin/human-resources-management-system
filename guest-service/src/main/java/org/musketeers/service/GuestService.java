@@ -1,9 +1,13 @@
 package org.musketeers.service;
 
 import org.musketeers.entity.Guest;
+import org.musketeers.entity.Phone;
 import org.musketeers.entity.enums.ActivationStatus;
+import org.musketeers.entity.enums.Gender;
+import org.musketeers.entity.enums.PhoneType;
 import org.musketeers.exception.ErrorType;
 import org.musketeers.exception.GuestServiceException;
+import org.musketeers.rabbitmq.model.RegisterGuestModel;
 import org.musketeers.repository.GuestRepository;
 import org.musketeers.utility.JwtTokenManager;
 import org.musketeers.utility.ServiceManager;
@@ -43,4 +47,18 @@ public class GuestService extends ServiceManager<Guest, String> {
         update(guest);
     }
 
+    public void createGuest(RegisterGuestModel model) {
+        Guest guest = Guest.builder()
+                .authId(model.getAuthid())
+                .name(model.getName())
+                .lastName(model.getSurName())
+                .gender(model.getGender().equalsIgnoreCase("MALE") ? Gender.MALE : Gender.FEMALE)
+                .identityNumber(model.getIdentityNumber())
+                .email(model.getEmail())
+                .image("asd")
+                .phone(Phone.builder().phoneType(PhoneType.PERSONAL).phoneNumber(model.getPhone()).build())
+                .dateOfBirth(model.getDateOfBirth())
+                .build();
+        save(guest);
+    }
 }

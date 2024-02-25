@@ -1,0 +1,35 @@
+server:
+  port: 9089
+spring:
+  cloud:
+    config:
+      enabled: false
+  rabbitmq:
+    host: localhost
+    port: 5672
+    username: user
+    password: user
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://localhost:5432/DayOffDBForProject
+    username: postgres
+    password: 1234
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+day-off-service-config:
+  jwt:
+    issuer: ${HR_SYSTEM_ISSUER}
+    secret-key: ${HR_SYSTEM_KEY}
+  rabbitmq:
+    day-off-exchange: dayOffExchange
+    get-personnel-id-and-company-id-for-day-off-request-queue: getPersonnelIdAndCompanyIdForDayOffRequestQueue
+    get-personnel-id-and-company-id-for-day-off-request-binding-key: getPersonnelIdAndCompanyIdForDayOffRequestBindingKey
+    send-day-off-status-change-notification-to-personnel-service-queue: sendDayOffStatusChangeNotificationToPersonnelServiceQueue
+    send-day-off-status-change-notification-to-personnel-service-binding-key: sendDayOffStatusChangeNotificationToPersonnelServiceBindingKey
+    get-personnel-details-for-day-off-request-queue: getPersonnelDetailsForDayOffRequestQueue
+    get-personnel-details-for-day-off-request-binding-key: getPersonnelDetailsForDayOffRequestBindingKey
+    expiration-timeout: 5000
+
+
+

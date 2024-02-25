@@ -16,6 +16,7 @@ import org.musketeers.utility.JwtTokenManager;
 import org.musketeers.utility.ServiceManager;
 import org.springframework.stereotype.Service;
 
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -37,7 +38,9 @@ public class PersonnelService extends ServiceManager<Personnel, String> {
 
     private final UpdateSupervisorProducer updateSupervisorProducer;
 
-    public PersonnelService(PersonnelRepository personnelRepository, JwtTokenManager jwtTokenManager, CreatePersonnelProducer createPersonnelProducer, GetCompanyIdFromSupervisorTokenProducer getCompanyIdFromSupervisorTokenProducer, GetCompanyDetailsByPersonnelRequestProducer getCompanyDetailsByPersonnelRequestProducer, UpdatePersonnelRequestProducer updatePersonnelRequestProducer, UpdateSupervisorProducer updateSupervisorProducer) {
+    private final SendDayOffStatusChangeMailProducer sendDayOffStatusChangeMailProducer;
+
+    public PersonnelService(PersonnelRepository personnelRepository, JwtTokenManager jwtTokenManager, CreatePersonnelProducer createPersonnelProducer, GetCompanyIdFromSupervisorTokenProducer getCompanyIdFromSupervisorTokenProducer, GetCompanyDetailsByPersonnelRequestProducer getCompanyDetailsByPersonnelRequestProducer, UpdatePersonnelRequestProducer updatePersonnelRequestProducer, UpdateSupervisorProducer updateSupervisorProducer, SendDayOffStatusChangeMailProducer sendDayOffStatusChangeMailProducer) {
         super(personnelRepository);
         this.personnelRepository = personnelRepository;
         this.jwtTokenManager = jwtTokenManager;
@@ -46,6 +49,7 @@ public class PersonnelService extends ServiceManager<Personnel, String> {
         this.getCompanyDetailsByPersonnelRequestProducer = getCompanyDetailsByPersonnelRequestProducer;
         this.updatePersonnelRequestProducer = updatePersonnelRequestProducer;
         this.updateSupervisorProducer = updateSupervisorProducer;
+        this.sendDayOffStatusChangeMailProducer = sendDayOffStatusChangeMailProducer;
     }
 
     public GetPersonnelDetailsResponseDto getPersonnelDetailsByToken(String token) {
@@ -265,5 +269,54 @@ public class PersonnelService extends ServiceManager<Personnel, String> {
     public String getCompanyIdFromAuthId(String authId) {
         Personnel personnel = personnelRepository.findOptionalByAuthId(authId).orElseThrow(() -> new PersonnelServiceException(ErrorType.PERSONNEL_NOT_FOUND));
         return personnel.getCompanyId();
+    }
+
+    public GetPersonnelIdAndCompanyIdForDayOffRequestModel getPersonnelIdAndCompanyIdForDayOffRequest(String authId) {
+        Personnel personnel = personnelRepository.findOptionalByAuthId(authId).orElseThrow(() -> new PersonnelServiceException(ErrorType.PERSONNEL_NOT_FOUND));
+        return GetPersonnelIdAndCompanyIdForDayOffRequestModel.builder()
+                .personnelId(personnel.getId())
+                .companyId(personnel.getCompanyId())
+                .build();
+    }
+
+    public void handleDayOffRequestStatusChange(SendDayOffStatusChangeNotificationModel model) {
+        Personnel personnel = findById(model.getPersonnelId());
+        if(model.getUpdatedStatus().equals("ACCEPTED")) {
+            long reduceAmount = ChronoUnit.DAYS.between(model.getRequestStartDate(), model.getRequestEndDate());
+            personnel.setDayOff(personnel.getDayOff() - reduceAmount);
+            update(personnel);
+        }
+        sendDayOffStatusChangeNotificationToPersonnelMail(model, personnel);
+    }
+
+    private void sendDayOffStatusChangeNotificationToPersonnelMail(SendDayOffStatusChangeNotificationModel model, Personnel personnel) {
+        sendDayOffStatusChangeMailProducer.sendMailToPersonnel(SendDayOffStatusChangeMailModel.builder()
+                .name(personnel.getName())
+                .lastName(personnel.getLastName())
+                .email(personnel.getEmail())
+                .requestDescription(model.getRequestDescription())
+                .requestStartDate(model.getRequestStartDate())
+                .requestEndDate(model.getRequestEndDate())
+                .updatedStatus(model.getUpdatedStatus())
+                .requestCreatedAt(model.getRequestCreatedAt())
+                .requestUpdatedAt(model.getRequestUpdatedAt())
+                .build());
+    }
+
+    public List<GetPersonnelDetailsForDayOffRequestModel> getPersonnelDetailsForDayOffRequest(List<String> personnelIds) {
+        List<Personnel> personnelList = new ArrayList<>();
+        personnelIds.forEach(personnelId -> personnelList.add(findById(personnelId)));
+        List<GetPersonnelDetailsForDayOffRequestModel> personnelModelList = new ArrayList<>();
+        personnelList.forEach(personnel -> {
+            personnelModelList.add(GetPersonnelDetailsForDayOffRequestModel.builder()
+                    .personnelId(personnel.getId())
+                    .name(personnel.getName())
+                    .lastName(personnel.getLastName())
+                    .image(personnel.getImage())
+                    .email(personnel.getEmail())
+                    .dayOff(String.valueOf(personnel.getDayOff()))
+                    .build());
+        });
+        return personnelModelList;
     }
 }

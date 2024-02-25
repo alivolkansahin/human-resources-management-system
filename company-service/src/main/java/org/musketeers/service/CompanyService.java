@@ -330,7 +330,7 @@ public class CompanyService extends ServiceManager<Company, String> {
 
     public Boolean checkCompanyStatus(CompanyStatusCheckRequestModel model) {
         Company company = findById(model.getCompanyId()).orElseThrow(() -> new CompanyServiceException(ErrorType.COMPANY_NOT_FOUND));
-        if(!company.getCompanyStatus().equals(EStatus.ACTIVE)) return false;
+        if(company.getCompanyStatus().equals(EStatus.PASSIVE)) return false;
         LocalDate contractEndDate = company.getContract().getEndDate();
         LocalDate checkDate = Instant.ofEpochMilli(model.getCurrentTime()).atZone(ZoneId.systemDefault()).toLocalDate();
         if(checkDate.isAfter(contractEndDate)) {

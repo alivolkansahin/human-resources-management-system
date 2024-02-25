@@ -54,6 +54,12 @@ public class RabbitMQConfig {
     @Value("${personnel-service-config.rabbitmq.update-personnel-by-id-supervisor-binding-key}")
     private String updatePersonnelByIdSupervisorBindingKey;
 
+    @Value("${personnel-service-config.rabbitmq.send-day-off-status-change-notification-to-mail-service-queue}")
+    private String sendDayOffStatusChangeNotificationToMailServiceQueue;
+
+    @Value("${personnel-service-config.rabbitmq.send-day-off-status-change-notification-to-mail-service-binding-key}")
+    private String sendDayOffStatusChangeNotificationToMailServiceBindingKey;
+
     @Bean
     DirectExchange createPersonnelExchange() {
         return new DirectExchange(createPersonnelExchange);
@@ -89,6 +95,11 @@ public class RabbitMQConfig {
     }
 
     @Bean
+    Queue sendDayOffStatusChangeNotificationToMailServiceQueue(){
+        return new Queue(sendDayOffStatusChangeNotificationToMailServiceQueue);
+    }
+
+    @Bean
     Binding bindingCreatePersonnelAuthQueue(DirectExchange createPersonnelExchange, Queue createPersonnelAuthQueue) {
         return BindingBuilder.bind(createPersonnelAuthQueue).to(createPersonnelExchange).with(createPersonnelAuthBindingKey);
     }
@@ -115,6 +126,11 @@ public class RabbitMQConfig {
     @Bean
     public Binding bindingUpdatePersonnelByIdSupervisorQueue(DirectExchange createPersonnelExchange, Queue updatePersonnelByIdSupervisorQueue){
         return BindingBuilder.bind(updatePersonnelByIdSupervisorQueue).to(createPersonnelExchange).with(updatePersonnelByIdSupervisorBindingKey);
+    }
+
+    @Bean
+    public Binding bindingSendDayOffStatusChangeNotificationToMailServiceQueue(DirectExchange createPersonnelExchange, Queue sendDayOffStatusChangeNotificationToMailServiceQueue){
+        return BindingBuilder.bind(sendDayOffStatusChangeNotificationToMailServiceQueue).to(createPersonnelExchange).with(sendDayOffStatusChangeNotificationToMailServiceBindingKey);
     }
 
 

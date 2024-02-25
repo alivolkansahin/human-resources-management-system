@@ -1,0 +1,26 @@
+dependencies {
+
+    implementation libs.springBootJPA
+    implementation libs.postgreSQL
+    implementation libs.springBootAMQP
+/*
+    // seçimlerini yap ve ekle
+    implementation libs.springBootAMQP
+    implementation libs.springBootRedis
+    implementation libs.springBootCassandra
+    implementation libs.springBootElasticsearch
+    implementation libs.postgreSQL
+    implementation libs.springBootMongoDB
+
+*/
+
+/*
+    testImplementation platform('org.junit:junit-bom:5.9.1')
+    testImplementation 'org.junit.jupiter:junit-jupiter'*/
+}
+
+/*
+test {
+    useJUnitPlatform()
+}
+*/

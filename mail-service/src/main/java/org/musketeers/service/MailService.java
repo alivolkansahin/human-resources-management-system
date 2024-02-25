@@ -9,12 +9,16 @@ import jakarta.mail.internet.MimeMessage;
 import lombok.RequiredArgsConstructor;
 import org.musketeers.rabbitmq.model.ActivationGuestModel;
 import org.musketeers.rabbitmq.model.CreatePersonnelMailModel;
+import org.musketeers.rabbitmq.model.SendDayOffStatusChangeMailModel;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
 import org.springframework.ui.freemarker.FreeMarkerTemplateUtils;
 
 import java.io.IOException;
+import java.time.Instant;
+import java.time.ZoneId;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.TimeZone;
@@ -40,9 +44,8 @@ public class MailService {
         MimeMessageHelper mimeMessageHelper = new MimeMessageHelper(mimeMessage);
         try {
             mimeMessageHelper.setSubject("Musketeers HR Management System Account Activation");
-            mimeMessageHelper.setFrom("avolkan.shn@gmail.com");
+            mimeMessageHelper.setFrom("musketeershmrs@gmail.com");
             mimeMessageHelper.setTo(model.getEmail());
-            mimeMessageHelper.setCc("avolkan.shn@gmail.com");
             mimeMessageHelper.setText(getMailContent(model), true);
         } catch (MessagingException e) {
             throw new RuntimeException(e);
@@ -76,10 +79,9 @@ public class MailService {
         MimeMessage mimeMessage = javaMailSender.createMimeMessage();
         MimeMessageHelper mimeMessageHelper = new MimeMessageHelper(mimeMessage);
         try {
-            mimeMessageHelper.setSubject("Musketeers HR Management System Account data submission");
-            mimeMessageHelper.setFrom("avolkan.shn@gmail.com");
+            mimeMessageHelper.setSubject("Musketeers HR Management System Account Activation Success");
+            mimeMessageHelper.setFrom("musketeershmrs@gmail.com");
             mimeMessageHelper.setTo(model.getEmail());
-            mimeMessageHelper.setCc("avolkan.shn@gmail.com");
             mimeMessageHelper.setText(getMailContentForPersonnel(model), true);
         } catch (MessagingException e) {
             throw new RuntimeException(e);
@@ -98,5 +100,54 @@ public class MailService {
         } catch (IOException | TemplateException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    public void sendMailForDayOffRequestToPersonnel(SendDayOffStatusChangeMailModel model) {
+        freemarkerConfiguration.setDefaultEncoding("UTF-8");
+        freemarkerConfiguration.setTemplateExceptionHandler(TemplateExceptionHandler.RETHROW_HANDLER);
+        freemarkerConfiguration.setLogTemplateExceptions(false);
+        freemarkerConfiguration.setWrapUncheckedExceptions(true);
+        freemarkerConfiguration.setFallbackOnNullLoopVariable(false);
+        freemarkerConfiguration.setSQLDateAndTimeTimeZone(TimeZone.getDefault());
+
+        MimeMessage mimeMessage = javaMailSender.createMimeMessage();
+        MimeMessageHelper mimeMessageHelper = new MimeMessageHelper(mimeMessage);
+        try {
+            mimeMessageHelper.setSubject("Regarding Your Leave Request Dated " + Instant.ofEpochMilli(model.getRequestCreatedAt())
+                    .atZone(ZoneId.systemDefault())
+                    .toLocalDate()
+                    .toString());
+            mimeMessageHelper.setFrom("musketeershmrs@gmail.com");
+            mimeMessageHelper.setTo(model.getEmail());
+            mimeMessageHelper.setText(getMailContentForDayOffMail(model), true);
+        } catch (MessagingException e) {
+            throw new RuntimeException(e);
+        }
+        javaMailSender.send(mimeMessage);
+    }
+
+    private String getMailContentForDayOffMail(SendDayOffStatusChangeMailModel model) {
+        Map<String, String> root = new HashMap<>();
+        root.put("name", model.getName());
+        root.put("lastName", model.getLastName());
+        root.put("requestCreatedAt", Instant.ofEpochMilli(model.getRequestCreatedAt())
+                .atZone(ZoneId.systemDefault())
+                .toLocalDate()
+                .toString());
+        root.put("requestDescription", model.getRequestDescription());
+        root.put("requestStartDate", model.getRequestStartDate().toString());
+        root.put("requestEndDate", model.getRequestEndDate().toString());
+        root.put("requestStatus", model.getUpdatedStatus());
+        root.put("requestUpdatedAt", Instant.ofEpochMilli(model.getRequestUpdatedAt())
+                .atZone(ZoneId.systemDefault())
+                .toLocalDate()
+                .toString());
+        try {
+            Template temp = freemarkerConfiguration.getTemplate("day-off-request-update.ftl");
+            return FreeMarkerTemplateUtils.processTemplateIntoString(temp, root);
+        } catch (IOException | TemplateException e) {
+            throw new RuntimeException(e);
+        }
+
     }
 }

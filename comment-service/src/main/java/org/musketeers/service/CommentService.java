@@ -55,7 +55,6 @@ public class CommentService extends ServiceManager<Comment, String> {
     }
 
     public List<GetAllCommentsByCompanyResponseDto> getAllCommentsByCompany(String companyId) {
-//        List<Comment> activeCommentsByCompany = commentRepository.findAllByCompanyIdOrderByCreatedAtDesc(companyId).stream().filter(comment -> comment.getActivationStatus().equals(EActivationStatus.ACTIVATED)).toList();
         List<Comment> activeCommentsByCompany = commentRepository.findAllByCompanyIdAndActivationStatusOrderByCreatedAtDesc(companyId, EActivationStatus.ACTIVATED);
         if(activeCommentsByCompany.isEmpty()) return Collections.emptyList();
         List<GetPersonnelDetailsByCommentResponseModel> personnelDetailsResponseModel = getPersonnelDetailsFromPersonnelService(activeCommentsByCompany);
@@ -109,8 +108,6 @@ public class CommentService extends ServiceManager<Comment, String> {
                     .personnelLastName(personnelDetailsResponseModel.get(i).getLastName())
                     .personnelGender(personnelDetailsResponseModel.get(i).getGender())
                     .personnelImage(personnelDetailsResponseModel.get(i).getImage())
-                    .personnelDateOfEmployment(personnelDetailsResponseModel.get(i).getDateOfEmployment().toString())
-//                    .personnelDateOfEmployment(LocalDate.now().toString())
                     .header(comments.get(i).getHeader())
                     .content(comments.get(i).getContent())
                     .rating(comments.get(i).getRating())

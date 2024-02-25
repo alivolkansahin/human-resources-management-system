@@ -21,6 +21,4 @@ public class PersonnelDetailsResponseDto {
 
     private String image;
 
-    private LocalDate dateOfEmployment;
-
 }

@@ -21,6 +21,4 @@ public class GetPersonnelDetailsByCommentResponseModel {
 
     private String image;
 
-    private LocalDate dateOfEmployment;
-
 }

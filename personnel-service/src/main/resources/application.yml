@@ -38,6 +38,11 @@ personnel-service-config:
     update-personnel-by-id-supervisor-queue: updatePersonnelByIdSupervisorQueue
     update-personnel-by-id-supervisor-binding-key: updatePersonnelByIdSupervisorBindingKey
     get-company-id-for-user-login-queue: getCompanyIdForUserLoginQueue
+    get-personnel-id-and-company-id-for-day-off-request-queue: getPersonnelIdAndCompanyIdForDayOffRequestQueue
+    send-day-off-status-change-notification-to-personnel-service-queue: sendDayOffStatusChangeNotificationToPersonnelServiceQueue
+    send-day-off-status-change-notification-to-mail-service-queue: sendDayOffStatusChangeNotificationToMailServiceQueue
+    send-day-off-status-change-notification-to-mail-service-binding-key: sendDayOffStatusChangeNotificationToMailServiceBindingKey
+    get-personnel-details-for-day-off-request-queue: getPersonnelDetailsForDayOffRequestQueue
     expiration-timeout: 5000
 
 

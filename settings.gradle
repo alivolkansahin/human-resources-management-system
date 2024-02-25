@@ -10,4 +10,7 @@ include 'admin-service'
 include 'supervisor-service'
 include 'guest-service'
 include 'comment-service'
+include 'day-off-service'
+include 'advance-service'
+include 'spending-service'
 

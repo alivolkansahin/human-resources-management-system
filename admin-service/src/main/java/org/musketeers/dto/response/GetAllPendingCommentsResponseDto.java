@@ -25,8 +25,6 @@ public class GetAllPendingCommentsResponseDto {
 
     private String personnelImage;
 
-    private String personnelDateOfEmployment;
-
     private String header;
 
     private String content;

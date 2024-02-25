@@ -189,7 +189,6 @@ public class PersonnelService extends ServiceManager<Personnel, String> {
                     .lastName(personnel.getLastName())
                     .gender(personnel.getEGender().toString())
                     .image(personnel.getImage())
-                    .dateOfEmployment(personnel.getDateOfEmployment())
                     .build());
         });
         return personnelModelList;

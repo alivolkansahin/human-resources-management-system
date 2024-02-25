@@ -102,14 +102,15 @@ public class AuthService extends ServiceManager<Auth, String> {
                 .build();
         save(auth);
 
-        RegisterSupervisorModel registerSupervisorModel = null;
-        if(dto.getIsCompanyFirstRegistration()) {
-            registerSupervisorModel = prepareSupervisorModelIfFirstRegistrationTrue(auth, dto);
-        } else {
-            Boolean isCompanyFound = searchForCompanyNameRequestProducer.searchForCompanyName(dto.getCompanyName());
-            if(!isCompanyFound) throw new AuthServiceException(ErrorType.COMPANY_NOT_FOUND);
-            registerSupervisorModel = prepareSupervisorModelIfFirstRegistrationFalse(auth, dto);
+        Boolean isCompanyFound = searchForCompanyNameRequestProducer.searchForCompanyName(dto.getCompanyName());
+        if (dto.getIsCompanyFirstRegistration() && isCompanyFound) {
+            throw new AuthServiceException(ErrorType.COMPANY_NAME_EXIST);
+        } else if (!dto.getIsCompanyFirstRegistration() && !isCompanyFound) {
+            throw new AuthServiceException(ErrorType.COMPANY_NOT_FOUND);
         }
+        RegisterSupervisorModel registerSupervisorModel = dto.getIsCompanyFirstRegistration() ?
+                prepareSupervisorModelIfFirstRegistrationTrue(auth, dto) :
+                prepareSupervisorModelIfFirstRegistrationFalse(auth, dto);
         registerSupervisorProducer.sendNewSupervisor(registerSupervisorModel);
         return "Successfully registered";
     }

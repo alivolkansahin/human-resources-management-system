@@ -43,6 +43,11 @@ personnel-service-config:
     send-day-off-status-change-notification-to-mail-service-queue: sendDayOffStatusChangeNotificationToMailServiceQueue
     send-day-off-status-change-notification-to-mail-service-binding-key: sendDayOffStatusChangeNotificationToMailServiceBindingKey
     get-personnel-details-for-day-off-request-queue: getPersonnelDetailsForDayOffRequestQueue
+    get-personnel-id-and-company-id-for-advance-request-queue: getPersonnelIdAndCompanyIdForAdvanceRequestQueue
+    send-advance-status-change-notification-to-personnel-service-queue: sendAdvanceStatusChangeNotificationToPersonnelServiceQueue
+    send-advance-status-change-notification-to-mail-service-queue: sendAdvanceStatusChangeNotificationToMailServiceQueue
+    send-advance-status-change-notification-to-mail-service-binding-key: sendAdvanceStatusChangeNotificationToMailServiceBindingKey
+    get-personnel-details-for-advance-request-queue: getPersonnelDetailsForAdvanceRequestQueue
     expiration-timeout: 5000
 
 

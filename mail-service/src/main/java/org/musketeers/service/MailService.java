@@ -9,6 +9,7 @@ import jakarta.mail.internet.MimeMessage;
 import lombok.RequiredArgsConstructor;
 import org.musketeers.rabbitmq.model.ActivationGuestModel;
 import org.musketeers.rabbitmq.model.CreatePersonnelMailModel;
+import org.musketeers.rabbitmq.model.SendAdvanceStatusChangeMailModel;
 import org.musketeers.rabbitmq.model.SendDayOffStatusChangeMailModel;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -113,7 +114,7 @@ public class MailService {
         MimeMessage mimeMessage = javaMailSender.createMimeMessage();
         MimeMessageHelper mimeMessageHelper = new MimeMessageHelper(mimeMessage);
         try {
-            mimeMessageHelper.setSubject("Regarding Your Leave Request Dated " + Instant.ofEpochMilli(model.getRequestCreatedAt())
+            mimeMessageHelper.setSubject("Regarding Your Day Off Request Dated " + Instant.ofEpochMilli(model.getRequestCreatedAt())
                     .atZone(ZoneId.systemDefault())
                     .toLocalDate()
                     .toString());
@@ -148,6 +149,52 @@ public class MailService {
         } catch (IOException | TemplateException e) {
             throw new RuntimeException(e);
         }
+    }
 
+    public void sendMailForAdvanceRequestToPersonnel(SendAdvanceStatusChangeMailModel model) {
+        freemarkerConfiguration.setDefaultEncoding("UTF-8");
+        freemarkerConfiguration.setTemplateExceptionHandler(TemplateExceptionHandler.RETHROW_HANDLER);
+        freemarkerConfiguration.setLogTemplateExceptions(false);
+        freemarkerConfiguration.setWrapUncheckedExceptions(true);
+        freemarkerConfiguration.setFallbackOnNullLoopVariable(false);
+        freemarkerConfiguration.setSQLDateAndTimeTimeZone(TimeZone.getDefault());
+
+        MimeMessage mimeMessage = javaMailSender.createMimeMessage();
+        MimeMessageHelper mimeMessageHelper = new MimeMessageHelper(mimeMessage);
+        try {
+            mimeMessageHelper.setSubject("Regarding Your Advance Request Dated " + Instant.ofEpochMilli(model.getRequestCreatedAt())
+                    .atZone(ZoneId.systemDefault())
+                    .toLocalDate()
+                    .toString());
+            mimeMessageHelper.setFrom("musketeershmrs@gmail.com");
+            mimeMessageHelper.setTo(model.getEmail());
+            mimeMessageHelper.setText(getMailContentForAdvanceMail(model), true);
+        } catch (MessagingException e) {
+            throw new RuntimeException(e);
+        }
+        javaMailSender.send(mimeMessage);
+    }
+
+    private String getMailContentForAdvanceMail(SendAdvanceStatusChangeMailModel model) {
+        Map<String, String> root = new HashMap<>();
+        root.put("name", model.getName());
+        root.put("lastName", model.getLastName());
+        root.put("requestCreatedAt", Instant.ofEpochMilli(model.getRequestCreatedAt())
+                .atZone(ZoneId.systemDefault())
+                .toLocalDate()
+                .toString());
+        root.put("requestDescription", model.getRequestDescription());
+        root.put("requestAmount", model.getRequestAmount().toString());
+        root.put("requestStatus", model.getUpdatedStatus());
+        root.put("requestUpdatedAt", Instant.ofEpochMilli(model.getRequestUpdatedAt())
+                .atZone(ZoneId.systemDefault())
+                .toLocalDate()
+                .toString());
+        try {
+            Template temp = freemarkerConfiguration.getTemplate("advance-request-update.ftl");
+            return FreeMarkerTemplateUtils.processTemplateIntoString(temp, root);
+        } catch (IOException | TemplateException e) {
+            throw new RuntimeException(e);
+        }
     }
 }

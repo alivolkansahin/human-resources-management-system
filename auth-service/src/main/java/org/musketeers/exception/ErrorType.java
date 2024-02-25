@@ -30,7 +30,8 @@ public enum ErrorType {
     PARAMETER_NOT_VALID(5002,"Parameter is incorrect" ,HttpStatus.BAD_REQUEST ),
 
     SERVICE_NOT_RESPONDING(5010, "Your request cannot be processed at the moment", HttpStatus.SERVICE_UNAVAILABLE),
-    COMPANY_NOT_FOUND(1010, "Company not found!", HttpStatus.BAD_REQUEST);
+    COMPANY_NOT_FOUND(1010, "Company not found!", HttpStatus.BAD_REQUEST),
+    COMPANY_NAME_EXIST(1011,"Company name already exists!", HttpStatus.BAD_REQUEST);
 
 
 

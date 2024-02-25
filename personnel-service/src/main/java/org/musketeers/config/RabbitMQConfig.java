@@ -60,6 +60,12 @@ public class RabbitMQConfig {
     @Value("${personnel-service-config.rabbitmq.send-day-off-status-change-notification-to-mail-service-binding-key}")
     private String sendDayOffStatusChangeNotificationToMailServiceBindingKey;
 
+    @Value("${personnel-service-config.rabbitmq.send-advance-status-change-notification-to-mail-service-queue}")
+    private String sendAdvanceStatusChangeNotificationToMailServiceQueue;
+
+    @Value("${personnel-service-config.rabbitmq.send-advance-status-change-notification-to-mail-service-binding-key}")
+    private String sendAdvanceStatusChangeNotificationToMailServiceBindingKey;
+
     @Bean
     DirectExchange createPersonnelExchange() {
         return new DirectExchange(createPersonnelExchange);
@@ -100,6 +106,11 @@ public class RabbitMQConfig {
     }
 
     @Bean
+    Queue sendAdvanceStatusChangeNotificationToMailServiceQueue(){
+        return new Queue(sendAdvanceStatusChangeNotificationToMailServiceQueue);
+    }
+
+    @Bean
     Binding bindingCreatePersonnelAuthQueue(DirectExchange createPersonnelExchange, Queue createPersonnelAuthQueue) {
         return BindingBuilder.bind(createPersonnelAuthQueue).to(createPersonnelExchange).with(createPersonnelAuthBindingKey);
     }
@@ -131,6 +142,11 @@ public class RabbitMQConfig {
     @Bean
     public Binding bindingSendDayOffStatusChangeNotificationToMailServiceQueue(DirectExchange createPersonnelExchange, Queue sendDayOffStatusChangeNotificationToMailServiceQueue){
         return BindingBuilder.bind(sendDayOffStatusChangeNotificationToMailServiceQueue).to(createPersonnelExchange).with(sendDayOffStatusChangeNotificationToMailServiceBindingKey);
+    }
+
+    @Bean
+    public Binding bindingSendAdvanceStatusChangeNotificationToMailServiceQueue(DirectExchange createPersonnelExchange, Queue sendAdvanceStatusChangeNotificationToMailServiceQueue){
+        return BindingBuilder.bind(sendAdvanceStatusChangeNotificationToMailServiceQueue).to(createPersonnelExchange).with(sendAdvanceStatusChangeNotificationToMailServiceBindingKey);
     }
 
 

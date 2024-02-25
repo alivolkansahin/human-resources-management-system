@@ -9,6 +9,7 @@ import java.util.List;
 
 @Repository
 public interface DayOffRepository extends JpaRepository<DayOff, String> {
+
     List<DayOff> findAllByPersonnelIdAndRequestStatus(String personnelId, ERequestStatus status);
 
     List<DayOff> findAllByCompanyId(String companyId);

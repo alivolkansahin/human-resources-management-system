@@ -25,6 +25,7 @@ mail-service-config:
     activation-guest-queue: mailQueue
     mail-queue-personnel: mailQueuePersonnel
     send-day-off-status-change-notification-to-mail-service-queue: sendDayOffStatusChangeNotificationToMailServiceQueue
+    send-advance-status-change-notification-to-mail-service-queue: sendAdvanceStatusChangeNotificationToMailServiceQueue
 
 
 

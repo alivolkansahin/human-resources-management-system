@@ -40,7 +40,9 @@ public class PersonnelService extends ServiceManager<Personnel, String> {
 
     private final SendDayOffStatusChangeMailProducer sendDayOffStatusChangeMailProducer;
 
-    public PersonnelService(PersonnelRepository personnelRepository, JwtTokenManager jwtTokenManager, CreatePersonnelProducer createPersonnelProducer, GetCompanyIdFromSupervisorTokenProducer getCompanyIdFromSupervisorTokenProducer, GetCompanyDetailsByPersonnelRequestProducer getCompanyDetailsByPersonnelRequestProducer, UpdatePersonnelRequestProducer updatePersonnelRequestProducer, UpdateSupervisorProducer updateSupervisorProducer, SendDayOffStatusChangeMailProducer sendDayOffStatusChangeMailProducer) {
+    private final SendAdvanceStatusChangeMailProducer sendAdvanceStatusChangeMailProducer;
+
+    public PersonnelService(PersonnelRepository personnelRepository, JwtTokenManager jwtTokenManager, CreatePersonnelProducer createPersonnelProducer, GetCompanyIdFromSupervisorTokenProducer getCompanyIdFromSupervisorTokenProducer, GetCompanyDetailsByPersonnelRequestProducer getCompanyDetailsByPersonnelRequestProducer, UpdatePersonnelRequestProducer updatePersonnelRequestProducer, UpdateSupervisorProducer updateSupervisorProducer, SendDayOffStatusChangeMailProducer sendDayOffStatusChangeMailProducer, SendAdvanceStatusChangeMailProducer sendAdvanceStatusChangeMailProducer) {
         super(personnelRepository);
         this.personnelRepository = personnelRepository;
         this.jwtTokenManager = jwtTokenManager;
@@ -50,6 +52,7 @@ public class PersonnelService extends ServiceManager<Personnel, String> {
         this.updatePersonnelRequestProducer = updatePersonnelRequestProducer;
         this.updateSupervisorProducer = updateSupervisorProducer;
         this.sendDayOffStatusChangeMailProducer = sendDayOffStatusChangeMailProducer;
+        this.sendAdvanceStatusChangeMailProducer = sendAdvanceStatusChangeMailProducer;
     }
 
     public GetPersonnelDetailsResponseDto getPersonnelDetailsByToken(String token) {
@@ -282,14 +285,14 @@ public class PersonnelService extends ServiceManager<Personnel, String> {
         Personnel personnel = findById(model.getPersonnelId());
         if(model.getUpdatedStatus().equals("ACCEPTED")) {
             long reduceAmount = ChronoUnit.DAYS.between(model.getRequestStartDate(), model.getRequestEndDate());
-            personnel.setDayOff(personnel.getDayOff() - reduceAmount);
+            personnel.setDayOff(personnel.getDayOff() - (reduceAmount+1L));
             update(personnel);
         }
         sendDayOffStatusChangeNotificationToPersonnelMail(model, personnel);
     }
 
     private void sendDayOffStatusChangeNotificationToPersonnelMail(SendDayOffStatusChangeNotificationModel model, Personnel personnel) {
-        sendDayOffStatusChangeMailProducer.sendMailToPersonnel(SendDayOffStatusChangeMailModel.builder()
+        SendDayOffStatusChangeMailModel requestModel = SendDayOffStatusChangeMailModel.builder()
                 .name(personnel.getName())
                 .lastName(personnel.getLastName())
                 .email(personnel.getEmail())
@@ -299,7 +302,8 @@ public class PersonnelService extends ServiceManager<Personnel, String> {
                 .updatedStatus(model.getUpdatedStatus())
                 .requestCreatedAt(model.getRequestCreatedAt())
                 .requestUpdatedAt(model.getRequestUpdatedAt())
-                .build());
+                .build();
+        sendDayOffStatusChangeMailProducer.sendMailToPersonnel(requestModel);
     }
 
     public List<GetPersonnelDetailsForDayOffRequestModel> getPersonnelDetailsForDayOffRequest(List<String> personnelIds) {
@@ -314,6 +318,55 @@ public class PersonnelService extends ServiceManager<Personnel, String> {
                     .image(personnel.getImage())
                     .email(personnel.getEmail())
                     .dayOff(String.valueOf(personnel.getDayOff()))
+                    .build());
+        });
+        return personnelModelList;
+    }
+
+    public GetPersonnelIdAndCompanyIdForAdvanceRequestModel getPersonnelIdAndCompanyIdForAdvanceRequest(String authId) {
+        Personnel personnel = personnelRepository.findOptionalByAuthId(authId).orElseThrow(() -> new PersonnelServiceException(ErrorType.PERSONNEL_NOT_FOUND));
+        return GetPersonnelIdAndCompanyIdForAdvanceRequestModel.builder()
+                .personnelId(personnel.getId())
+                .companyId(personnel.getCompanyId())
+                .build();
+    }
+
+    public void handleAdvanceRequestStatusChange(SendAdvanceStatusChangeNotificationModel model) {
+        Personnel personnel = findById(model.getPersonnelId());
+        if(model.getUpdatedStatus().equals("ACCEPTED")) {
+            Double reduceAmount = model.getRequestAmount();
+            personnel.setAdvanceQuota(personnel.getAdvanceQuota() - reduceAmount);
+            update(personnel);
+        }
+        sendAdvanceStatusChangeNotificationToPersonnelMail(model, personnel);
+    }
+
+    private void sendAdvanceStatusChangeNotificationToPersonnelMail(SendAdvanceStatusChangeNotificationModel model, Personnel personnel) {
+        SendAdvanceStatusChangeMailModel requestModel = SendAdvanceStatusChangeMailModel.builder()
+                .name(personnel.getName())
+                .lastName(personnel.getLastName())
+                .email(personnel.getEmail())
+                .requestDescription(model.getRequestDescription())
+                .requestAmount(model.getRequestAmount())
+                .updatedStatus(model.getUpdatedStatus())
+                .requestCreatedAt(model.getRequestCreatedAt())
+                .requestUpdatedAt(model.getRequestUpdatedAt())
+                .build();
+        sendAdvanceStatusChangeMailProducer.sendMailToPersonnel(requestModel);
+    }
+
+    public List<GetPersonnelDetailsForAdvanceRequestModel> getPersonnelDetailsForAdvanceRequest(List<String> personnelIds) {
+        List<Personnel> personnelList = new ArrayList<>();
+        personnelIds.forEach(personnelId -> personnelList.add(findById(personnelId)));
+        List<GetPersonnelDetailsForAdvanceRequestModel> personnelModelList = new ArrayList<>();
+        personnelList.forEach(personnel -> {
+            personnelModelList.add(GetPersonnelDetailsForAdvanceRequestModel.builder()
+                    .personnelId(personnel.getId())
+                    .name(personnel.getName())
+                    .lastName(personnel.getLastName())
+                    .image(personnel.getImage())
+                    .email(personnel.getEmail())
+                    .advanceQuota(String.valueOf(personnel.getAdvanceQuota()))
                     .build());
         });
         return personnelModelList;

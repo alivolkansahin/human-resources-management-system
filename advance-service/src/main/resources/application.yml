@@ -21,18 +21,13 @@ advance-service-config:
   jwt:
     issuer: ${HR_SYSTEM_ISSUER}
     secret-key: ${HR_SYSTEM_KEY}
-
-rabbitmq:
-  exchange-name: advanceExchange
-#  supervisor-activation-company-queue: supervisorActivationCompanyQueue
-#  get-company-id-from-supervisor-queue: getCompanyIdFromSupervisorQueue
-#  get-company-id-from-supervisor-binding-key: getCompanyIdFromSupervisorBindingKey
-#  create-personnel-company-queue: createPersonnelCompanyQueue
-#  get-company-details-by-comment-company-queue: getCompanyDetailsByCommentCompanyQueue
-#  get-company-supervisors-supervisor-queue: getCompanySupervisorsSupervisorQueue
-#  get-company-supervisors-supervisor-binding-key: getCompanySupervisorsSupervisorBindingKey
-#  get-company-details-by-personnel-queue: getCompanyDetailsByPersonnelQueue
-#  company-status-check-queue: companyStatusCheckQueue
-#  search-for-company-name-queue: searchForCompanyNameQueue
-  expiration-timeout: 5000
+  rabbitmq:
+    advance-exchange: advanceExchange
+    get-personnel-id-and-company-id-for-advance-request-queue: getPersonnelIdAndCompanyIdForAdvanceRequestQueue
+    get-personnel-id-and-company-id-for-advance-request-binding-key: getPersonnelIdAndCompanyIdForAdvanceRequestBindingKey
+    send-advance-status-change-notification-to-personnel-service-queue: sendAdvanceStatusChangeNotificationToPersonnelServiceQueue
+    send-advance-status-change-notification-to-personnel-service-binding-key: sendAdvanceStatusChangeNotificationToPersonnelServiceBindingKey
+    get-personnel-details-for-advance-request-queue: getPersonnelDetailsForAdvanceRequestQueue
+    get-personnel-details-for-advance-request-binding-key: getPersonnelDetailsForAdvanceRequestBindingKey
+    expiration-timeout: 5000
 

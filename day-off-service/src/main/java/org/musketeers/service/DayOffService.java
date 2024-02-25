@@ -89,8 +89,11 @@ public class DayOffService extends ServiceManager<DayOff, String> {
     }
 
     public String updateRequestStatus(DayOffUpdateRequestDto dto) {
-        validateUserRoleAndRetrieveAuthId(dto.getToken(), SUPERVISOR_ROLE);
+        String authId = validateUserRoleAndRetrieveAuthId(dto.getToken(), SUPERVISOR_ROLE);
+        GetPersonnelIdAndCompanyIdForDayOffRequestModel responseModel = getPersonnelIdAndCompanyIdForDayOffRequestProducer.getPersonnelIdAndCompanyIdFromPersonnelService(authId);
+        String companyId = responseModel.getCompanyId();
         DayOff dayOff = findById(dto.getRequestId());
+        if(!dayOff.getCompanyId().equals(companyId)) throw new DayOffServiceException(ErrorType.INVALID_SUPERVISOR);
         if(!dayOff.getRequestStatus().equals(ERequestStatus.PENDING)) throw new DayOffServiceException(ErrorType.INVALID_PARAMETER);
         dayOff.setRequestStatus(ERequestStatus.valueOf(dto.getDecision()));
         update(dayOff);

@@ -64,10 +64,10 @@ public class CompanyController {
         return ResponseEntity.ok(incomeService.saveIncome(dto));
     }
 
-    @PostMapping(ADD_EXPENSE)
-    public ResponseEntity<Boolean> addExpense(@RequestBody AddExpenseRequestDto dto){
-        return ResponseEntity.ok(expenseService.saveExpense(dto));
-    }
+//    @PostMapping(ADD_EXPENSE)
+//    public ResponseEntity<Boolean> addExpense(@RequestBody AddExpenseRequestDto dto){
+//        return ResponseEntity.ok(expenseService.saveExpense(dto));
+//    }
 
     @PostMapping(ADD_HOLIDAY)
     public ResponseEntity<Boolean> addHoliday(@RequestBody AddHolidayRequestDto dto){

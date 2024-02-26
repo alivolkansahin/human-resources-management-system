@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -22,5 +23,7 @@ public class UpdatePersonnelRequestDto {
     private String email;
 
     private List<String> phones;         // get(0) personal, get(1) work phone...
+
+    private MultipartFile profileImage;
 
 }

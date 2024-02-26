@@ -47,6 +47,8 @@ personnel-service-config:
     send-advance-status-change-notification-to-personnel-service-queue: sendAdvanceStatusChangeNotificationToPersonnelServiceQueue
     send-advance-status-change-notification-to-mail-service-queue: sendAdvanceStatusChangeNotificationToMailServiceQueue
     send-advance-status-change-notification-to-mail-service-binding-key: sendAdvanceStatusChangeNotificationToMailServiceBindingKey
+    send-advance-expense-to-company-service-queue: sendAdvanceExpenseToCompanyServiceQueue
+    send-advance-expense-to-company-service-binding-key: sendAdvanceExpenseToCompanyServiceBindingKey
     get-personnel-details-for-advance-request-queue: getPersonnelDetailsForAdvanceRequestQueue
     expiration-timeout: 5000
 

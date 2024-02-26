@@ -11,17 +11,13 @@ import java.time.LocalDate;
 @AllArgsConstructor
 @Data
 @Builder
-public class CreatePersonnelCompanyModel {
-
-    private String personnelId;
+public class SendAdvanceExpenseToCompanyServiceModel {
 
     private String companyId;
 
-    private String departmentId;
+    private String description;
 
-    private String expenseDescription;
-
-    private Double expenseAmount;
+    private Double amount;
 
     private LocalDate expenseDate;
 

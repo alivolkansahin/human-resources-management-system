@@ -16,6 +16,13 @@ import org.musketeers.utility.JwtTokenManager;
 import org.musketeers.utility.ServiceManager;
 import org.springframework.stereotype.Service;
 
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.time.Instant;
+import java.time.ZoneId;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -42,7 +49,9 @@ public class PersonnelService extends ServiceManager<Personnel, String> {
 
     private final SendAdvanceStatusChangeMailProducer sendAdvanceStatusChangeMailProducer;
 
-    public PersonnelService(PersonnelRepository personnelRepository, JwtTokenManager jwtTokenManager, CreatePersonnelProducer createPersonnelProducer, GetCompanyIdFromSupervisorTokenProducer getCompanyIdFromSupervisorTokenProducer, GetCompanyDetailsByPersonnelRequestProducer getCompanyDetailsByPersonnelRequestProducer, UpdatePersonnelRequestProducer updatePersonnelRequestProducer, UpdateSupervisorProducer updateSupervisorProducer, SendDayOffStatusChangeMailProducer sendDayOffStatusChangeMailProducer, SendAdvanceStatusChangeMailProducer sendAdvanceStatusChangeMailProducer) {
+    private final SendAdvanceExpenseToCompanyServiceProducer sendAdvanceExpenseToCompanyServiceProducer;
+
+    public PersonnelService(PersonnelRepository personnelRepository, JwtTokenManager jwtTokenManager, CreatePersonnelProducer createPersonnelProducer, GetCompanyIdFromSupervisorTokenProducer getCompanyIdFromSupervisorTokenProducer, GetCompanyDetailsByPersonnelRequestProducer getCompanyDetailsByPersonnelRequestProducer, UpdatePersonnelRequestProducer updatePersonnelRequestProducer, UpdateSupervisorProducer updateSupervisorProducer, SendDayOffStatusChangeMailProducer sendDayOffStatusChangeMailProducer, SendAdvanceStatusChangeMailProducer sendAdvanceStatusChangeMailProducer, SendAdvanceExpenseToCompanyServiceProducer sendAdvanceExpenseToCompanyServiceProducer) {
         super(personnelRepository);
         this.personnelRepository = personnelRepository;
         this.jwtTokenManager = jwtTokenManager;
@@ -53,6 +62,7 @@ public class PersonnelService extends ServiceManager<Personnel, String> {
         this.updateSupervisorProducer = updateSupervisorProducer;
         this.sendDayOffStatusChangeMailProducer = sendDayOffStatusChangeMailProducer;
         this.sendAdvanceStatusChangeMailProducer = sendAdvanceStatusChangeMailProducer;
+        this.sendAdvanceExpenseToCompanyServiceProducer = sendAdvanceExpenseToCompanyServiceProducer;
     }
 
     public GetPersonnelDetailsResponseDto getPersonnelDetailsByToken(String token) {
@@ -160,11 +170,17 @@ public class PersonnelService extends ServiceManager<Personnel, String> {
     }
 
     private void sendPersonnelInfoToCompanyQueue(Personnel personnel){
-        createPersonnelProducer.sendPersonnelInfoToCompany(CreatePersonnelCompanyModel.builder()
+        CreatePersonnelCompanyModel requestModel = CreatePersonnelCompanyModel.builder()
                 .personnelId(personnel.getId())
                 .companyId(personnel.getCompanyId())
                 .departmentId(personnel.getDepartmentId())
-                .build());
+                .expenseDescription("SALARY")
+                .expenseAmount(personnel.getSalary())
+                .expenseDate(Instant.ofEpochMilli(personnel.getCreatedAt())
+                        .atZone(ZoneId.systemDefault())
+                        .toLocalDate())
+                .build();
+        createPersonnelProducer.sendPersonnelInfoToCompany(requestModel);
     }
 
     public List<Personnel> getAllByCompanyId(String token) {
@@ -266,6 +282,26 @@ public class PersonnelService extends ServiceManager<Personnel, String> {
                     .build());
         }
         personnel.setPhones(personnelPhones);
+        /*
+        ///
+        String originalFilename = dto.getProfileImage().getOriginalFilename();
+        Path path = Paths.get("uploads/", originalFilename);
+        try {
+            Files.write(path, dto.getProfileImage().getBytes());
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        personnel.setProfileImagePath(path.toString());
+        /// or
+        String profilePictureFileName = personnel.getId() + ".jpg";
+        String profilePicturePath = "uploads" + File.separator + profilePictureFileName;
+        try {
+            dto.getProfileImage().transferTo(new File(profilePicturePath));
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        personnel.setProfilePictureFileName(profilePictureFileName);
+        */
     }
 
     public String getCompanyIdFromAuthId(String authId) {
@@ -337,6 +373,14 @@ public class PersonnelService extends ServiceManager<Personnel, String> {
             Double reduceAmount = model.getRequestAmount();
             personnel.setAdvanceQuota(personnel.getAdvanceQuota() - reduceAmount);
             update(personnel);
+            sendAdvanceExpenseToCompanyServiceProducer.sendExpense(SendAdvanceExpenseToCompanyServiceModel.builder()
+                    .companyId(personnel.getCompanyId())
+                    .description("ADVANCE")
+                    .amount(reduceAmount)
+                    .expenseDate(Instant.ofEpochMilli(personnel.getUpdatedAt())
+                            .atZone(ZoneId.systemDefault())
+                            .toLocalDate())
+                    .build());
         }
         sendAdvanceStatusChangeNotificationToPersonnelMail(model, personnel);
     }

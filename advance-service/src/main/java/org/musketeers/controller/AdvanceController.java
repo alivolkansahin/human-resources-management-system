@@ -17,6 +17,7 @@ import static org.musketeers.constant.Endpoint.*;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping(ROOT + ADVANCE)
+@CrossOrigin
 public class AdvanceController {
 
     private final AdvanceService advanceService;

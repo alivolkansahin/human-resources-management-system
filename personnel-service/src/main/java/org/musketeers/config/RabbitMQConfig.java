@@ -66,6 +66,12 @@ public class RabbitMQConfig {
     @Value("${personnel-service-config.rabbitmq.send-advance-status-change-notification-to-mail-service-binding-key}")
     private String sendAdvanceStatusChangeNotificationToMailServiceBindingKey;
 
+    @Value("${personnel-service-config.rabbitmq.send-advance-expense-to-company-service-queue}")
+    private String sendAdvanceExpenseToCompanyServiceQueue;
+
+    @Value("${personnel-service-config.rabbitmq.send-advance-expense-to-company-service-binding-key}")
+    private String sendAdvanceExpenseToCompanyServiceBindingKey;
+
     @Bean
     DirectExchange createPersonnelExchange() {
         return new DirectExchange(createPersonnelExchange);
@@ -111,6 +117,11 @@ public class RabbitMQConfig {
     }
 
     @Bean
+    Queue sendAdvanceExpenseToCompanyServiceQueue(){
+        return new Queue(sendAdvanceExpenseToCompanyServiceQueue);
+    }
+
+    @Bean
     Binding bindingCreatePersonnelAuthQueue(DirectExchange createPersonnelExchange, Queue createPersonnelAuthQueue) {
         return BindingBuilder.bind(createPersonnelAuthQueue).to(createPersonnelExchange).with(createPersonnelAuthBindingKey);
     }
@@ -147,6 +158,11 @@ public class RabbitMQConfig {
     @Bean
     public Binding bindingSendAdvanceStatusChangeNotificationToMailServiceQueue(DirectExchange createPersonnelExchange, Queue sendAdvanceStatusChangeNotificationToMailServiceQueue){
         return BindingBuilder.bind(sendAdvanceStatusChangeNotificationToMailServiceQueue).to(createPersonnelExchange).with(sendAdvanceStatusChangeNotificationToMailServiceBindingKey);
+    }
+
+    @Bean
+    public Binding bindingSendAdvanceExpenseToCompanyServiceQueue(DirectExchange createPersonnelExchange, Queue sendAdvanceExpenseToCompanyServiceQueue){
+        return BindingBuilder.bind(sendAdvanceExpenseToCompanyServiceQueue).to(createPersonnelExchange).with(sendAdvanceExpenseToCompanyServiceBindingKey);
     }
 
 

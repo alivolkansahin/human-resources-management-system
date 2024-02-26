@@ -11,18 +11,19 @@ import org.musketeers.repository.entity.Personnel;
 import org.musketeers.utility.ServiceManager;
 import org.springframework.stereotype.Service;
 
-import java.util.Arrays;
-
 @Service
 public class DepartmentService extends ServiceManager<Department, String> {
     private final DepartmentRepository departmentRepository;
 
     private final CompanyService companyService;
 
-    public DepartmentService(DepartmentRepository departmentRepository, CompanyService companyService) {
+    private final ExpenseService expenseService;
+
+    public DepartmentService(DepartmentRepository departmentRepository, CompanyService companyService, ExpenseService expenseService) {
         super(departmentRepository);
         this.departmentRepository = departmentRepository;
         this.companyService = companyService;
+        this.expenseService = expenseService;
     }
 
     public Boolean saveDepartment(AddDepartmentRequestDto dto) {
@@ -40,8 +41,13 @@ public class DepartmentService extends ServiceManager<Department, String> {
 
     public void addPersonnelToDepartment(CreatePersonnelCompanyModel model) {
         Department department = findById(model.getDepartmentId()).orElseThrow(() -> new CompanyServiceException(ErrorType.COMPANY_NOT_FOUND));// DEPARTMENT NOT FOUND olabilir.
-        department.getPersonnel().add(Personnel.builder().department(department).personnelId(model.getPersonnelId()).build());
+        Personnel personnel = Personnel.builder()
+                .department(department)
+                .personnelId(model.getPersonnelId())
+                .build();
+        department.getPersonnel().add(personnel);
         update(department);
+        expenseService.addPersonnelSalaryExpense(model);
     }
 
 }

@@ -21,18 +21,7 @@ spending-service-config:
   jwt:
     issuer: ${HR_SYSTEM_ISSUER}
     secret-key: ${HR_SYSTEM_KEY}
-
-rabbitmq:
-  exchange-name: spendingExchange
-#  supervisor-activation-company-queue: supervisorActivationCompanyQueue
-#  get-company-id-from-supervisor-queue: getCompanyIdFromSupervisorQueue
-#  get-company-id-from-supervisor-binding-key: getCompanyIdFromSupervisorBindingKey
-#  create-personnel-company-queue: createPersonnelCompanyQueue
-#  get-company-details-by-comment-company-queue: getCompanyDetailsByCommentCompanyQueue
-#  get-company-supervisors-supervisor-queue: getCompanySupervisorsSupervisorQueue
-#  get-company-supervisors-supervisor-binding-key: getCompanySupervisorsSupervisorBindingKey
-#  get-company-details-by-personnel-queue: getCompanyDetailsByPersonnelQueue
-#  company-status-check-queue: companyStatusCheckQueue
-#  search-for-company-name-queue: searchForCompanyNameQueue
-  expiration-timeout: 5000
+  rabbitmq:
+    spending-exchange: spendingExchange
+    expiration-timeout: 5000
 

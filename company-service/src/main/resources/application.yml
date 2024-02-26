@@ -35,5 +35,6 @@ rabbitmq:
   get-company-details-by-personnel-queue: getCompanyDetailsByPersonnelQueue
   company-status-check-queue: companyStatusCheckQueue
   search-for-company-name-queue: searchForCompanyNameQueue
+  send-advance-expense-to-company-service-queue: sendAdvanceExpenseToCompanyServiceQueue
   expiration-timeout: 5000
 

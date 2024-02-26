@@ -67,6 +67,11 @@ public class SupervisorService extends ServiceManager<Supervisor, String> {
         CreateCompanyResponseModel createCompanyResponseModel = createCompanyProducer.createCompanyAndReturn(createCompanyRequestModel);
         supervisor.setCompanyId(createCompanyResponseModel.getCompanyId());
         supervisor.setActivationStatus(ActivationStatus.ACTIVATED);
+        supervisor.setIsCompanyFirstRegistration(null);
+        supervisor.setContractName(null);
+        supervisor.setContractDuration(null);
+        supervisor.setContractCost(null);
+        supervisor.setContractCurrency(null);
         update(supervisor);
         preparePersonnelModelFromSupervisor(supervisor);
     }

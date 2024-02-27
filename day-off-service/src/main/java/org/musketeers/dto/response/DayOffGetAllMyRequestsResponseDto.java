@@ -15,6 +15,8 @@ public class DayOffGetAllMyRequestsResponseDto {
 
     private String id;
 
+    private String reason;
+
     private String description;
 
     private LocalDate startDate;

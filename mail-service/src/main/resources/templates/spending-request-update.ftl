@@ -8,6 +8,7 @@
 <h1 style="color: #333">Hello, ${name} ${lastName}!</h1>
 <h2 style="color: #333">Your Spending request dated ${requestCreatedAt} has been processed. Please find the details of your Spending request below:</h2>
 <hr>
+<p style="color: #666">Reason: ${requestReason} </p>
 <p style="color: #666">Description: ${requestDescription} </p>
 <p style="color: #666">Amount: ${requestAmount} ${requestCurrency} </p>
 <p style="color: #666">Spending Date: ${requestSpendingDate} </p>

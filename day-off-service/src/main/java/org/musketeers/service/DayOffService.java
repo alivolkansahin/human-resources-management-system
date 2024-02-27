@@ -7,6 +7,7 @@ import org.musketeers.dto.response.DayOffGetAllMyRequestsResponseDto;
 import org.musketeers.dto.response.DayOffGetAllRequestsResponseDto;
 import org.musketeers.entity.DayOff;
 import org.musketeers.entity.enums.ERequestStatus;
+import org.musketeers.entity.enums.EReason;
 import org.musketeers.exception.DayOffServiceException;
 import org.musketeers.exception.ErrorType;
 import org.musketeers.rabbitmq.model.GetPersonnelDetailsForDayOffRequestModel;
@@ -69,6 +70,7 @@ public class DayOffService extends ServiceManager<DayOff, String> {
         save(DayOff.builder()
                 .personnelId(personnelId)
                 .companyId(companyId)
+                .reason(EReason.valueOf(dto.getReason()))
                 .description(dto.getDescription())
                 .startDate(dto.getStartDate())
                 .endDate(dto.getEndDate())
@@ -104,6 +106,7 @@ public class DayOffService extends ServiceManager<DayOff, String> {
     private void sendDayOffStatusChangeNotificationToPersonnelService(DayOff dayOff) {
         SendDayOffStatusChangeNotificationModel requestModel = SendDayOffStatusChangeNotificationModel.builder()
                 .personnelId(dayOff.getPersonnelId())
+                .requestReason(dayOff.getReason().toString())
                 .requestDescription(dayOff.getDescription())
                 .requestStartDate(dayOff.getStartDate())
                 .requestEndDate(dayOff.getEndDate())
@@ -136,6 +139,7 @@ public class DayOffService extends ServiceManager<DayOff, String> {
                     .image(responseModelList.get(i).getImage())
                     .email(responseModelList.get(i).getEmail())
                     .dayOff(responseModelList.get(i).getDayOff())
+                    .reason(dayOffRequests.get(i).getReason().toString())
                     .description(dayOffRequests.get(i).getDescription())
                     .startDate(dayOffRequests.get(i).getStartDate())
                     .endDate(dayOffRequests.get(i).getEndDate())
@@ -164,6 +168,7 @@ public class DayOffService extends ServiceManager<DayOff, String> {
         for (DayOff eachDayOffRequest : personnelDayOffRequests) {
             responseDtoList.add(DayOffGetAllMyRequestsResponseDto.builder()
                     .id(eachDayOffRequest.getId())
+                    .reason(eachDayOffRequest.getReason().toString())
                     .description(eachDayOffRequest.getDescription())
                     .startDate(eachDayOffRequest.getStartDate())
                     .endDate(eachDayOffRequest.getEndDate())

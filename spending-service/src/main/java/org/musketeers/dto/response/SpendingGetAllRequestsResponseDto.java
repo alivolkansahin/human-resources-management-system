@@ -16,6 +16,8 @@ public class SpendingGetAllRequestsResponseDto {
 
     private String id;
 
+    private String reason;
+
     private String personnelId;
 
     private String name;

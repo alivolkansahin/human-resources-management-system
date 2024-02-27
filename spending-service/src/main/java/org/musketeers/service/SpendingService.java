@@ -11,6 +11,7 @@ import org.musketeers.entity.Attachment;
 import org.musketeers.entity.Spending;
 import org.musketeers.entity.enums.ECurrency;
 import org.musketeers.entity.enums.ERequestStatus;
+import org.musketeers.entity.enums.EReason;
 import org.musketeers.exception.ErrorType;
 import org.musketeers.exception.SpendingServiceException;
 import org.musketeers.rabbitmq.model.GetPersonnelDetailsForSpendingRequestModel;
@@ -47,9 +48,8 @@ public class SpendingService extends ServiceManager<Spending, String> {
 
     private final GetPersonnelDetailsForSpendingRequestProducer getPersonnelDetailsForSpendingRequestProducer;
 
-
-
     private static final String SUPERVISOR_ROLE = "SUPERVISOR";
+
     private static final String PERSONNEL_ROLE = "PERSONNEL";
 
     public SpendingService(SpendingRepository spendingRepository, JwtTokenManager jwtTokenManager, Cloudinary cloudinary, GetPersonnelIdAndCompanyIdForSpendingRequestProducer getPersonnelIdAndCompanyIdForSpendingRequestProducer, SendSpendingStatusChangeNotificationProducer sendSpendingStatusChangeNotificationProducer, GetPersonnelDetailsForSpendingRequestProducer getPersonnelDetailsForSpendingRequestProducer) {
@@ -69,7 +69,6 @@ public class SpendingService extends ServiceManager<Spending, String> {
         return claimsFromToken.get(0);
     }
 
-
     public String createRequest(SpendingCreateRequestDto dto) {
         String authId = validateUserRoleAndRetrieveAuthId(dto.getToken(), PERSONNEL_ROLE);
         GetPersonnelIdAndCompanyIdForSpendingRequestModel responseModel = getPersonnelIdAndCompanyIdForSpendingRequestProducer.getPersonnelIdAndCompanyIdFromPersonnelService(authId);
@@ -80,6 +79,7 @@ public class SpendingService extends ServiceManager<Spending, String> {
         Spending spending = Spending.builder()
                 .personnelId(personnelId)
                 .companyId(companyId)
+                .reason(EReason.valueOf(dto.getReason()))
                 .description(dto.getDescription())
                 .amount(dto.getAmount())
                 .currency(ECurrency.valueOf(dto.getCurrency()))
@@ -137,6 +137,7 @@ public class SpendingService extends ServiceManager<Spending, String> {
     private void sendSpendingStatusChangeNotificationToPersonnelService(Spending spending) {
         SendSpendingStatusChangeNotificationModel requestModel = SendSpendingStatusChangeNotificationModel.builder()
                 .personnelId(spending.getPersonnelId())
+                .requestReason(spending.getReason().toString())
                 .requestDescription(spending.getDescription())
                 .requestAmount(spending.getAmount())
                 .requestCurrency(spending.getCurrency().toString())
@@ -170,6 +171,7 @@ public class SpendingService extends ServiceManager<Spending, String> {
                     .lastName(responseModelList.get(i).getLastName())
                     .image(responseModelList.get(i).getImage())
                     .email(responseModelList.get(i).getEmail())
+                    .reason(spendingRequests.get(i).getReason().toString())
                     .description(spendingRequests.get(i).getDescription())
                     .amount(spendingRequests.get(i).getAmount())
                     .currency(spendingRequests.get(i).getCurrency().toString())
@@ -200,6 +202,7 @@ public class SpendingService extends ServiceManager<Spending, String> {
         for (Spending eachSpendingRequest : personnelSpendingRequests) {
             responseDtoList.add(SpendingGetAllMyRequestsResponseDto.builder()
                     .id(eachSpendingRequest.getId())
+                    .reason(eachSpendingRequest.getReason().toString())
                     .description(eachSpendingRequest.getDescription())
                     .amount(eachSpendingRequest.getAmount())
                     .currency(eachSpendingRequest.getCurrency().toString())

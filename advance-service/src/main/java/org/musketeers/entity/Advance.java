@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
 import org.musketeers.entity.enums.ERequestStatus;
+import org.musketeers.entity.enums.EReason;
 
 @EqualsAndHashCode(callSuper = true)
 @NoArgsConstructor
@@ -21,6 +22,9 @@ public class Advance extends BaseEntity{
     private String personnelId;
 
     private String companyId;
+
+    @Enumerated(EnumType.STRING)
+    private EReason reason;
 
     private String description;
 

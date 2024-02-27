@@ -14,7 +14,7 @@ public class SendSpendingStatusChangeMailConsumer {
 
     @RabbitListener(queues = "${mail-service-config.rabbitmq.send-spending-status-change-notification-to-mail-service-queue}")
     public void sendSpendingStatusChangeMailToPersonnel(SendSpendingStatusChangeMailModel model) {
-        mailService.sendMailForSpendingRequestToPersonnel(model);
+        mailService.sendSpendingRequestStatusChangeMailToPersonnel(model);
     }
 
 }

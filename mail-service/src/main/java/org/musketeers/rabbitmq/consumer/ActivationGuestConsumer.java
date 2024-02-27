@@ -14,7 +14,7 @@ public class ActivationGuestConsumer {
 
     @RabbitListener(queues = "${mail-service-config.rabbitmq.activation-guest-queue}")
     public void sendActivationMailToGuest(ActivationGuestModel model){
-        mailService.sendMail(model);
+        mailService.sendActivationMailToGuest(model);
     }
 
 }

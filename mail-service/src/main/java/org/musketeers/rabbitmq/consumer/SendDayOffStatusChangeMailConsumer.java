@@ -14,6 +14,6 @@ public class SendDayOffStatusChangeMailConsumer {
 
     @RabbitListener(queues = "${mail-service-config.rabbitmq.send-day-off-status-change-notification-to-mail-service-queue}")
     public void sendDayOffStatusChangeMailToPersonnel(SendDayOffStatusChangeMailModel model) {
-        mailService.sendMailForDayOffRequestToPersonnel(model);
+        mailService.sendDayOffRequestStatusChangeMailToPersonnel(model);
     }
 }

@@ -2,14 +2,16 @@ package org.musketeers.entity.enums;
 
 public enum EReason {
 
-    A,
+    ANNUAL,
 
-    B,
+    SICK,
 
-    C,
+    MATERNITY,
 
-    D,
+    PATERNITY,
 
-    E;
+    EDUCATIONAL,
+
+    MARRIAGE;
 
 }

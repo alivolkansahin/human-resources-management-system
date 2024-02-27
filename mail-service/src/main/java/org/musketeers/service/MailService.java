@@ -206,8 +206,8 @@ public class MailService {
         freemarkerConfiguration.setSQLDateAndTimeTimeZone(TimeZone.getDefault());
 
         MimeMessage mimeMessage = javaMailSender.createMimeMessage();
-        MimeMessageHelper mimeMessageHelper = new MimeMessageHelper(mimeMessage);
         try {
+            MimeMessageHelper mimeMessageHelper = new MimeMessageHelper(mimeMessage, true);
             mimeMessageHelper.setSubject("Regarding Your Spending Request Dated " + Instant.ofEpochMilli(model.getRequestCreatedAt())
                     .atZone(ZoneId.systemDefault())
                     .toLocalDate()

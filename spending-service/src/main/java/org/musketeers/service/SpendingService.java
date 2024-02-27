@@ -95,6 +95,9 @@ public class SpendingService extends ServiceManager<Spending, String> {
                     attachments.add(Attachment.builder()
                             .spending(spending)
                             .fileUrl(url)
+                            .createdAt(spending.getCreatedAt())
+                            .updatedAt(spending.getUpdatedAt())
+                            .status(true)
                             .build());
                 } catch (IOException e) {
                     throw new RuntimeException(e);

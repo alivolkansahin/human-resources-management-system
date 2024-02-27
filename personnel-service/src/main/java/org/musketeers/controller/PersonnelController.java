@@ -3,11 +3,11 @@ package org.musketeers.controller;
 
 import lombok.RequiredArgsConstructor;
 import org.musketeers.dto.request.CreatePersonnelRequestDto;
-import org.musketeers.dto.request.GetPersonnelByCompanyRequestDto;
 import org.musketeers.dto.request.UpdatePersonnelRequestDto;
 import org.musketeers.dto.response.GetPersonnelDetailsResponseDto;
 import org.musketeers.entity.Personnel;
 import org.musketeers.service.PersonnelService;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -43,10 +43,9 @@ public class PersonnelController {
         return ResponseEntity.ok(personnelService.softDeletePersonnelById(id));
     }
 
-//    @PutMapping(UPDATE + "/{id}")
-    @PutMapping(UPDATE)
-    public ResponseEntity<Boolean> updatePersonnelById(@RequestBody UpdatePersonnelRequestDto dto){
-        return ResponseEntity.ok(personnelService.updatePersonnelById(dto));
+    @PutMapping(value = UPDATE, consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<Boolean> updatePersonnelProfile(@ModelAttribute UpdatePersonnelRequestDto dto){
+        return ResponseEntity.ok(personnelService.updatePersonnelProfile(dto));
     }
 
     @GetMapping(GET_ALL + "-by-company/{token}")

@@ -50,7 +50,18 @@ personnel-service-config:
     send-advance-expense-to-company-service-queue: sendAdvanceExpenseToCompanyServiceQueue
     send-advance-expense-to-company-service-binding-key: sendAdvanceExpenseToCompanyServiceBindingKey
     get-personnel-details-for-advance-request-queue: getPersonnelDetailsForAdvanceRequestQueue
+    get-personnel-id-and-company-id-for-spending-request-queue: getPersonnelIdAndCompanyIdForSpendingRequestQueue
+    send-spending-status-change-notification-to-personnel-service-queue: sendSpendingStatusChangeNotificationToPersonnelServiceQueue
+    send-spending-status-change-notification-to-mail-service-queue: sendSpendingStatusChangeNotificationToMailServiceQueue
+    send-spending-status-change-notification-to-mail-service-binding-key: sendSpendingStatusChangeNotificationToMailServiceBindingKey
+    send-spending-expense-to-company-service-queue: sendSpendingExpenseToCompanyServiceQueue
+    send-spending-expense-to-company-service-binding-key: sendSpendingExpenseToCompanyServiceBindingKey
+    get-personnel-details-for-spending-request-queue: getPersonnelDetailsForSpendingRequestQueue
     expiration-timeout: 5000
+  cloudinary:
+    cloud-name: ${CLOUDINARY_CLOUD_NAME}
+    api-key: ${CLOUDINARY_API_KEY}
+    api-secret: ${CLOUDINARY_API_SECRET}
 
 
 

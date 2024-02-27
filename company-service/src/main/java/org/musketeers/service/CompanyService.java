@@ -1,5 +1,6 @@
 package org.musketeers.service;
 
+import com.cloudinary.Cloudinary;
 import org.musketeers.dto.request.CompanyUpdateRequestDTO;
 import org.musketeers.dto.response.GetCompanyDetailedInfoResponseDto;
 import org.musketeers.dto.response.GetCompanySummaryInfoResponseDto;
@@ -19,12 +20,10 @@ import org.musketeers.utility.JwtTokenManager;
 import org.musketeers.utility.ServiceManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
-import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -33,6 +32,8 @@ import java.util.stream.Collectors;
 public class CompanyService extends ServiceManager<Company, String> {
     private final CompanyRepository companyRepository;
     private final JwtTokenManager jwtTokenManager;
+
+    private final Cloudinary cloudinary;
 
     private final GetCompanyIdFromSupervisorProducer getCompanyIdFromSupervisorProducer;
 
@@ -52,10 +53,11 @@ public class CompanyService extends ServiceManager<Company, String> {
         this.departmentService = departmentService;
     }
 
-    public CompanyService(CompanyRepository companyRepository, JwtTokenManager jwtTokenManager, GetCompanyIdFromSupervisorProducer getCompanyIdFromSupervisorProducer, GetCompanySupervisorRequestProducer getCompanySupervisorRequestProducer, PersonnelService personnelService) {
+    public CompanyService(CompanyRepository companyRepository, JwtTokenManager jwtTokenManager, Cloudinary cloudinary, GetCompanyIdFromSupervisorProducer getCompanyIdFromSupervisorProducer, GetCompanySupervisorRequestProducer getCompanySupervisorRequestProducer, PersonnelService personnelService) {
         super(companyRepository);
         this.companyRepository = companyRepository;
         this.jwtTokenManager=jwtTokenManager;
+        this.cloudinary = cloudinary;
         this.getCompanyIdFromSupervisorProducer = getCompanyIdFromSupervisorProducer;
         this.getCompanySupervisorRequestProducer = getCompanySupervisorRequestProducer;
         this.personnelService = personnelService;

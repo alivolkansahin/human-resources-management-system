@@ -72,6 +72,18 @@ public class RabbitMQConfig {
     @Value("${personnel-service-config.rabbitmq.send-advance-expense-to-company-service-binding-key}")
     private String sendAdvanceExpenseToCompanyServiceBindingKey;
 
+    @Value("${personnel-service-config.rabbitmq.send-spending-status-change-notification-to-mail-service-queue}")
+    private String sendSpendingStatusChangeNotificationToMailServiceQueue;
+
+    @Value("${personnel-service-config.rabbitmq.send-spending-status-change-notification-to-mail-service-binding-key}")
+    private String sendSpendingStatusChangeNotificationToMailServiceBindingKey;
+
+    @Value("${personnel-service-config.rabbitmq.send-spending-expense-to-company-service-queue}")
+    private String sendSpendingExpenseToCompanyServiceQueue;
+
+    @Value("${personnel-service-config.rabbitmq.send-spending-expense-to-company-service-binding-key}")
+    private String sendSpendingExpenseToCompanyServiceBindingKey;
+
     @Bean
     DirectExchange createPersonnelExchange() {
         return new DirectExchange(createPersonnelExchange);
@@ -122,6 +134,16 @@ public class RabbitMQConfig {
     }
 
     @Bean
+    Queue sendSpendingStatusChangeNotificationToMailServiceQueue(){
+        return new Queue(sendSpendingStatusChangeNotificationToMailServiceQueue);
+    }
+
+    @Bean
+    Queue sendSpendingExpenseToCompanyServiceQueue(){
+        return new Queue(sendSpendingExpenseToCompanyServiceQueue);
+    }
+
+    @Bean
     Binding bindingCreatePersonnelAuthQueue(DirectExchange createPersonnelExchange, Queue createPersonnelAuthQueue) {
         return BindingBuilder.bind(createPersonnelAuthQueue).to(createPersonnelExchange).with(createPersonnelAuthBindingKey);
     }
@@ -163,6 +185,16 @@ public class RabbitMQConfig {
     @Bean
     public Binding bindingSendAdvanceExpenseToCompanyServiceQueue(DirectExchange createPersonnelExchange, Queue sendAdvanceExpenseToCompanyServiceQueue){
         return BindingBuilder.bind(sendAdvanceExpenseToCompanyServiceQueue).to(createPersonnelExchange).with(sendAdvanceExpenseToCompanyServiceBindingKey);
+    }
+
+    @Bean
+    public Binding bindingSendSpendingStatusChangeNotificationToMailServiceQueue(DirectExchange createPersonnelExchange, Queue sendSpendingStatusChangeNotificationToMailServiceQueue){
+        return BindingBuilder.bind(sendSpendingStatusChangeNotificationToMailServiceQueue).to(createPersonnelExchange).with(sendSpendingStatusChangeNotificationToMailServiceBindingKey);
+    }
+
+    @Bean
+    public Binding bindingSendSpendingExpenseToCompanyServiceQueue(DirectExchange createPersonnelExchange, Queue sendSpendingExpenseToCompanyServiceQueue){
+        return BindingBuilder.bind(sendSpendingExpenseToCompanyServiceQueue).to(createPersonnelExchange).with(sendSpendingExpenseToCompanyServiceBindingKey);
     }
 
 

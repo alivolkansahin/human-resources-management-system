@@ -116,6 +116,7 @@ public class SupervisorService extends ServiceManager<Supervisor, String> {
         } else {
             supervisor.setPhones(List.of(personalPhone));
         }
+        supervisor.setImage(model.getImage());
         update(supervisor);
     }
 

@@ -34,6 +34,7 @@ public class HRInfo extends BaseEntity{
 
     private String phone;
 
+    @Enumerated(EnumType.STRING)
     private EGender gender;
 
     private String image;

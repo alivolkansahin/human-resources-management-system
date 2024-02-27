@@ -6,26 +6,25 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
 @Builder
-public class UpdatePersonnelRequestDto {
+public class SpendingCreateRequestDto {
 
     private String token;
 
-    private String name;
+    private String description;
 
-    private String lastName;
+    private Double amount;
 
-    private String email;
+    private String currency;
 
-    private List<String> phones;         // get(0) personal, get(1) work phone...
+    private LocalDate spendingDate;
 
-    private MultipartFile profileImage;
-
-    private String profileImageUrl;
+    private List<MultipartFile> attachments;
 
 }

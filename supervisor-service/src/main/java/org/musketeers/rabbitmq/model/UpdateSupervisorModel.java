@@ -22,4 +22,7 @@ public class UpdateSupervisorModel {
     private String email;
 
     private List<String> phones;
+
+    private String image;
+
 }

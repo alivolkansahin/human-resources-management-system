@@ -5,6 +5,7 @@ import org.musketeers.exception.CompanyServiceException;
 import org.musketeers.exception.ErrorType;
 import org.musketeers.rabbitmq.model.CreatePersonnelCompanyModel;
 import org.musketeers.rabbitmq.model.SendAdvanceExpenseToCompanyServiceModel;
+import org.musketeers.rabbitmq.model.SendSpendingExpenseToCompanyServiceModel;
 import org.musketeers.repository.ExpenseRepository;
 import org.musketeers.repository.entity.Company;
 import org.musketeers.repository.entity.Expense;
@@ -60,6 +61,31 @@ public class ExpenseService extends ServiceManager<Expense, String> {
                 .company(company)
                 .description(model.getDescription())
                 .amount(model.getAmount())
+                .expenseDate(model.getExpenseDate())
+                .build();
+        save(expense);
+    }
+
+    public void saveSpendingExpense(SendSpendingExpenseToCompanyServiceModel model) {
+        Company company = companyService.findById(model.getCompanyId()).orElseThrow(() -> new CompanyServiceException(ErrorType.COMPANY_NOT_FOUND));
+        double multiplier;
+        switch (model.getCurrency()) {
+            case "TL":
+                multiplier = 1.0;
+                break;
+            case "USD":
+                multiplier = 31.13;
+                break;
+            case "EUR":
+                multiplier = 33.77;
+                break;
+            default:
+                return;
+        }
+        Expense expense = Expense.builder()
+                .company(company)
+                .description(model.getDescription())
+                .amount(model.getAmount() * multiplier)
                 .expenseDate(model.getExpenseDate())
                 .build();
         save(expense);

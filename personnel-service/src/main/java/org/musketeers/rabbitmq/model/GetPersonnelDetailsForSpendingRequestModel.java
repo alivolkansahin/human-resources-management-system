@@ -5,24 +5,20 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.List;
-
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
 @Builder
-public class UpdateSupervisorModel {
+public class GetPersonnelDetailsForSpendingRequestModel {
 
-    private String authId;
+    private String personnelId;
 
     private String name;
 
     private String lastName;
 
-    private String email;
-
-    private List<String> phones;
-
     private String image;
+
+    private String email;
 
 }

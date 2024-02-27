@@ -8,7 +8,6 @@ import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
 import lombok.RequiredArgsConstructor;
 import org.musketeers.rabbitmq.model.*;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.UrlResource;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
@@ -28,9 +27,11 @@ import java.util.TimeZone;
 public class MailService {
 
     private final JavaMailSender javaMailSender;
-    private final Configuration freemarkerConfiguration; // doc: The main entry point into the FreeMarker API; encapsulates the configuration settings of FreeMarker, also serves as a central template-loading and caching service.
 
-    public void sendMail(ActivationGuestModel model) {
+    // doc: The main entry point into the FreeMarker API; encapsulates the configuration settings of FreeMarker, also serves as a central template-loading and caching service.
+    private final Configuration freemarkerConfiguration;
+
+    private void configureFreemarker() {
         // Recommended settings for new projects:
         freemarkerConfiguration.setDefaultEncoding("UTF-8");
         freemarkerConfiguration.setTemplateExceptionHandler(TemplateExceptionHandler.RETHROW_HANDLER);
@@ -38,58 +39,53 @@ public class MailService {
         freemarkerConfiguration.setWrapUncheckedExceptions(true);
         freemarkerConfiguration.setFallbackOnNullLoopVariable(false);
         freemarkerConfiguration.setSQLDateAndTimeTimeZone(TimeZone.getDefault());
+    }
 
-        // MimeMessage : Offers support for HTML text content, inline elements such as images, and typical mail attachments.
+    public void sendActivationMailToGuest(ActivationGuestModel model) {
+        configureFreemarker();
         MimeMessage mimeMessage = javaMailSender.createMimeMessage();
         MimeMessageHelper mimeMessageHelper = new MimeMessageHelper(mimeMessage);
         try {
             mimeMessageHelper.setSubject("Musketeers HR Management System Account Activation");
             mimeMessageHelper.setFrom("musketeershmrs@gmail.com");
             mimeMessageHelper.setTo(model.getEmail());
-            mimeMessageHelper.setText(getMailContent(model), true);
+            mimeMessageHelper.setText(getActivationMailContent(model), true);
         } catch (MessagingException e) {
             throw new RuntimeException(e);
         }
         javaMailSender.send(mimeMessage);
     }
 
-    private String getMailContent(ActivationGuestModel model) {
-        // Create a data-model
+    private String getActivationMailContent(ActivationGuestModel model) {
         Map<String, String> root = new HashMap<>();
         root.put("id", model.getId());
         root.put("name", model.getName());
         root.put("email", model.getEmail());
         String mailContent;
         try {
-            // Get the template (uses cache internally)
             Template temp = freemarkerConfiguration.getTemplate("guest-activation.ftl");
             return FreeMarkerTemplateUtils.processTemplateIntoString(temp, root);
         } catch (IOException | TemplateException e) {
             throw new RuntimeException(e);
         }
     }
-    public void sendMailForPersonnel(CreatePersonnelMailModel model) {
-        freemarkerConfiguration.setDefaultEncoding("UTF-8");
-        freemarkerConfiguration.setTemplateExceptionHandler(TemplateExceptionHandler.RETHROW_HANDLER);
-        freemarkerConfiguration.setLogTemplateExceptions(false);
-        freemarkerConfiguration.setWrapUncheckedExceptions(true);
-        freemarkerConfiguration.setFallbackOnNullLoopVariable(false);
-        freemarkerConfiguration.setSQLDateAndTimeTimeZone(TimeZone.getDefault());
 
+    public void sendAccountCreatedInformationToPersonnel(CreatePersonnelMailModel model) {
+        configureFreemarker();
         MimeMessage mimeMessage = javaMailSender.createMimeMessage();
         MimeMessageHelper mimeMessageHelper = new MimeMessageHelper(mimeMessage);
         try {
-            mimeMessageHelper.setSubject("Musketeers HR Management System Account Activation Success");
+            mimeMessageHelper.setSubject("Musketeers HR Management System Account Created");
             mimeMessageHelper.setFrom("musketeershmrs@gmail.com");
             mimeMessageHelper.setTo(model.getEmail());
-            mimeMessageHelper.setText(getMailContentForPersonnel(model), true);
+            mimeMessageHelper.setText(getAccountCreatedInformationMailContent(model), true);
         } catch (MessagingException e) {
             throw new RuntimeException(e);
         }
         javaMailSender.send(mimeMessage);
     }
 
-    private String getMailContentForPersonnel(CreatePersonnelMailModel model) {
+    private String getAccountCreatedInformationMailContent(CreatePersonnelMailModel model) {
         Map<String, String> root = new HashMap<>();
         root.put("name", model.getName());
         root.put("email", model.getEmail());
@@ -102,14 +98,8 @@ public class MailService {
         }
     }
 
-    public void sendMailForDayOffRequestToPersonnel(SendDayOffStatusChangeMailModel model) {
-        freemarkerConfiguration.setDefaultEncoding("UTF-8");
-        freemarkerConfiguration.setTemplateExceptionHandler(TemplateExceptionHandler.RETHROW_HANDLER);
-        freemarkerConfiguration.setLogTemplateExceptions(false);
-        freemarkerConfiguration.setWrapUncheckedExceptions(true);
-        freemarkerConfiguration.setFallbackOnNullLoopVariable(false);
-        freemarkerConfiguration.setSQLDateAndTimeTimeZone(TimeZone.getDefault());
-
+    public void sendDayOffRequestStatusChangeMailToPersonnel(SendDayOffStatusChangeMailModel model) {
+        configureFreemarker();
         MimeMessage mimeMessage = javaMailSender.createMimeMessage();
         MimeMessageHelper mimeMessageHelper = new MimeMessageHelper(mimeMessage);
         try {
@@ -119,14 +109,14 @@ public class MailService {
                     .toString());
             mimeMessageHelper.setFrom("musketeershmrs@gmail.com");
             mimeMessageHelper.setTo(model.getEmail());
-            mimeMessageHelper.setText(getMailContentForDayOffMail(model), true);
+            mimeMessageHelper.setText(getDayOffRequestStatusChangeMailContent(model), true);
         } catch (MessagingException e) {
             throw new RuntimeException(e);
         }
         javaMailSender.send(mimeMessage);
     }
 
-    private String getMailContentForDayOffMail(SendDayOffStatusChangeMailModel model) {
+    private String getDayOffRequestStatusChangeMailContent(SendDayOffStatusChangeMailModel model) {
         Map<String, String> root = new HashMap<>();
         root.put("name", model.getName());
         root.put("lastName", model.getLastName());
@@ -150,14 +140,8 @@ public class MailService {
         }
     }
 
-    public void sendMailForAdvanceRequestToPersonnel(SendAdvanceStatusChangeMailModel model) {
-        freemarkerConfiguration.setDefaultEncoding("UTF-8");
-        freemarkerConfiguration.setTemplateExceptionHandler(TemplateExceptionHandler.RETHROW_HANDLER);
-        freemarkerConfiguration.setLogTemplateExceptions(false);
-        freemarkerConfiguration.setWrapUncheckedExceptions(true);
-        freemarkerConfiguration.setFallbackOnNullLoopVariable(false);
-        freemarkerConfiguration.setSQLDateAndTimeTimeZone(TimeZone.getDefault());
-
+    public void sendAdvanceRequestStatusChangeMailToPersonnel(SendAdvanceStatusChangeMailModel model) {
+        configureFreemarker();
         MimeMessage mimeMessage = javaMailSender.createMimeMessage();
         MimeMessageHelper mimeMessageHelper = new MimeMessageHelper(mimeMessage);
         try {
@@ -167,14 +151,14 @@ public class MailService {
                     .toString());
             mimeMessageHelper.setFrom("musketeershmrs@gmail.com");
             mimeMessageHelper.setTo(model.getEmail());
-            mimeMessageHelper.setText(getMailContentForAdvanceMail(model), true);
+            mimeMessageHelper.setText(getAdvanceRequestStatusChangeMailContent(model), true);
         } catch (MessagingException e) {
             throw new RuntimeException(e);
         }
         javaMailSender.send(mimeMessage);
     }
 
-    private String getMailContentForAdvanceMail(SendAdvanceStatusChangeMailModel model) {
+    private String getAdvanceRequestStatusChangeMailContent(SendAdvanceStatusChangeMailModel model) {
         Map<String, String> root = new HashMap<>();
         root.put("name", model.getName());
         root.put("lastName", model.getLastName());
@@ -197,14 +181,8 @@ public class MailService {
         }
     }
 
-    public void sendMailForSpendingRequestToPersonnel(SendSpendingStatusChangeMailModel model) {
-        freemarkerConfiguration.setDefaultEncoding("UTF-8");
-        freemarkerConfiguration.setTemplateExceptionHandler(TemplateExceptionHandler.RETHROW_HANDLER);
-        freemarkerConfiguration.setLogTemplateExceptions(false);
-        freemarkerConfiguration.setWrapUncheckedExceptions(true);
-        freemarkerConfiguration.setFallbackOnNullLoopVariable(false);
-        freemarkerConfiguration.setSQLDateAndTimeTimeZone(TimeZone.getDefault());
-
+    public void sendSpendingRequestStatusChangeMailToPersonnel(SendSpendingStatusChangeMailModel model) {
+        configureFreemarker();
         MimeMessage mimeMessage = javaMailSender.createMimeMessage();
         try {
             MimeMessageHelper mimeMessageHelper = new MimeMessageHelper(mimeMessage, true);
@@ -220,14 +198,14 @@ public class MailService {
                 mimeMessageHelper.addAttachment(fileName, new UrlResource(attachmentUrl));
             }
 
-            mimeMessageHelper.setText(getMailContentForSpendingMail(model), true);
+            mimeMessageHelper.setText(getSpendingRequestStatusChangeMailContent(model), true);
         } catch (MessagingException | MalformedURLException e) {
             throw new RuntimeException(e);
         }
         javaMailSender.send(mimeMessage);
     }
 
-    private String getMailContentForSpendingMail(SendSpendingStatusChangeMailModel model) {
+    private String getSpendingRequestStatusChangeMailContent(SendSpendingStatusChangeMailModel model) {
         Map<String, String> root = new HashMap<>();
         root.put("name", model.getName());
         root.put("lastName", model.getLastName());
@@ -251,4 +229,5 @@ public class MailService {
             throw new RuntimeException(e);
         }
     }
+
 }

@@ -15,6 +15,6 @@ public class PersonnelRegistrationDataConsumer {
 
     @RabbitListener(queues = "${mail-service-config.rabbitmq.mail-queue-personnel}")
     public void sendRegistrationDataForPersonnel(CreatePersonnelMailModel model) {
-        mailService.sendMailForPersonnel(model);
+        mailService.sendAccountCreatedInformationToPersonnel(model);
     }
 }

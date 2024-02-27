@@ -22,6 +22,10 @@ company-service-config:
   jwt:
     issuer: ${HR_SYSTEM_ISSUER}
     secret-key: ${HR_SYSTEM_KEY}
+  cloudinary:
+    cloud-name: ${CLOUDINARY_CLOUD_NAME}
+    api-key: ${CLOUDINARY_API_KEY}
+    api-secret: ${CLOUDINARY_API_SECRET}
 
 rabbitmq:
   exchange-name: companyExchange
@@ -36,5 +40,6 @@ rabbitmq:
   company-status-check-queue: companyStatusCheckQueue
   search-for-company-name-queue: searchForCompanyNameQueue
   send-advance-expense-to-company-service-queue: sendAdvanceExpenseToCompanyServiceQueue
+  send-spending-expense-to-company-service-queue: sendSpendingExpenseToCompanyServiceQueue
   expiration-timeout: 5000
 

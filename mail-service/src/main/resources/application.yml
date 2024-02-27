@@ -26,6 +26,7 @@ mail-service-config:
     mail-queue-personnel: mailQueuePersonnel
     send-day-off-status-change-notification-to-mail-service-queue: sendDayOffStatusChangeNotificationToMailServiceQueue
     send-advance-status-change-notification-to-mail-service-queue: sendAdvanceStatusChangeNotificationToMailServiceQueue
+    send-spending-status-change-notification-to-mail-service-queue: sendSpendingStatusChangeNotificationToMailServiceQueue
 
 
 

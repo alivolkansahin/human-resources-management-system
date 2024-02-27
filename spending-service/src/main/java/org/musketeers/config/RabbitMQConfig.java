@@ -18,59 +18,58 @@ public class RabbitMQConfig {
     @Value("${spending-service-config.rabbitmq.spending-exchange}")
     private String spendingExchange;
 
-//    @Value("${day-off-service-config.rabbitmq.get-personnel-id-and-company-id-for-day-off-request-queue}")
-//    private String getPersonnelIdAndCompanyIdForDayOffRequestQueue;
-//
-//    @Value("${day-off-service-config.rabbitmq.get-personnel-id-and-company-id-for-day-off-request-binding-key}")
-//    private String getPersonnelIdAndCompanyIdForDayOffRequestBindingKey;
-//
-//    @Value("${day-off-service-config.rabbitmq.send-day-off-status-change-notification-to-personnel-service-queue}")
-//    private String sendDayOffStatusChangeNotificationToPersonnelServiceQueue;
-//
-//    @Value("${day-off-service-config.rabbitmq.send-day-off-status-change-notification-to-personnel-service-binding-key}")
-//    private String sendDayOffStatusChangeNotificationToPersonnelServiceBindingKey;
-//
-//    @Value("${day-off-service-config.rabbitmq.get-personnel-details-for-day-off-request-queue}")
-//    private String getPersonnelDetailsForDayOffRequestQueue;
-//
-//    @Value("${day-off-service-config.rabbitmq.get-personnel-details-for-day-off-request-binding-key}")
-//    private String getPersonnelDetailsForDayOffRequestBindingKey;
-//
-//    @Bean
-//    DirectExchange spendingExchange(){
-//        return new DirectExchange(spendingExchange);
-//    }
-//
-//    @Bean
-//    Queue getPersonnelIdAndCompanyIdForDayOffRequestQueue(){
-//        return new Queue(getPersonnelIdAndCompanyIdForDayOffRequestQueue);
-//    }
-//
-//    @Bean
-//    Queue sendDayOffStatusChangeNotificationToPersonnelServiceQueue(){
-//        return new Queue(sendDayOffStatusChangeNotificationToPersonnelServiceQueue);
-//    }
-//
-//    @Bean
-//    Queue getPersonnelDetailsForDayOffRequestQueue(){
-//        return new Queue(getPersonnelDetailsForDayOffRequestQueue);
-//    }
-//
-//    @Bean
-//    public Binding bindingGetPersonnelIdAndCompanyIdForDayOffRequestQueue(DirectExchange spendingExchange, Queue getPersonnelIdAndCompanyIdForDayOffRequestQueue){
-//        return BindingBuilder.bind(getPersonnelIdAndCompanyIdForDayOffRequestQueue).to(spendingExchange).with(getPersonnelIdAndCompanyIdForDayOffRequestBindingKey);
-//    }
-//
-//    @Bean
-//    public Binding bindingSendDayOffStatusChangeNotificationToPersonnelServiceQueue(DirectExchange spendingExchange, Queue sendDayOffStatusChangeNotificationToPersonnelServiceQueue){
-//        return BindingBuilder.bind(sendDayOffStatusChangeNotificationToPersonnelServiceQueue).to(spendingExchange).with(sendDayOffStatusChangeNotificationToPersonnelServiceBindingKey);
-//    }
-//
-//    @Bean
-//    public Binding bindingGetPersonnelDetailsForDayOffRequestQueue(DirectExchange spendingExchange, Queue getPersonnelDetailsForDayOffRequestQueue){
-//        return BindingBuilder.bind(getPersonnelDetailsForDayOffRequestQueue).to(spendingExchange).with(getPersonnelDetailsForDayOffRequestBindingKey);
-//    }
+    @Value("${spending-service-config.rabbitmq.get-personnel-id-and-company-id-for-spending-request-queue}")
+    private String getPersonnelIdAndCompanyIdForSpendingRequestQueue;
 
+    @Value("${spending-service-config.rabbitmq.get-personnel-id-and-company-id-for-spending-request-binding-key}")
+    private String getPersonnelIdAndCompanyIdForSpendingRequestBindingKey;
+
+    @Value("${spending-service-config.rabbitmq.send-spending-status-change-notification-to-personnel-service-queue}")
+    private String sendSpendingStatusChangeNotificationToPersonnelServiceQueue;
+
+    @Value("${spending-service-config.rabbitmq.send-spending-status-change-notification-to-personnel-service-binding-key}")
+    private String sendSpendingStatusChangeNotificationToPersonnelServiceBindingKey;
+
+    @Value("${spending-service-config.rabbitmq.get-personnel-details-for-spending-request-queue}")
+    private String getPersonnelDetailsForSpendingRequestQueue;
+
+    @Value("${spending-service-config.rabbitmq.get-personnel-details-for-spending-request-binding-key}")
+    private String getPersonnelDetailsForSpendingRequestBindingKey;
+
+    @Bean
+    DirectExchange spendingExchange(){
+        return new DirectExchange(spendingExchange);
+    }
+
+    @Bean
+    Queue getPersonnelIdAndCompanyIdForSpendingRequestQueue(){
+        return new Queue(getPersonnelIdAndCompanyIdForSpendingRequestQueue);
+    }
+
+    @Bean
+    Queue sendSpendingStatusChangeNotificationToPersonnelServiceQueue(){
+        return new Queue(sendSpendingStatusChangeNotificationToPersonnelServiceQueue);
+    }
+
+    @Bean
+    Queue getPersonnelDetailsForSpendingRequestQueue(){
+        return new Queue(getPersonnelDetailsForSpendingRequestQueue);
+    }
+
+    @Bean
+    public Binding bindingGetPersonnelIdAndCompanyIdForSpendingRequestQueue(DirectExchange spendingExchange, Queue getPersonnelIdAndCompanyIdForSpendingRequestQueue){
+        return BindingBuilder.bind(getPersonnelIdAndCompanyIdForSpendingRequestQueue).to(spendingExchange).with(getPersonnelIdAndCompanyIdForSpendingRequestBindingKey);
+    }
+
+    @Bean
+    public Binding bindingSpendingStatusChangeNotificationToPersonnelServiceQueue(DirectExchange spendingExchange, Queue sendSpendingStatusChangeNotificationToPersonnelServiceQueue){
+        return BindingBuilder.bind(sendSpendingStatusChangeNotificationToPersonnelServiceQueue).to(spendingExchange).with(sendSpendingStatusChangeNotificationToPersonnelServiceBindingKey);
+    }
+
+    @Bean
+    public Binding bindingGetPersonnelDetailsForSpendingRequestQueue(DirectExchange spendingExchange, Queue getPersonnelDetailsForSpendingRequestQueue){
+        return BindingBuilder.bind(getPersonnelDetailsForSpendingRequestQueue).to(spendingExchange).with(getPersonnelDetailsForSpendingRequestBindingKey);
+    }
 
     @Bean
     MessageConverter messageConverter(){
@@ -83,4 +82,5 @@ public class RabbitMQConfig {
         template.setMessageConverter(messageConverter());
         return template;
     }
+
 }

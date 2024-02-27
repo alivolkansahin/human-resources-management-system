@@ -1,5 +1,7 @@
 package org.musketeers.service;
 
+import com.cloudinary.Cloudinary;
+import com.cloudinary.utils.ObjectUtils;
 import org.musketeers.dto.request.CreatePersonnelRequestDto;
 import org.musketeers.dto.request.UpdatePersonnelRequestDto;
 import org.musketeers.dto.response.*;
@@ -16,17 +18,11 @@ import org.musketeers.utility.JwtTokenManager;
 import org.musketeers.utility.ServiceManager;
 import org.springframework.stereotype.Service;
 
-import java.io.File;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.time.Instant;
 import java.time.ZoneId;
 import java.time.temporal.ChronoUnit;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 
 @Service
 public class PersonnelService extends ServiceManager<Personnel, String> {
@@ -34,6 +30,8 @@ public class PersonnelService extends ServiceManager<Personnel, String> {
     private final PersonnelRepository personnelRepository;
 
     private final JwtTokenManager jwtTokenManager;
+
+    private final Cloudinary cloudinary;
 
     private final CreatePersonnelProducer createPersonnelProducer;
 
@@ -51,10 +49,15 @@ public class PersonnelService extends ServiceManager<Personnel, String> {
 
     private final SendAdvanceExpenseToCompanyServiceProducer sendAdvanceExpenseToCompanyServiceProducer;
 
-    public PersonnelService(PersonnelRepository personnelRepository, JwtTokenManager jwtTokenManager, CreatePersonnelProducer createPersonnelProducer, GetCompanyIdFromSupervisorTokenProducer getCompanyIdFromSupervisorTokenProducer, GetCompanyDetailsByPersonnelRequestProducer getCompanyDetailsByPersonnelRequestProducer, UpdatePersonnelRequestProducer updatePersonnelRequestProducer, UpdateSupervisorProducer updateSupervisorProducer, SendDayOffStatusChangeMailProducer sendDayOffStatusChangeMailProducer, SendAdvanceStatusChangeMailProducer sendAdvanceStatusChangeMailProducer, SendAdvanceExpenseToCompanyServiceProducer sendAdvanceExpenseToCompanyServiceProducer) {
+    private final SendSpendingStatusChangeMailProducer sendSpendingStatusChangeMailProducer;
+
+    private final SendSpendingExpenseToCompanyServiceProducer sendSpendingExpenseToCompanyServiceProducer;
+
+    public PersonnelService(PersonnelRepository personnelRepository, JwtTokenManager jwtTokenManager, Cloudinary cloudinary, CreatePersonnelProducer createPersonnelProducer, GetCompanyIdFromSupervisorTokenProducer getCompanyIdFromSupervisorTokenProducer, GetCompanyDetailsByPersonnelRequestProducer getCompanyDetailsByPersonnelRequestProducer, UpdatePersonnelRequestProducer updatePersonnelRequestProducer, UpdateSupervisorProducer updateSupervisorProducer, SendDayOffStatusChangeMailProducer sendDayOffStatusChangeMailProducer, SendAdvanceStatusChangeMailProducer sendAdvanceStatusChangeMailProducer, SendAdvanceExpenseToCompanyServiceProducer sendAdvanceExpenseToCompanyServiceProducer, SendSpendingStatusChangeMailProducer sendSpendingStatusChangeMailProducer, SendSpendingExpenseToCompanyServiceProducer sendSpendingExpenseToCompanyServiceProducer) {
         super(personnelRepository);
         this.personnelRepository = personnelRepository;
         this.jwtTokenManager = jwtTokenManager;
+        this.cloudinary = cloudinary;
         this.createPersonnelProducer = createPersonnelProducer;
         this.getCompanyIdFromSupervisorTokenProducer = getCompanyIdFromSupervisorTokenProducer;
         this.getCompanyDetailsByPersonnelRequestProducer = getCompanyDetailsByPersonnelRequestProducer;
@@ -63,6 +66,8 @@ public class PersonnelService extends ServiceManager<Personnel, String> {
         this.sendDayOffStatusChangeMailProducer = sendDayOffStatusChangeMailProducer;
         this.sendAdvanceStatusChangeMailProducer = sendAdvanceStatusChangeMailProducer;
         this.sendAdvanceExpenseToCompanyServiceProducer = sendAdvanceExpenseToCompanyServiceProducer;
+        this.sendSpendingStatusChangeMailProducer = sendSpendingStatusChangeMailProducer;
+        this.sendSpendingExpenseToCompanyServiceProducer = sendSpendingExpenseToCompanyServiceProducer;
     }
 
     public GetPersonnelDetailsResponseDto getPersonnelDetailsByToken(String token) {
@@ -237,7 +242,7 @@ public class PersonnelService extends ServiceManager<Personnel, String> {
                 .build();
     }
 
-    public Boolean updatePersonnelById(UpdatePersonnelRequestDto dto) {
+    public Boolean updatePersonnelProfile(UpdatePersonnelRequestDto dto) {
         List<String> authIdAndRole = jwtTokenManager.getClaimsFromToken(dto.getToken());
         Personnel personnel = personnelRepository.findOptionalByAuthId(authIdAndRole.get(0)).orElseThrow(() -> new PersonnelServiceException(ErrorType.PERSONNEL_NOT_FOUND));
         UpdatePersonnelRequestModel requestModelForAuth = UpdatePersonnelRequestModel.builder()
@@ -262,11 +267,13 @@ public class PersonnelService extends ServiceManager<Personnel, String> {
                 .phones(personnel.getPhones().stream()
                         .map(Phone::getPhoneNumber)
                         .toList())
+                .image(personnel.getImage())
                 .build();
         updateSupervisorProducer.updateSupervisorService(requestModelForSupervisor);
     }
 
     private void preparePersonnelForUpdate(Personnel personnel, UpdatePersonnelRequestDto dto) {
+        long startTime = System.currentTimeMillis();
         personnel.setName(dto.getName());
         personnel.setLastName(dto.getLastName());
         personnel.setEmail(dto.getEmail());
@@ -282,26 +289,25 @@ public class PersonnelService extends ServiceManager<Personnel, String> {
                     .build());
         }
         personnel.setPhones(personnelPhones);
-        /*
-        ///
-        String originalFilename = dto.getProfileImage().getOriginalFilename();
-        Path path = Paths.get("uploads/", originalFilename);
-        try {
-            Files.write(path, dto.getProfileImage().getBytes());
-        } catch (IOException e) {
-            throw new RuntimeException(e);
+//        String profilePictureFileName = personnel.getId() + ".jpg";
+//        String profilePicturePath = "H:\\Program Files\\PROJECTS\\human-resources-management-system\\personnel-service\\src\\main\\resources\\uploads\\" + profilePictureFileName;
+//        try {
+//            dto.getProfileImage().transferTo(new File(profilePicturePath));
+//        } catch (IOException e) {
+//            throw new RuntimeException(e);
+//        }
+        if(Optional.ofNullable(dto.getProfileImageUrl()).isEmpty()) {
+            try {
+                byte[] fileBytes = dto.getProfileImage().getBytes();
+                Map<?, ?> response = cloudinary.uploader().upload(fileBytes, ObjectUtils.emptyMap());
+                String url = (String) response.get("url");
+                personnel.setImage(url);
+                return;
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
         }
-        personnel.setProfileImagePath(path.toString());
-        /// or
-        String profilePictureFileName = personnel.getId() + ".jpg";
-        String profilePicturePath = "uploads" + File.separator + profilePictureFileName;
-        try {
-            dto.getProfileImage().transferTo(new File(profilePicturePath));
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-        personnel.setProfilePictureFileName(profilePictureFileName);
-        */
+        personnel.setImage(dto.getProfileImageUrl());
     }
 
     public String getCompanyIdFromAuthId(String authId) {
@@ -414,5 +420,63 @@ public class PersonnelService extends ServiceManager<Personnel, String> {
                     .build());
         });
         return personnelModelList;
+    }
+
+    public GetPersonnelIdAndCompanyIdForSpendingRequestModel getPersonnelIdAndCompanyIdForSpendingRequest(String authId) {
+        Personnel personnel = personnelRepository.findOptionalByAuthId(authId).orElseThrow(() -> new PersonnelServiceException(ErrorType.PERSONNEL_NOT_FOUND));
+        return GetPersonnelIdAndCompanyIdForSpendingRequestModel.builder()
+                .personnelId(personnel.getId())
+                .companyId(personnel.getCompanyId())
+                .build();
+    }
+
+    public void handleSpendingRequestStatusChange(SendSpendingStatusChangeNotificationModel model) {
+        Personnel personnel = findById(model.getPersonnelId());
+        if(model.getUpdatedStatus().equals("ACCEPTED")) {
+            sendSpendingExpenseToCompanyServiceProducer.sendExpense(SendSpendingExpenseToCompanyServiceModel.builder()
+                    .companyId(personnel.getCompanyId())
+                    .description("SPENDING")
+                    .amount(model.getRequestAmount())
+                    .currency(model.getRequestCurrency())
+                    .expenseDate(Instant.ofEpochMilli(personnel.getUpdatedAt())
+                            .atZone(ZoneId.systemDefault())
+                            .toLocalDate())
+                    .build());
+        }
+        sendSpendingStatusChangeNotificationToPersonnelMail(model, personnel);
+    }
+
+    private void sendSpendingStatusChangeNotificationToPersonnelMail(SendSpendingStatusChangeNotificationModel model, Personnel personnel) {
+        SendSpendingStatusChangeMailModel requestModel = SendSpendingStatusChangeMailModel.builder()
+                .name(personnel.getName())
+                .lastName(personnel.getLastName())
+                .email(personnel.getEmail())
+                .requestDescription(model.getRequestDescription())
+                .requestAmount(model.getRequestAmount())
+                .requestCurrency(model.getRequestCurrency())
+                .requestSpendingDate(model.getRequestSpendingDate())
+                .requestAttachments(model.getRequestAttachments())
+                .updatedStatus(model.getUpdatedStatus())
+                .requestCreatedAt(model.getRequestCreatedAt())
+                .requestUpdatedAt(model.getRequestUpdatedAt())
+                .build();
+        sendSpendingStatusChangeMailProducer.sendMailToPersonnel(requestModel);
+    }
+
+    public List<GetPersonnelDetailsForSpendingRequestModel> getPersonnelDetailsForSpendingRequest(List<String> personnelIds) {
+        List<Personnel> personnelList = new ArrayList<>();
+        personnelIds.forEach(personnelId -> personnelList.add(findById(personnelId)));
+        List<GetPersonnelDetailsForSpendingRequestModel> personnelModelList = new ArrayList<>();
+        personnelList.forEach(personnel -> {
+            personnelModelList.add(GetPersonnelDetailsForSpendingRequestModel.builder()
+                    .personnelId(personnel.getId())
+                    .name(personnel.getName())
+                    .lastName(personnel.getLastName())
+                    .image(personnel.getImage())
+                    .email(personnel.getEmail())
+                    .build());
+        });
+        return personnelModelList;
+
     }
 }

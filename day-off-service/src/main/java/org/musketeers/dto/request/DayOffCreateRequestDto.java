@@ -15,6 +15,8 @@ public class DayOffCreateRequestDto {
 
     private String token;
 
+    private String reason;
+
     private String description;
 
     private LocalDate startDate;

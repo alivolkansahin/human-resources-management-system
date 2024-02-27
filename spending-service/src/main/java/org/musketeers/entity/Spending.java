@@ -7,6 +7,7 @@ import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 import org.musketeers.entity.enums.ECurrency;
 import org.musketeers.entity.enums.ERequestStatus;
+import org.musketeers.entity.enums.EReason;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -27,6 +28,9 @@ public class Spending extends BaseEntity{
     private String personnelId;
 
     private String companyId;
+
+    @Enumerated(EnumType.STRING)
+    private EReason reason;
 
     private String description;
 

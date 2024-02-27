@@ -16,6 +16,8 @@ public class SendSpendingStatusChangeNotificationModel {
 
     private String personnelId;
 
+    private String requestReason;
+
     private String requestDescription;
 
     private Double requestAmount;

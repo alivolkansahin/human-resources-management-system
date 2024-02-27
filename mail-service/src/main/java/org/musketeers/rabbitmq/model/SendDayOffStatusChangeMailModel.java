@@ -19,6 +19,8 @@ public class SendDayOffStatusChangeMailModel {
 
     private String email;
 
+    private String requestReason;
+
     private String requestDescription;
 
     private LocalDate requestStartDate;

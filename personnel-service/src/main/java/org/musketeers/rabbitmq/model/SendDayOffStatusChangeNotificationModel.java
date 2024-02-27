@@ -15,6 +15,8 @@ public class SendDayOffStatusChangeNotificationModel {
 
     private String personnelId;
 
+    private String requestReason;
+
     private String requestDescription;
 
     private LocalDate requestStartDate;

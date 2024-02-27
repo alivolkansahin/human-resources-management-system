@@ -124,6 +124,7 @@ public class MailService {
                 .atZone(ZoneId.systemDefault())
                 .toLocalDate()
                 .toString());
+        root.put("requestReason", model.getRequestReason());
         root.put("requestDescription", model.getRequestDescription());
         root.put("requestStartDate", model.getRequestStartDate().toString());
         root.put("requestEndDate", model.getRequestEndDate().toString());
@@ -166,6 +167,7 @@ public class MailService {
                 .atZone(ZoneId.systemDefault())
                 .toLocalDate()
                 .toString());
+        root.put("requestReason", model.getRequestReason());
         root.put("requestDescription", model.getRequestDescription());
         root.put("requestAmount", model.getRequestAmount().toString());
         root.put("requestStatus", model.getUpdatedStatus());
@@ -213,6 +215,7 @@ public class MailService {
                 .atZone(ZoneId.systemDefault())
                 .toLocalDate()
                 .toString());
+        root.put("requestReason", model.getRequestReason());
         root.put("requestDescription", model.getRequestDescription());
         root.put("requestAmount", model.getRequestAmount().toString());
         root.put("requestCurrency", model.getRequestCurrency());

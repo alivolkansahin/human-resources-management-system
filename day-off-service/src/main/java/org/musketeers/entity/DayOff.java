@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
 import org.musketeers.entity.enums.ERequestStatus;
+import org.musketeers.entity.enums.EReason;
 
 import java.time.LocalDate;
 
@@ -23,6 +24,9 @@ public class DayOff extends BaseEntity{
     private String personnelId;
 
     private String companyId;
+
+    @Enumerated(EnumType.STRING)
+    private EReason reason;
 
     private String description;
 

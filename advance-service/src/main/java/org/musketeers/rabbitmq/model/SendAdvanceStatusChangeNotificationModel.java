@@ -13,6 +13,8 @@ public class SendAdvanceStatusChangeNotificationModel {
 
     private String personnelId;
 
+    private String requestReason;
+
     private String requestDescription;
 
     private Double requestAmount;

@@ -25,6 +25,7 @@ import org.springframework.util.FileCopyUtils;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
+import java.util.Locale;
 import java.util.Optional;
 
 @Service
@@ -165,13 +166,11 @@ public class AuthService extends ServiceManager<Auth, String> {
                 .id(auth.get().getId())
                 .build();
         registerGuestActivationProducer.changeGuestStatus(registerGuestActivationModel);
-//        Path activationSuccessHTMLPath = Paths.get("H:\\Program Files\\PROJECTS\\human-resources-management-system\\auth-service\\src\\main\\resources\\templates\\activation-success-page.html");
         try {
             ClassPathResource classPathResource = new ClassPathResource("templates/activation-success-page.html");
             InputStream inputStream = classPathResource.getInputStream();
-//            byte [] successfulPage = Files.readAllBytes(activationSuccessHTMLPath);
-            byte[] successfulPage = FileCopyUtils.copyToByteArray(inputStream);
-            return new String(successfulPage);
+            byte[] activationSuccessfulPage = FileCopyUtils.copyToByteArray(inputStream);
+            return new String(activationSuccessfulPage);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -199,17 +198,25 @@ public class AuthService extends ServiceManager<Auth, String> {
     }
 
     public String registerPersonnel(CreatePersonnelAuthModel model) {
-        String code;
+        String compoundName = model.getName().replace(" ", "");
+        String passwordPrefix= compoundName.substring(0,1).toUpperCase(Locale.ROOT) + compoundName.substring(1);
+        String generatedPassword;
+        String resultPassword;
         do {
-            code = model.getName() + CodeGenerator.generateCode();
-        } while (!code.matches(".*\\d.*"));
+            generatedPassword = passwordPrefix + CodeGenerator.generateCode();
+            resultPassword = switch(passwordPrefix.length()) {
+                case 2 -> generatedPassword + "v";
+                case 1 -> generatedPassword + "vo";
+                default -> generatedPassword;
+            };
+        } while (!resultPassword.matches(".*\\d.*"));
 
         Auth auth = Auth.builder()
                 .email(model.getEmail())
                 .phone(model.getPhone())
                 .role(ERole.PERSONNEL)
                 .status(EStatus.ACTIVE)
-                .password(code)
+                .password(resultPassword)
                 .build();
         save(auth);
 

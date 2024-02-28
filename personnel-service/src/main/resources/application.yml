@@ -16,6 +16,9 @@ spring:
     port: 5672
     username: user
     password: user
+  servlet:
+    multipart:
+      max-file-size: 3MB
 personnel-service-config:
   jwt:
     issuer: ${HR_SYSTEM_ISSUER}

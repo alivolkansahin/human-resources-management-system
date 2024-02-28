@@ -19,8 +19,6 @@ public class SendAdvanceStatusChangeMailModel {
 
     private String email;
 
-    private String requestReason;
-
     private String requestDescription;
 
     private Double requestAmount;

@@ -9,6 +9,7 @@ import org.musketeers.dto.response.GetCompanySummaryInfoResponseDto;
 import org.musketeers.mapper.ICompanyMapper;
 import org.musketeers.repository.entity.Company;
 import org.musketeers.service.*;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -27,25 +28,23 @@ public class CompanyController {
     private final HolidayService holidayService;
     private final ICompanyMapper companyMapper;
 
-    @PostMapping(SAVE)
-    public boolean save(@RequestBody Company company) {
-        return companyService.createCompany(company);
-    }
+//    @PostMapping(SAVE)
+//    public boolean save(@RequestBody Company company) {
+//        return companyService.createCompany(company);
+//    }
 
     @GetMapping(FINDALL)
     public List<Company> findAll(){
         return companyService.findAll();
     }
 
-
-    // RESPONSE ENTITY VE RESPONSE DTO...
     @GetMapping(FINDCOMPANYBYSUPERVISORTOKEN + "/{token}")
     public Company findByCompanyId(@PathVariable String token){
         return companyService.findByCompanyId(token);
     }
 
-    @PutMapping(UPDATE + "-for-first-time")
-    public ResponseEntity<Boolean> updateCompanyForFirstTime(@RequestBody CompanyUpdateRequestDTO dto){
+    @PutMapping(value = UPDATE_FOR_THE_FIRST_TIME, consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Boolean> updateCompanyForFirstTime(@ModelAttribute CompanyUpdateRequestDTO dto){
         return ResponseEntity.ok(companyService.updateCompanyForFirstTime(dto));
     }
 

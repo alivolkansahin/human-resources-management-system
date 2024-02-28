@@ -27,8 +27,6 @@ public class AdvanceGetAllRequestsResponseDto {
 
     private String advanceQuota;
 
-    private String reason;
-
     private String description;
 
     private Double amount;

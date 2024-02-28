@@ -15,8 +15,6 @@ public class AdvanceCreateRequestDto {
 
     private String token;
 
-    private String reason;
-
     private String description;
 
     private Double amount;

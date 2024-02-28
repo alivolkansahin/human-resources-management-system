@@ -1,6 +1,7 @@
 package org.musketeers.service;
 
 import com.cloudinary.Cloudinary;
+import com.cloudinary.utils.ObjectUtils;
 import org.musketeers.dto.request.CompanyUpdateRequestDTO;
 import org.musketeers.dto.response.GetCompanyDetailedInfoResponseDto;
 import org.musketeers.dto.response.GetCompanySummaryInfoResponseDto;
@@ -22,6 +23,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.ZoneId;
@@ -63,14 +65,14 @@ public class CompanyService extends ServiceManager<Company, String> {
         this.personnelService = personnelService;
     }
 
-    public boolean createCompany(Company company) {
-        if (companyRepository.findOptionalByCompanyName(company.getCompanyName()).isPresent()){
-            Company savedCompany = save(company);
-            return true;
-        }else{
-            return false;
-        }
-    }
+//    public boolean createCompany(Company company) {
+//        if (companyRepository.findOptionalByCompanyName(company.getCompanyName()).isPresent()){
+//            Company savedCompany = save(company);
+//            return true;
+//        }else{
+//            return false;
+//        }
+//    }
 
     public Optional<Company> findByCompanyName(String companyName){
         return companyRepository.findOptionalByCompanyName(companyName);
@@ -100,7 +102,14 @@ public class CompanyService extends ServiceManager<Company, String> {
     private Company getUpdatedCompany(CompanyUpdateRequestDTO dto,Company company) {
         Long time = System.currentTimeMillis();
         company.setEstablishmentDate(dto.getEstablishmentDate());
-        company.setCompanyLogo(dto.getCompanyLogo());
+        try {
+            byte[] fileBytes = dto.getCompanyLogo().getBytes();
+            Map<?, ?> response = cloudinary.uploader().upload(fileBytes, ObjectUtils.emptyMap());
+            String url = (String) response.get("url");
+            company.setCompanyLogo(url);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
         company.setCompanyStatus(EStatus.ACTIVE);
         company.setAddress(dto.getAddress());
         company.setHrInfos(dto.getHrInfos().stream()
@@ -203,7 +212,7 @@ public class CompanyService extends ServiceManager<Company, String> {
                     .id(company.getId())
                     .name(company.getCompanyName())
                     .logo(company.getCompanyLogo())
-                    .establishmentDate(company.getEstablishmentDate())
+                    .establishmentDate(company.getEstablishmentDate().toString())
                     .build()).toList();
     }
     private List<GetCompanySummaryInfoResponseDto> searchCompanyByNameForGuest(String companyName) {
@@ -212,7 +221,7 @@ public class CompanyService extends ServiceManager<Company, String> {
                     .id(company.getId())
                     .name(company.getCompanyName())
                     .logo(company.getCompanyLogo())
-                    .establishmentDate(company.getEstablishmentDate())
+                    .establishmentDate(company.getEstablishmentDate().toString())
                     .build()).toList();
     }
 
@@ -232,7 +241,7 @@ public class CompanyService extends ServiceManager<Company, String> {
     private GetCompanyDetailedInfoResponseDto prepareCompanyDetailedInfoResponseDto(Company company, List<GetCompanySupervisorResponseModel> supervisorInfosModel) {
         return GetCompanyDetailedInfoResponseDto.builder()
                 .companyName(company.getCompanyName())
-                .establishmentDate(company.getEstablishmentDate())
+                .establishmentDate(company.getEstablishmentDate().toString())
                 .companyLogo(company.getCompanyLogo())
                 .address(company.getAddress())
                 .hrInfos(company.getHrInfos().stream()

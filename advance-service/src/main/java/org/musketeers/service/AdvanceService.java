@@ -7,7 +7,6 @@ import org.musketeers.dto.response.AdvanceGetAllMyRequestsResponseDto;
 import org.musketeers.dto.response.AdvanceGetAllRequestsResponseDto;
 import org.musketeers.entity.Advance;
 import org.musketeers.entity.enums.ERequestStatus;
-import org.musketeers.entity.enums.EReason;
 import org.musketeers.exception.AdvanceServiceException;
 import org.musketeers.exception.ErrorType;
 import org.musketeers.rabbitmq.model.GetPersonnelDetailsForAdvanceRequestModel;
@@ -71,7 +70,6 @@ public class AdvanceService extends ServiceManager<Advance, String> {
         save(Advance.builder()
                 .personnelId(personnelId)
                 .companyId(companyId)
-                .reason(EReason.valueOf(dto.getReason()))
                 .description(dto.getDescription())
                 .amount(dto.getAmount())
                 .build());
@@ -106,7 +104,6 @@ public class AdvanceService extends ServiceManager<Advance, String> {
     private void sendDayOffStatusChangeNotificationToPersonnelService(Advance advance) {
         SendAdvanceStatusChangeNotificationModel requestModel = SendAdvanceStatusChangeNotificationModel.builder()
                 .personnelId(advance.getPersonnelId())
-                .requestReason(advance.getReason().toString())
                 .requestDescription(advance.getDescription())
                 .requestAmount(advance.getAmount())
                 .updatedStatus(advance.getRequestStatus().toString())
@@ -138,7 +135,6 @@ public class AdvanceService extends ServiceManager<Advance, String> {
                     .image(responseModelList.get(i).getImage())
                     .email(responseModelList.get(i).getEmail())
                     .advanceQuota(responseModelList.get(i).getAdvanceQuota())
-                    .reason(advanceRequests.get(i).getReason().toString())
                     .description(advanceRequests.get(i).getDescription())
                     .amount(advanceRequests.get(i).getAmount())
                     .requestStatus(advanceRequests.get(i).getRequestStatus().toString())
@@ -166,7 +162,6 @@ public class AdvanceService extends ServiceManager<Advance, String> {
         for (Advance eachAdvanceRequest : personnelAdvanceRequests) {
             responseDtoList.add(AdvanceGetAllMyRequestsResponseDto.builder()
                     .id(eachAdvanceRequest.getId())
-                    .reason(eachAdvanceRequest.getReason().toString())
                     .description(eachAdvanceRequest.getDescription())
                     .amount(eachAdvanceRequest.getAmount())
                     .requestStatus(eachAdvanceRequest.getRequestStatus().toString())

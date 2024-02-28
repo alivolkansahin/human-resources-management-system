@@ -20,7 +20,7 @@ public class EndPoints {
     public static final String ADD_INCOME="/addincome";
 
     public static final String SAVE="/save";
-    public static final String UPDATE="/update";
+    public static final String UPDATE_FOR_THE_FIRST_TIME="/update-for-the-first-time";
     public static final String SOFT_DELETE="/softdelete";
     public static final String HARD_DELETE="/harddelete";
     public static final String FINDALL="/findall";

@@ -15,8 +15,6 @@ public class AdvanceGetAllMyRequestsResponseDto {
 
     private String id;
 
-    private String reason;
-
     private String description;
 
     private Double amount;

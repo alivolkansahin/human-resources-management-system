@@ -273,7 +273,6 @@ public class PersonnelService extends ServiceManager<Personnel, String> {
     }
 
     private void preparePersonnelForUpdate(Personnel personnel, UpdatePersonnelRequestDto dto) {
-        long startTime = System.currentTimeMillis();
         personnel.setName(dto.getName());
         personnel.setLastName(dto.getLastName());
         personnel.setEmail(dto.getEmail());
@@ -397,7 +396,6 @@ public class PersonnelService extends ServiceManager<Personnel, String> {
                 .name(personnel.getName())
                 .lastName(personnel.getLastName())
                 .email(personnel.getEmail())
-                .requestReason(model.getRequestReason())
                 .requestDescription(model.getRequestDescription())
                 .requestAmount(model.getRequestAmount())
                 .updatedStatus(model.getUpdatedStatus())

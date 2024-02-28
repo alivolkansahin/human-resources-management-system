@@ -43,7 +43,7 @@ public class PersonnelController {
         return ResponseEntity.ok(personnelService.softDeletePersonnelById(id));
     }
 
-    @PutMapping(value = UPDATE, consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @PutMapping(value = UPDATE, consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Boolean> updatePersonnelProfile(@ModelAttribute UpdatePersonnelRequestDto dto){
         return ResponseEntity.ok(personnelService.updatePersonnelProfile(dto));
     }

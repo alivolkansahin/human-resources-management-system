@@ -27,11 +27,10 @@ import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.time.Instant;
+import java.time.LocalDate;
 import java.time.ZoneId;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
+import java.time.format.DateTimeFormatter;
+import java.util.*;
 
 @Service
 public class SpendingService extends ServiceManager<Spending, String> {
@@ -83,10 +82,11 @@ public class SpendingService extends ServiceManager<Spending, String> {
                 .description(dto.getDescription())
                 .amount(dto.getAmount())
                 .currency(ECurrency.valueOf(dto.getCurrency()))
-                .spendingDate(dto.getSpendingDate())
+                .spendingDate(LocalDate.parse(dto.getSpendingDate(), DateTimeFormatter.ofPattern("EEE MMM dd yyyy HH:mm:ss 'GMT'Z (z)", Locale.ENGLISH)))
                 .build();
-        if(!dto.getAttachments().isEmpty()){
+        if(Optional.ofNullable(dto.getAttachments()).isPresent()){
             List<Attachment> attachments = new ArrayList<>();
+            long time = System.currentTimeMillis();
             dto.getAttachments().forEach(multipartFile -> {
                 try {
                     byte[] fileBytes = multipartFile.getBytes();
@@ -95,8 +95,8 @@ public class SpendingService extends ServiceManager<Spending, String> {
                     attachments.add(Attachment.builder()
                             .spending(spending)
                             .fileUrl(url)
-                            .createdAt(spending.getCreatedAt())
-                            .updatedAt(spending.getUpdatedAt())
+                            .createdAt(time)
+                            .updatedAt(time)
                             .status(true)
                             .build());
                 } catch (IOException e) {

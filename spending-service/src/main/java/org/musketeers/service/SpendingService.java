@@ -74,7 +74,7 @@ public class SpendingService extends ServiceManager<Spending, String> {
         String personnelId = responseModel.getPersonnelId();
         String companyId = responseModel.getCompanyId();
         List<Spending> personnelPendingRequests = spendingRepository.findAllByPersonnelIdAndRequestStatus(personnelId, ERequestStatus.PENDING);
-        if(!personnelPendingRequests.isEmpty()) throw new SpendingServiceException(ErrorType.PENDING_REQUEST_EXISTS);
+//        if(!personnelPendingRequests.isEmpty()) throw new SpendingServiceException(ErrorType.PENDING_REQUEST_EXISTS);
         Spending spending = Spending.builder()
                 .personnelId(personnelId)
                 .companyId(companyId)

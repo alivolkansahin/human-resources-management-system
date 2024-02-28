@@ -7,6 +7,7 @@ import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 import org.musketeers.repository.enums.EStatus;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @AllArgsConstructor
@@ -25,7 +26,7 @@ public class Company extends BaseEntity{
     @Column(unique = true)
     private String companyName;
 
-    private String establishmentDate;
+    private LocalDate establishmentDate;
 
     private String companyLogo;
 

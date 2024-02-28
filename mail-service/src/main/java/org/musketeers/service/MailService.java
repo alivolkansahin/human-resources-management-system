@@ -61,7 +61,6 @@ public class MailService {
         root.put("id", model.getId());
         root.put("name", model.getName());
         root.put("email", model.getEmail());
-        String mailContent;
         try {
             Template temp = freemarkerConfiguration.getTemplate("guest-activation.ftl");
             return FreeMarkerTemplateUtils.processTemplateIntoString(temp, root);
@@ -167,7 +166,6 @@ public class MailService {
                 .atZone(ZoneId.systemDefault())
                 .toLocalDate()
                 .toString());
-        root.put("requestReason", model.getRequestReason());
         root.put("requestDescription", model.getRequestDescription());
         root.put("requestAmount", model.getRequestAmount().toString());
         root.put("requestStatus", model.getUpdatedStatus());

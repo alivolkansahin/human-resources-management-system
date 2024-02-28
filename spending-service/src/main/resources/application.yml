@@ -17,6 +17,10 @@ spring:
   jpa:
     hibernate:
       ddl-auto: create-drop
+  servlet:
+    multipart:
+      max-file-size: 3MB
+      max-request-size: 30MB
 spending-service-config:
   jwt:
     issuer: ${HR_SYSTEM_ISSUER}

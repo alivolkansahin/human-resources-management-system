@@ -2,14 +2,14 @@ package org.musketeers.entity.enums;
 
 public enum EReason {
 
-    A,
+    TRAVEL,
 
-    B,
+    TRAINING,
 
-    C,
+    OFFICE,
 
-    D,
+    HEALTH,
 
-    E;
+    ADVERTISING;
 
 }

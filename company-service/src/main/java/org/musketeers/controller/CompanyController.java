@@ -18,7 +18,7 @@ import java.util.List;
 @RestController
 @RequestMapping(ROOT+COMPANY)
 @RequiredArgsConstructor
-@CrossOrigin
+@CrossOrigin("*")
 public class CompanyController {
 
     private final CompanyService companyService;

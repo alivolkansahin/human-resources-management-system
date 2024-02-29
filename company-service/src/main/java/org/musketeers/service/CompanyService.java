@@ -103,13 +103,22 @@ public class CompanyService extends ServiceManager<Company, String> {
         Long time = System.currentTimeMillis();
         company.setEstablishmentDate(dto.getEstablishmentDate());
         try {
-            byte[] fileBytes = dto.getCompanyLogo().getBytes();
-            Map<?, ?> response = cloudinary.uploader().upload(fileBytes, ObjectUtils.emptyMap());
+//            byte[] fileBytes =
+            System.out.println("TRY CATCHTEYIM URL YUKLEYECEGİM...");
+            Map<?, ?> response = cloudinary.uploader().upload(dto.getCompanyLogo().getBytes(), ObjectUtils.emptyMap());
             String url = (String) response.get("url");
+            System.out.println("URL DÖNDÜ : " + url);
             company.setCompanyLogo(url);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+        System.out.println("THREAD SLEEPTE");
+        try {
+            Thread.sleep(4000);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+        System.out.println("THREAD SLEEPTEN ÇIKTI");
         company.setCompanyStatus(EStatus.ACTIVE);
         company.setAddress(dto.getAddress());
         company.setHrInfos(dto.getHrInfos().stream()

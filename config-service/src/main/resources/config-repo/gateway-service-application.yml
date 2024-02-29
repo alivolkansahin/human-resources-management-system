@@ -1,37 +1,120 @@
-#server:
-#  port: 80 # 80 / 8080 default portlarımızdı.
-#
-#spring:
-#  main:
-#    web-application-type: reactive
-#  zipkin:
-#    enabled: true
-#    base-url: http://localhost:9411
-#    service:
-#      name: gateway-service
-#  cloud:
-#    gateway:
-#      routes:
-#        - id: auth-service  # benim koyduğum unique bir isim
-#          uri: http://localhost:9090  # bu urlden gelen
-#          predicates:
-#            - Path=/api/v1/auth/**   # auth ile başlayan isteklerin sonu ne olursa olsun yakalamak istiyorum
-#          filters: # Circuit Breakers ile ekledik : https://docs.spring.io/spring-cloud-gateway/docs/3.1.8/reference/html/#fallback-headers
-#            - name: CircuitBreaker
-#              args:
-#                name: authCircuitBreaker
-#                fallbackUri: forward:/fallback/auth
-#        - id: user-profile-service
-#          uri: http://localhost:9091
-#          predicates:
-#            - Path=/api/v1/user/**
-#          filters:
-#            - name: CircuitBreaker
-#              args:
-#                name: userProfileCircuitBreaker
-#                fallbackUri: forward:/fallback/user
-#      default-filters: # burayı dökümantasyondan öğrendik
-#        # http://localhost/auth/findbyid/1
-#        # (?<segment>.*)   -->  auth/findbyid/1
-#        #   /$\{segment}   -->  http://localhost:9090/auth/findbyid/1
-#        - RewritePath=/(?<segment>.*), /$\{segment} # RewritePath=/(?<segment>.*),/api/v1/$\{segment}   eğer çoğu urlde kullandığınız statik değerler var ise, api/v1 gibi...
+server:
+  port: 80
+spring:
+  main:
+    web-application-type: reactive
+  cloud:
+    gateway:
+      globalcors:
+        cors-configurations:
+          '[/**]':
+            allowedOrigins: "*"
+            allowedHeaders: "*"
+            allowedMethods:
+              - GET
+              - POST
+              - PATCH
+              - PUT
+      default-filters:
+        - RewritePath=/(?<segment>.*),/api/v1/$\{segment}
+      routes:
+        - id: admin-service
+          uri: http://localhost:9093
+          predicates:
+            - Path=/admin/**
+          filters:
+            - DedupeResponseHeader=Access-Control-Allow-Credentials Access-Control-Allow-Origin
+            - name: CircuitBreaker
+              args:
+                name: adminCircuitBreaker
+                fallbackUri: forward:/fallback/admin
+        - id: advance-service
+          uri: http://localhost:9088
+          predicates:
+            - Path=/advance/**
+          filters:
+            - DedupeResponseHeader=Access-Control-Allow-Credentials Access-Control-Allow-Origin
+            - name: CircuitBreaker
+              args:
+                name: advanceCircuitBreaker
+                fallbackUri: forward:/fallback/advance
+        - id: auth-service
+          uri: http://localhost:9090
+          predicates:
+            - Path=/auth/**
+          filters:
+            - DedupeResponseHeader=Access-Control-Allow-Credentials Access-Control-Allow-Origin
+            - name: CircuitBreaker
+              args:
+                name: authCircuitBreaker
+                fallbackUri: forward:/fallback/auth
+        - id: comment-service
+          uri: http://localhost:9097
+          predicates:
+            - Path=/comment/**
+          filters:
+            - DedupeResponseHeader=Access-Control-Allow-Credentials Access-Control-Allow-Origin
+            - name: CircuitBreaker
+              args:
+                name: commentCircuitBreaker
+                fallbackUri: forward:/fallback/comment
+        - id: company-service
+          uri: http://localhost:9095
+          predicates:
+            - Path=/company/**
+          filters:
+            - DedupeResponseHeader=Access-Control-Allow-Credentials Access-Control-Allow-Origin
+            - name: CircuitBreaker
+              args:
+                name: companyCircuitBreaker
+                fallbackUri: forward:/fallback/company
+        - id: day-off-service
+          uri: http://localhost:9089
+          predicates:
+            - Path=/day-off/**
+          filters:
+            - DedupeResponseHeader=Access-Control-Allow-Credentials Access-Control-Allow-Origin
+            - name: CircuitBreaker
+              args:
+                name: dayOffCircuitBreaker
+                fallbackUri: forward:/fallback/day-off
+        - id: guest-service
+          uri: http://localhost:9094
+          predicates:
+            - Path=/guest/**
+          filters:
+            - DedupeResponseHeader=Access-Control-Allow-Credentials Access-Control-Allow-Origin
+            - name: CircuitBreaker
+              args:
+                name: guestCircuitBreaker
+                fallbackUri: forward:/fallback/guest
+        - id: personnel-service
+          uri: http://localhost:9091
+          predicates:
+            - Path=/personnel/**
+          filters:
+            - DedupeResponseHeader=Access-Control-Allow-Credentials Access-Control-Allow-Origin
+            - name: CircuitBreaker
+              args:
+                name: personnelCircuitBreaker
+                fallbackUri: forward:/fallback/personnel
+        - id: spending-service
+          uri: http://localhost:9087
+          predicates:
+            - Path=/spending/**
+          filters:
+            - DedupeResponseHeader=Access-Control-Allow-Credentials Access-Control-Allow-Origin
+            - name: CircuitBreaker
+              args:
+                name: spendingCircuitBreaker
+                fallbackUri: forward:/fallback/spending
+        - id: supervisor-service
+          uri: http://localhost:9092
+          predicates:
+            - Path=/supervisor/**
+          filters:
+            - DedupeResponseHeader=Access-Control-Allow-Credentials Access-Control-Allow-Origin
+            - name: CircuitBreaker
+              args:
+                name: supervisorCircuitBreaker
+                fallbackUri: forward:/fallback/supervisor

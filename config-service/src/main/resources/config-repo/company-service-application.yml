@@ -13,8 +13,7 @@ spring:
     password: 1234
   jpa:
     hibernate:
-      ddl-auto: update
-    show-sql: true
+      ddl-auto: create-drop
   servlet:
     multipart:
       max-file-size: 3MB

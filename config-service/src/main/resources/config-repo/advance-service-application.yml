@@ -1,0 +1,29 @@
+server:
+  port: 9088
+spring:
+  rabbitmq:
+    host: localhost
+    port: 5672
+    username: user
+    password: user
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://localhost:5432/AdvanceDBForProject
+    username: postgres
+    password: 1234
+  jpa:
+    hibernate:
+      ddl-auto: update
+advance-service-config:
+  jwt:
+    issuer: ${HR_SYSTEM_ISSUER}
+    secret-key: ${HR_SYSTEM_KEY}
+  rabbitmq:
+    advance-exchange: advanceExchange
+    get-personnel-id-and-company-id-for-advance-request-queue: getPersonnelIdAndCompanyIdForAdvanceRequestQueue
+    get-personnel-id-and-company-id-for-advance-request-binding-key: getPersonnelIdAndCompanyIdForAdvanceRequestBindingKey
+    send-advance-status-change-notification-to-personnel-service-queue: sendAdvanceStatusChangeNotificationToPersonnelServiceQueue
+    send-advance-status-change-notification-to-personnel-service-binding-key: sendAdvanceStatusChangeNotificationToPersonnelServiceBindingKey
+    get-personnel-details-for-advance-request-queue: getPersonnelDetailsForAdvanceRequestQueue
+    get-personnel-details-for-advance-request-binding-key: getPersonnelDetailsForAdvanceRequestBindingKey
+    expiration-timeout: 5000

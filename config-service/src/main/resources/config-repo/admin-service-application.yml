@@ -1,33 +1,38 @@
-#server:
-#  port: 9091
-#spring:
-#  security: # security 19 aralık salı
-#    user: # bu tek kullanıcı için, istediğim şey tam olarak bu değil
-#      name: java12
-#      password: 1234
-#  rabbitmq:
-#    host: localhost
-#    port: 5672
-#    username: user
-#    password: user
-#  zipkin:
-#    enabled: true
-#    base-url: http://localhost:9411
-#    service:
-#      name: person-service
-#  data:
-#    mongodb:
-#      host: localhost
-#      port: 27017
-#      database: UserProfileDB
-#      username: defaultUser
-#      password: bilge!123
-#
-#authserviceconfig:
-#  secrets:
-#    secret-key: ${JAVA12_m001_SECRETKEY}
-#    issuer: ${JAVA12_m001_ISSUER}
-#
-#redisconfig:
-#  host: localhost
-#  port: 6379
+server:
+  port: 9093
+spring:
+  rabbitmq:
+    host: localhost
+    port: 5672
+    username: user
+    password: user
+  datasource:
+    #    driver-class-name: com.mysql.cj.jdbc.Driver
+    #    url: jdbc:mysql://localhost:3306/hrsystem
+    #    username: devAvs
+    #    password: musketeers!123
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://localhost:5432/AdminDBForProject
+    username: postgres
+    password: 1234
+  jpa:
+    hibernate:
+      ddl-auto: update
+admin-service-config:
+  jwt:
+    issuer: ${HR_SYSTEM_ISSUER}
+    secret-key: ${HR_SYSTEM_KEY}
+  rabbitmq:
+    admin-exchange: adminExchange
+    get-supervisor-queue: getSupervisorQueue
+    get-supervisor-binding-key: getSupervisorBindingKey
+    admin-supervisor-registration-decision-exchange: adminSupervisorRegistrationDecisionExchange
+    registration-decision-supervisor-queue: registrationDecisionSupervisorQueue
+    registration-decision-auth-queue: registrationDecisionAuthQueue
+    admin-register-auth-queue: adminRegisterAuthQueue
+    admin-register-auth-binding-key: adminRegisterAuthBindingKey
+    admin-get-all-pending-comments-comment-queue: adminGetAllPendingCommentsCommentQueue
+    admin-get-all-pending-comments-comment-binding-key: adminGetAllPendingCommentsCommentBindingKey
+    admin-handle-comment-decision-queue: adminHandleCommentDecisionQueue
+    admin-handle-comment-decision-binding-key: adminHandleCommentDecisionBindingKey
+    expiration-timeout: 5000

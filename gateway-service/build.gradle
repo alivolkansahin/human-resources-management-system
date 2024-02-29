@@ -1,9 +1,7 @@
 dependencies {
-    /*
     implementation libs.springCloudGateway
     implementation libs.springCloudCircuitBreaker
     implementation libs.springCloudCircuitBreakerReactor
-    */
 
 /*
     testImplementation platform('org.junit:junit-bom:5.9.1')

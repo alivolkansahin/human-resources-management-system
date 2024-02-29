@@ -1,33 +1,64 @@
-#server:
-#  port: 9091
-#spring:
-#  security: # security 19 aralık salı
-#    user: # bu tek kullanıcı için, istediğim şey tam olarak bu değil
-#      name: java12
-#      password: 1234
-#  rabbitmq:
-#    host: localhost
-#    port: 5672
-#    username: user
-#    password: user
-#  zipkin:
-#    enabled: true
-#    base-url: http://localhost:9411
-#    service:
-#      name: person-service
-#  data:
-#    mongodb:
-#      host: localhost
-#      port: 27017
-#      database: UserProfileDB
-#      username: defaultUser
-#      password: bilge!123
-#
-#authserviceconfig:
-#  secrets:
-#    secret-key: ${JAVA12_m001_SECRETKEY}
-#    issuer: ${JAVA12_m001_ISSUER}
-#
-#redisconfig:
-#  host: localhost
-#  port: 6379
+server:
+  port: 9091
+spring:
+  data:
+    mongodb:
+      host: localhost
+      port: 27017
+      database: HRSystem
+      username: devAvs
+      password: musketeers!123
+  rabbitmq:
+    host: localhost
+    port: 5672
+    username: user
+    password: user
+  servlet:
+    multipart:
+      max-file-size: 3MB
+personnel-service-config:
+  jwt:
+    issuer: ${HR_SYSTEM_ISSUER}
+    secret-key: ${HR_SYSTEM_KEY}
+  rabbitmq:
+    create-personnel-exchange: createPersonnelExchange
+    create-personnel-auth-queue: createPersonnelAuthQueue
+    create-personnel-auth-binding-key: createPersonnelAuthBindingKey
+    create-personnel-company-queue: createPersonnelCompanyQueue
+    create-personnel-company-binding-key: createPersonnelCompanyBindingKey
+    get-company-id-supervisor-queue: getCompanyIdSupervisorQueue
+    get-company-id-supervisor-binding-key: getCompanyIdSupervisorBindingKey
+    add-comment-personnel-queue: addCommentPersonnelQueue
+    get-personnel-details-by-comment-personnel-queue: getPersonnelDetailsByCommentPersonnelQueue
+    create-personnel-from-supervisor-queue: createPersonnelFromSupervisorQueue
+    get-company-details-by-personnel-queue: getCompanyDetailsByPersonnelQueue
+    get-company-details-by-personnel-binding-key: getCompanyDetailsByPersonnelBindingKey
+    update-personnel-by-id-auth-queue: updatePersonnelByIdAuthQueue
+    update-personnel-by-id-auth-binding-key: updatePersonnelByIdAuthBindingKey
+    update-personnel-by-id-supervisor-queue: updatePersonnelByIdSupervisorQueue
+    update-personnel-by-id-supervisor-binding-key: updatePersonnelByIdSupervisorBindingKey
+    get-company-id-for-user-login-queue: getCompanyIdForUserLoginQueue
+    get-personnel-id-and-company-id-for-day-off-request-queue: getPersonnelIdAndCompanyIdForDayOffRequestQueue
+    send-day-off-status-change-notification-to-personnel-service-queue: sendDayOffStatusChangeNotificationToPersonnelServiceQueue
+    send-day-off-status-change-notification-to-mail-service-queue: sendDayOffStatusChangeNotificationToMailServiceQueue
+    send-day-off-status-change-notification-to-mail-service-binding-key: sendDayOffStatusChangeNotificationToMailServiceBindingKey
+    get-personnel-details-for-day-off-request-queue: getPersonnelDetailsForDayOffRequestQueue
+    get-personnel-id-and-company-id-for-advance-request-queue: getPersonnelIdAndCompanyIdForAdvanceRequestQueue
+    send-advance-status-change-notification-to-personnel-service-queue: sendAdvanceStatusChangeNotificationToPersonnelServiceQueue
+    send-advance-status-change-notification-to-mail-service-queue: sendAdvanceStatusChangeNotificationToMailServiceQueue
+    send-advance-status-change-notification-to-mail-service-binding-key: sendAdvanceStatusChangeNotificationToMailServiceBindingKey
+    send-advance-expense-to-company-service-queue: sendAdvanceExpenseToCompanyServiceQueue
+    send-advance-expense-to-company-service-binding-key: sendAdvanceExpenseToCompanyServiceBindingKey
+    get-personnel-details-for-advance-request-queue: getPersonnelDetailsForAdvanceRequestQueue
+    get-personnel-id-and-company-id-for-spending-request-queue: getPersonnelIdAndCompanyIdForSpendingRequestQueue
+    send-spending-status-change-notification-to-personnel-service-queue: sendSpendingStatusChangeNotificationToPersonnelServiceQueue
+    send-spending-status-change-notification-to-mail-service-queue: sendSpendingStatusChangeNotificationToMailServiceQueue
+    send-spending-status-change-notification-to-mail-service-binding-key: sendSpendingStatusChangeNotificationToMailServiceBindingKey
+    send-spending-expense-to-company-service-queue: sendSpendingExpenseToCompanyServiceQueue
+    send-spending-expense-to-company-service-binding-key: sendSpendingExpenseToCompanyServiceBindingKey
+    get-personnel-details-for-spending-request-queue: getPersonnelDetailsForSpendingRequestQueue
+    expiration-timeout: 5000
+  cloudinary:
+    cloud-name: ${CLOUDINARY_CLOUD_NAME}
+    api-key: ${CLOUDINARY_API_KEY}
+    api-secret: ${CLOUDINARY_API_SECRET}

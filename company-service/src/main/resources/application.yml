@@ -1,48 +1,8 @@
-server:
-  port: 9095
 spring:
   cloud:
     config:
-      enabled: false
-  rabbitmq:
-    host: localhost
-    port: 5672
-    username: user
-    password: user
-  datasource:
-    driver-class-name: org.postgresql.Driver
-    url: jdbc:postgresql://localhost:5432/CompanyDBForProject
-    username: postgres
-    password: 1234
-  jpa:
-    hibernate:
-      ddl-auto: create-drop
-    show-sql: true
-  servlet:
-    multipart:
-      max-file-size: 3MB
-company-service-config:
-  jwt:
-    issuer: ${HR_SYSTEM_ISSUER}
-    secret-key: ${HR_SYSTEM_KEY}
-  cloudinary:
-    cloud-name: ${CLOUDINARY_CLOUD_NAME}
-    api-key: ${CLOUDINARY_API_KEY}
-    api-secret: ${CLOUDINARY_API_SECRET}
-
-rabbitmq:
-  exchange-name: companyExchange
-  supervisor-activation-company-queue: supervisorActivationCompanyQueue
-  get-company-id-from-supervisor-queue: getCompanyIdFromSupervisorQueue
-  get-company-id-from-supervisor-binding-key: getCompanyIdFromSupervisorBindingKey
-  create-personnel-company-queue: createPersonnelCompanyQueue
-  get-company-details-by-comment-company-queue: getCompanyDetailsByCommentCompanyQueue
-  get-company-supervisors-supervisor-queue: getCompanySupervisorsSupervisorQueue
-  get-company-supervisors-supervisor-binding-key: getCompanySupervisorsSupervisorBindingKey
-  get-company-details-by-personnel-queue: getCompanyDetailsByPersonnelQueue
-  company-status-check-queue: companyStatusCheckQueue
-  search-for-company-name-queue: searchForCompanyNameQueue
-  send-advance-expense-to-company-service-queue: sendAdvanceExpenseToCompanyServiceQueue
-  send-spending-expense-to-company-service-queue: sendSpendingExpenseToCompanyServiceQueue
-  expiration-timeout: 5000
-
+      uri: ${HMRS_CONFIG_URI}
+  config:
+    import: "configserver:"
+  application:
+    name: company-service-application

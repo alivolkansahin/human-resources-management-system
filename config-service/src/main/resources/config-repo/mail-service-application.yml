@@ -1,34 +1,26 @@
-#server:
-#  port: 9093
-#
-#spring:
-#  rabbitmq:
-#    host: localhost
-#    port: 5672
-#    username: user
-#    password: user
-#  zipkin:
-#    enabled: true
-#    base-url: http://localhost:9411
-#    service:
-#      name: mail-service
-#  mail:
-#    host: smtp.gmail.com
-#    port: 587
-#    username: avolkan.shn@gmail.com
-#    password: aaaa bbbb cccc dddd # BURAYA BAK!!!
-#    properties:
-#      mail:
-#        smtp:
-#          auth: true
-#          starttls:
-#            enable: true
-#
-#rabbitmq:
-#  auth-exchange: authExchange
-#  register-queue: registerQueue
-#  activation-queue: activationQueue
-#  mail-queue: mailQueue
-#  register-bindingKey: registerBindingKey
-#  activation-bindingKey: activationBindingKey
-#  mail-bindingKey: mailBindingKey
+server:
+  port: 9096
+spring:
+  rabbitmq:
+    host: localhost
+    port: 5672
+    username: user
+    password: user
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: musketeershmrs@gmail.com
+    password: ${HMRS_MAIL_PASSWORD}
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+mail-service-config:
+  rabbitmq:
+    activation-guest-queue: mailQueue
+    mail-queue-personnel: mailQueuePersonnel
+    send-day-off-status-change-notification-to-mail-service-queue: sendDayOffStatusChangeNotificationToMailServiceQueue
+    send-advance-status-change-notification-to-mail-service-queue: sendAdvanceStatusChangeNotificationToMailServiceQueue
+    send-spending-status-change-notification-to-mail-service-queue: sendSpendingStatusChangeNotificationToMailServiceQueue

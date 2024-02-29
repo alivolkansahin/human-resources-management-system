@@ -1,18 +1,13 @@
-#server:
-#  port: 8888
-#
-#spring:
-#  zipkin:
-#    enabled: true
-#    base-url: ${ZIPKIN_URL}
-#    service:
-#      name: config-server-git-service
-#  cloud:
-#    config:
-#      server:
-#        git:
-#          uri: "https://github.com/alivolkansahin/config-server-repotheory1.git"
-#          default-label: main # eğer başka bir branch olsaydı o branchin adını yazmak gerekiyordu
-#          skip-ssl-validation: true
-#          username: alivolkansahin
-#          password: ${JAVA12_m001_GIT_KEY} # generate token yaptık github üzerinden
+server:
+  port: 8888
+spring:
+  cloud:
+    config:
+      server:
+        git:
+          uri: ${HMRS_GIT_URI}
+          default-label: main
+          skip-ssl-validation: true
+          refresh-rate: 10
+          username: alivolkansahin
+          password: ${HMRS_GIT_KEY}

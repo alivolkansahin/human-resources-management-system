@@ -1,27 +1,45 @@
-#server:
-#  port: 9090
-#spring:
-#  rabbitmq:
-#    host: localhost
-#    port: 5672
-#    username: user
-#    password: user
-#  zipkin:
-#    enabled: true
-#    base-url: http://localhost:9411
-#    service:
-#      name: auth-service
-#  datasource:
-#    driver-class-name: org.postgresql.Driver
-#    #    url: jdbc:postgresql://192.168.1.37:5433/m1Java12Auth  #192.168.1.37
-#    url: jdbc:postgresql://localhost:5432/databaseAdi
-#    username: postgres
-#    password: 1234
-#  jpa:
-#    hibernate:
-#      ddl-auto: update
-#
-#auth-service-config:
-#  secrets:
-#    secret-key: ${JAVA12_m001_SECRETKEY}
-#    issuer: ${JAVA12_m001_ISSUER}
+server:
+  port: 9090
+spring:
+  rabbitmq:
+    host: localhost
+    port: 5672
+    username: user
+    password: user
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://localhost:5432/AuthDBForProject
+    username: postgres
+    password: 1234
+  jpa:
+    hibernate:
+      ddl-auto: update
+authserviceconfig:
+  secrets:
+    secret-key: ${HR_SYSTEM_KEY}
+    issuer: ${HR_SYSTEM_ISSUER}
+rabbitmq:
+  mail-queue-guest: mailQueue
+  mail-bindingKey: mailBindingKey
+  mail-queue-personnel: mailQueuePersonnel
+  mail-bindingKey-personnel: mailBindingPersonnel
+  auth-exchange: authExchange
+  register-guest-queue: registerGuestQueue
+  register-guest-bindingKey: registerGuestBindingKey
+  register-guest-activation-queue: registerGuestActivationQueue
+  register-guest-activation-bindingKey: registerGuestActivationBindingKey
+  register-supervisor-queue: registerSupervisorQueue
+  register-supervisor-bindingKey: registerSupervisorBindingKey
+  registration-decision-auth-queue: registrationDecisionAuthQueue
+  create-personnel-auth-queue: createPersonnelAuthQueue
+  admin-register-auth-queue: adminRegisterAuthQueue
+  update-personnel-by-id-auth-queue: updatePersonnelByIdAuthQueue
+  company-status-check-queue: companyStatusCheckQueue
+  company-status-check-bindingKey: companyStatusCheckBindingKey
+  get-company-id-for-user-login-queue: getCompanyIdForUserLoginQueue
+  get-company-id-for-user-login-bindingKey: getCompanyIdForUserLoginBindingKey
+  search-for-company-name-queue: searchForCompanyNameQueue
+  search-for-company-name-bindingKey: searchForCompanyNameBindingKey
+  expiration-timeout: 5000
+#  active-status-queue: activeStatusQueue
+#  active-status-bindingKey: activeStatusBindingKey

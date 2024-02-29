@@ -1,48 +1,8 @@
-server:
-  port: 9096
 spring:
-  rabbitmq:
-    host: localhost
-    port: 5672
-    username: user
-    password: user
-  mail:
-    host: smtp.gmail.com
-    port: 587
-    username: musketeershmrs@gmail.com
-    password: boad zhyq rvrb glnk
-    properties:
-      mail:
-        smtp:
-          auth: true
-          starttls:
-            enable: true
   cloud:
     config:
-      enabled: false
-mail-service-config:
-  rabbitmq:
-    activation-guest-queue: mailQueue
-    mail-queue-personnel: mailQueuePersonnel
-    send-day-off-status-change-notification-to-mail-service-queue: sendDayOffStatusChangeNotificationToMailServiceQueue
-    send-advance-status-change-notification-to-mail-service-queue: sendAdvanceStatusChangeNotificationToMailServiceQueue
-    send-spending-status-change-notification-to-mail-service-queue: sendSpendingStatusChangeNotificationToMailServiceQueue
-
-
-
-
-
-
-
-
-
-
-
-#spring:
-#  cloud:
-#    config:
-#      uri: ${config-server-url} #http://localhost:8888
-#  config:
-#    import: "configserver:"
-#  application:
-#    name: mail-service-application
+      uri: ${HMRS_CONFIG_URI}
+  config:
+    import: "configserver:"
+  application:
+    name: mail-service-application

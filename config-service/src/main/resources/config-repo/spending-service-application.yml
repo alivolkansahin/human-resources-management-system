@@ -1,0 +1,37 @@
+server:
+  port: 9087
+spring:
+  rabbitmq:
+    host: localhost
+    port: 5672
+    username: user
+    password: user
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://localhost:5432/SpendingDBForProject
+    username: postgres
+    password: 1234
+  jpa:
+    hibernate:
+      ddl-auto: update
+  servlet:
+    multipart:
+      max-file-size: 3MB
+      max-request-size: 30MB
+spending-service-config:
+  jwt:
+    issuer: ${HR_SYSTEM_ISSUER}
+    secret-key: ${HR_SYSTEM_KEY}
+  rabbitmq:
+    spending-exchange: spendingExchange
+    get-personnel-id-and-company-id-for-spending-request-queue: getPersonnelIdAndCompanyIdForSpendingRequestQueue
+    get-personnel-id-and-company-id-for-spending-request-binding-key: getPersonnelIdAndCompanyIdForSpendingRequestBindingKey
+    send-spending-status-change-notification-to-personnel-service-queue: sendSpendingStatusChangeNotificationToPersonnelServiceQueue
+    send-spending-status-change-notification-to-personnel-service-binding-key: sendSpendingStatusChangeNotificationToPersonnelServiceBindingKey
+    get-personnel-details-for-spending-request-queue: getPersonnelDetailsForSpendingRequestQueue
+    get-personnel-details-for-spending-request-binding-key: getPersonnelDetailsForSpendingRequestBindingKey
+    expiration-timeout: 5000
+  cloudinary:
+    cloud-name: ${CLOUDINARY_CLOUD_NAME}
+    api-key: ${CLOUDINARY_API_KEY}
+    api-secret: ${CLOUDINARY_API_SECRET}

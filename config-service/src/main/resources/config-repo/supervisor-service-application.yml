@@ -1,33 +1,33 @@
-#server:
-#  port: 9091
-#spring:
-#  security: # security 19 aralık salı
-#    user: # bu tek kullanıcı için, istediğim şey tam olarak bu değil
-#      name: java12
-#      password: 1234
-#  rabbitmq:
-#    host: localhost
-#    port: 5672
-#    username: user
-#    password: user
-#  zipkin:
-#    enabled: true
-#    base-url: http://localhost:9411
-#    service:
-#      name: person-service
-#  data:
-#    mongodb:
-#      host: localhost
-#      port: 27017
-#      database: UserProfileDB
-#      username: defaultUser
-#      password: bilge!123
-#
-#authserviceconfig:
-#  secrets:
-#    secret-key: ${JAVA12_m001_SECRETKEY}
-#    issuer: ${JAVA12_m001_ISSUER}
-#
-#redisconfig:
-#  host: localhost
-#  port: 6379
+server:
+  port: 9092
+spring:
+  data:
+    mongodb:
+      host: localhost
+      port: 27017
+      database: HRSystem
+      username: devAvs
+      password: musketeers!123
+  rabbitmq:
+    host: localhost
+    port: 5672
+    username: user
+    password: user
+supervisor-service-config:
+  jwt:
+    issuer: ${HR_SYSTEM_ISSUER}
+    secret-key: ${HR_SYSTEM_KEY}
+  rabbitmq:
+    register-supervisor-queue: registerSupervisorQueue
+    get-supervisor-queue: getSupervisorQueue
+    registration-decision-supervisor-queue: registrationDecisionSupervisorQueue
+    supervisor-activation-exchange: supervisorActivationExchange
+    supervisor-activation-company-queue: supervisorActivationCompanyQueue
+    supervisor-activation-company-binding-key: supervisorActivationCompanyBindingKey
+    get-company-id-from-supervisor-queue: getCompanyIdFromSupervisorQueue
+    get-company-id-supervisor-queue: getCompanyIdSupervisorQueue
+    get-company-supervisors-supervisor-queue: getCompanySupervisorsSupervisorQueue
+    create-personnel-from-supervisor-queue: createPersonnelFromSupervisorQueue
+    create-personnel-from-supervisor-binding-key: createPersonnelFromSupervisorBindingKey
+    update-personnel-by-id-supervisor-queue: updatePersonnelByIdSupervisorQueue
+    expiration-timeout: 5000

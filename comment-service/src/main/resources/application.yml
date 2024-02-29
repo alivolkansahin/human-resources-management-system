@@ -1,48 +1,8 @@
-server:
-  port: 9097
 spring:
-  data:
-    mongodb:
-      host: localhost
-      port: 27017
-      database: HRSystem
-      username: devAvs
-      password: musketeers!123
   cloud:
     config:
-      enabled: false
-  rabbitmq:
-    host: localhost
-    port: 5672
-    username: user
-    password: user
-comment-service-config:
-  jwt:
-    issuer: ${HR_SYSTEM_ISSUER}
-    secret-key: ${HR_SYSTEM_KEY}
-  rabbitmq:
-    comment-exchange: commentExchange
-    add-comment-personnel-queue: addCommentPersonnelQueue
-    add-comment-personnel-binding-key: addCommentPersonnelBindingKey
-    get-personnel-details-by-comment-personnel-queue: getPersonnelDetailsByCommentPersonnelQueue
-    get-personnel-details-by-comment-personnel-binding-key: getPersonnelDetailsByCommentPersonnelBindingKey
-    admin-get-all-pending-comments-comment-queue: adminGetAllPendingCommentsCommentQueue
-    get-company-details-by-comment-company-queue: getCompanyDetailsByCommentCompanyQueue
-    get-company-details-by-comment-company-binding-key: getCompanyDetailsByCommentCompanyBindingKey
-    admin-handle-comment-decision-queue: adminHandleCommentDecisionQueue
-    expiration-timeout: 5000
-
-
-
-
-
-
-
-#spring:
-#  cloud:
-#    config:
-#      uri: ${config-server-url} #http://localhost:8888
-#  config:
-#    import: "configserver:"
-#  application:
-#    name: comment-service-application
+      uri: ${HMRS_CONFIG_URI}
+  config:
+    import: "configserver:"
+  application:
+    name: comment-service-application

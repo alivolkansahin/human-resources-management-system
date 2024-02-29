@@ -1,8 +1,6 @@
 dependencies {
-/*
     implementation libs.springCloudConfig                  // Move this to responsible microservice (Config Service)
     implementation libs.springCloudConfigServer            // Move this to responsible microservice (Config Service)
-*/
 
 /*
     testImplementation platform('org.junit:junit-bom:5.9.1')

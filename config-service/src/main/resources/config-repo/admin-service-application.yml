@@ -17,7 +17,7 @@ spring:
     password: 1234
   jpa:
     hibernate:
-      ddl-auto: update
+      ddl-auto: create-drop
 admin-service-config:
   jwt:
     issuer: ${HR_SYSTEM_ISSUER}

@@ -40,8 +40,8 @@ allprojects {
         implementation libs.springBootWeb
         implementation libs.springCloudOpenFeign
         implementation libs.springCloudConfigClient
-        implementation libs.micrometer
-        implementation libs.zipkinBrave
+//        implementation libs.micrometer
+//        implementation libs.zipkinBrave
         compileOnly libs.lombok
         annotationProcessor libs.lombok
 //        implementation libs.springDockerCompose

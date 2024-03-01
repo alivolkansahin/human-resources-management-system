@@ -2,7 +2,7 @@ dependencies {
     implementation libs.postgreSQL
     implementation libs.springBootJPA
     implementation libs.springBootAMQP
-    implementation libs.cloudinary
+//    implementation libs.cloudinary
 /*
         // seçimlerini yap ve ekle
         implementation libs.springBootAMQP

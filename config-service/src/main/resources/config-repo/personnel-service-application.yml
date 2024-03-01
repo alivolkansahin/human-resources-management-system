@@ -13,9 +13,6 @@ spring:
     port: 5672
     username: user
     password: user
-  servlet:
-    multipart:
-      max-file-size: 3MB
 personnel-service-config:
   jwt:
     issuer: ${HR_SYSTEM_ISSUER}
@@ -58,7 +55,3 @@ personnel-service-config:
     send-spending-expense-to-company-service-binding-key: sendSpendingExpenseToCompanyServiceBindingKey
     get-personnel-details-for-spending-request-queue: getPersonnelDetailsForSpendingRequestQueue
     expiration-timeout: 5000
-  cloudinary:
-    cloud-name: ${CLOUDINARY_CLOUD_NAME}
-    api-key: ${CLOUDINARY_API_KEY}
-    api-secret: ${CLOUDINARY_API_SECRET}

@@ -11,7 +11,7 @@ ext {
             swagger       : "2.3.0",
             micrometer    : "1.2.2",   		// new spring sleuth
             zipkinBrave   : "2.16.3",  		// new zipkin brave
-            cloudinary    : "1.38.0"
+//            cloudinary    : "1.38.0"
 
             /*
             twilio        : "9.14.1",
@@ -51,8 +51,8 @@ ext {
             mapStruct                       : "org.mapstruct:mapstruct:$versions.mapStruct",                                                // MapStruct for easier handling DTOs
             mapStructProcessor              : "org.mapstruct:mapstruct-processor:$versions.mapStruct",                                      // MapStruct Processor to allow usage of its @Annotations
             jwt                             : "com.auth0:java-jwt:$versions.jwt",                                                           // JSON Web Token - JWT
-            swagger                         : "org.springdoc:springdoc-openapi-starter-webmvc-ui:$versions.swagger",                        // Swagger UI --> "/swagger-ui/index.html"
-            cloudinary                      : "com.cloudinary:cloudinary-http44:$versions.cloudinary"                                       // Cloudinary is a cloud service that offers a solution to a web application's entire image management pipeline. Upload images to the cloud.
+            swagger                         : "org.springdoc:springdoc-openapi-starter-webmvc-ui:$versions.swagger"                         // Swagger UI --> "/swagger-ui/index.html"
+//            cloudinary                      : "com.cloudinary:cloudinary-http44:$versions.cloudinary"                                       // Cloudinary is a cloud service that offers a solution to a web application's entire image management pipeline. Upload images to the cloud.
 
             /*
             prometheus                      : "io.micrometer:micrometer-registry-prometheus:$versions.prometheus",                          // Prometheus tool for system resource monitoring and altering

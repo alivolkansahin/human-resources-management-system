@@ -19,7 +19,7 @@ public class CompanyUpdateRequestDTO {
 
     private LocalDate establishmentDate;
 
-    private MultipartFile companyLogo;
+    private String companyLogoUrl;
 
     private String address;
 

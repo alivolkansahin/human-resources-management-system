@@ -23,8 +23,8 @@ public class SpendingController {
 
     private final SpendingService spendingService;
 
-    @PostMapping(value = CREATE_REQUEST, consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<String> createRequest(@ModelAttribute SpendingCreateRequestDto dto) {
+    @PostMapping(CREATE_REQUEST)
+    public ResponseEntity<String> createRequest(@RequestBody SpendingCreateRequestDto dto) {
         return ResponseEntity.ok(spendingService.createRequest(dto));
     }
 

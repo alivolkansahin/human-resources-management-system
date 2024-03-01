@@ -14,17 +14,10 @@ spring:
   jpa:
     hibernate:
       ddl-auto: create-drop
-  servlet:
-    multipart:
-      max-file-size: 3MB
 company-service-config:
   jwt:
     issuer: ${HR_SYSTEM_ISSUER}
     secret-key: ${HR_SYSTEM_KEY}
-  cloudinary:
-    cloud-name: ${CLOUDINARY_CLOUD_NAME}
-    api-key: ${CLOUDINARY_API_KEY}
-    api-secret: ${CLOUDINARY_API_SECRET}
 rabbitmq:
   exchange-name: companyExchange
   supervisor-activation-company-queue: supervisorActivationCompanyQueue

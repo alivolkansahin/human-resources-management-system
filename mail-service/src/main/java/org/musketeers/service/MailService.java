@@ -8,6 +8,7 @@ import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
 import lombok.RequiredArgsConstructor;
 import org.musketeers.rabbitmq.model.*;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.UrlResource;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
@@ -30,6 +31,9 @@ public class MailService {
 
     // doc: The main entry point into the FreeMarker API; encapsulates the configuration settings of FreeMarker, also serves as a central template-loading and caching service.
     private final Configuration freemarkerConfiguration;
+
+    @Value("${mail-service-config.mail.gateway-url}")
+    private String gatewayUrl;
 
     private void configureFreemarker() {
         // Recommended settings for new projects:
@@ -61,6 +65,7 @@ public class MailService {
         root.put("id", model.getId());
         root.put("name", model.getName());
         root.put("email", model.getEmail());
+        root.put("gatewayUrl", gatewayUrl);
         try {
             Template temp = freemarkerConfiguration.getTemplate("guest-activation.ftl");
             return FreeMarkerTemplateUtils.processTemplateIntoString(temp, root);

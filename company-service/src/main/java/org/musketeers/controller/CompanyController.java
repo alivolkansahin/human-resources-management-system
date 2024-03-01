@@ -1,24 +1,25 @@
 package org.musketeers.controller;
 
 import lombok.RequiredArgsConstructor;
-import static org.musketeers.constant.EndPoints.*;
-
-import org.musketeers.dto.request.*;
+import org.musketeers.dto.request.AddDepartmentRequestDto;
+import org.musketeers.dto.request.AddHolidayRequestDto;
+import org.musketeers.dto.request.AddIncomeRequestDto;
+import org.musketeers.dto.request.CompanyUpdateRequestDTO;
 import org.musketeers.dto.response.GetCompanyDetailedInfoResponseDto;
 import org.musketeers.dto.response.GetCompanySummaryInfoResponseDto;
-import org.musketeers.mapper.ICompanyMapper;
 import org.musketeers.repository.entity.Company;
 import org.musketeers.service.*;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+import static org.musketeers.constant.EndPoints.*;
+
 @RestController
 @RequestMapping(ROOT+COMPANY)
 @RequiredArgsConstructor
-@CrossOrigin("*")
+@CrossOrigin
 public class CompanyController {
 
     private final CompanyService companyService;
@@ -26,12 +27,6 @@ public class CompanyController {
     private final IncomeService incomeService;
     private final ExpenseService expenseService;
     private final HolidayService holidayService;
-    private final ICompanyMapper companyMapper;
-
-//    @PostMapping(SAVE)
-//    public boolean save(@RequestBody Company company) {
-//        return companyService.createCompany(company);
-//    }
 
     @GetMapping(FINDALL)
     public List<Company> findAll(){
@@ -43,8 +38,8 @@ public class CompanyController {
         return companyService.findByCompanyId(token);
     }
 
-    @PutMapping(value = UPDATE_FOR_THE_FIRST_TIME, consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Boolean> updateCompanyForFirstTime(@ModelAttribute CompanyUpdateRequestDTO dto){
+    @PutMapping(UPDATE_FOR_THE_FIRST_TIME)
+    public ResponseEntity<Boolean> updateCompanyForFirstTime(@RequestBody CompanyUpdateRequestDTO dto){
         return ResponseEntity.ok(companyService.updateCompanyForFirstTime(dto));
     }
 

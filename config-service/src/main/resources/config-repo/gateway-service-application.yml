@@ -6,7 +6,6 @@ spring:
   cloud:
     gateway:
       globalcors:
-        add-to-simple-url-handler-mapping: true
         cors-configurations:
           '[/**]':
             allowedOrigins: "*"
@@ -14,17 +13,15 @@ spring:
             allowedMethods:
               - GET
               - POST
-              - PUT
-              - DELETE
               - PATCH
-              - OPTIONS
+              - PUT
       default-filters:
-        - RewritePath=/(?<segment>.*), /$\{segment}
+        - RewritePath=/(?<segment>.*),/api/v1/$\{segment}
       routes:
         - id: admin-service
           uri: http://localhost:9093
           predicates:
-            - Path=/api/v1/admin/**
+            - Path=/admin/**
           filters:
             - DedupeResponseHeader=Access-Control-Allow-Credentials Access-Control-Allow-Origin
             - name: CircuitBreaker
@@ -34,7 +31,7 @@ spring:
         - id: advance-service
           uri: http://localhost:9088
           predicates:
-            - Path=/api/v1/advance/**
+            - Path=/advance/**
           filters:
             - DedupeResponseHeader=Access-Control-Allow-Credentials Access-Control-Allow-Origin
             - name: CircuitBreaker
@@ -44,7 +41,7 @@ spring:
         - id: auth-service
           uri: http://localhost:9090
           predicates:
-            - Path=/api/v1/auth/**
+            - Path=/auth/**
           filters:
             - DedupeResponseHeader=Access-Control-Allow-Credentials Access-Control-Allow-Origin
             - name: CircuitBreaker
@@ -54,7 +51,7 @@ spring:
         - id: comment-service
           uri: http://localhost:9097
           predicates:
-            - Path=/api/v1/comment/**
+            - Path=/comment/**
           filters:
             - DedupeResponseHeader=Access-Control-Allow-Credentials Access-Control-Allow-Origin
             - name: CircuitBreaker
@@ -64,7 +61,7 @@ spring:
         - id: company-service
           uri: http://localhost:9095
           predicates:
-            - Path=/api/v1/company/**
+            - Path=/company/**
           filters:
             - DedupeResponseHeader=Access-Control-Allow-Credentials Access-Control-Allow-Origin
             - name: CircuitBreaker
@@ -74,7 +71,7 @@ spring:
         - id: day-off-service
           uri: http://localhost:9089
           predicates:
-            - Path=/api/v1/day-off/**
+            - Path=/day-off/**
           filters:
             - DedupeResponseHeader=Access-Control-Allow-Credentials Access-Control-Allow-Origin
             - name: CircuitBreaker
@@ -84,7 +81,7 @@ spring:
         - id: guest-service
           uri: http://localhost:9094
           predicates:
-            - Path=/api/v1/guest/**
+            - Path=/guest/**
           filters:
             - DedupeResponseHeader=Access-Control-Allow-Credentials Access-Control-Allow-Origin
             - name: CircuitBreaker
@@ -94,7 +91,7 @@ spring:
         - id: personnel-service
           uri: http://localhost:9091
           predicates:
-            - Path=/api/v1/personnel/**
+            - Path=/personnel/**
           filters:
             - DedupeResponseHeader=Access-Control-Allow-Credentials Access-Control-Allow-Origin
             - name: CircuitBreaker
@@ -104,7 +101,7 @@ spring:
         - id: spending-service
           uri: http://localhost:9087
           predicates:
-            - Path=/api/v1/spending/**
+            - Path=/spending/**
           filters:
             - DedupeResponseHeader=Access-Control-Allow-Credentials Access-Control-Allow-Origin
             - name: CircuitBreaker
@@ -114,16 +111,10 @@ spring:
         - id: supervisor-service
           uri: http://localhost:9092
           predicates:
-            - Path=/api/v1/supervisor/**
+            - Path=/supervisor/**
           filters:
             - DedupeResponseHeader=Access-Control-Allow-Credentials Access-Control-Allow-Origin
             - name: CircuitBreaker
               args:
                 name: supervisorCircuitBreaker
                 fallbackUri: forward:/fallback/supervisor
-#        - id: cloudinary_cors
-#          uri: https://api.cloudinary.com
-#          predicates:
-#            - Path=/**
-#          filters:
-#            - DedupeResponseHeader=Access-Control-Allow-Credentials Access-Control-Allow-Origin

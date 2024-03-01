@@ -1,7 +1,5 @@
 package org.musketeers.service;
 
-import com.cloudinary.Cloudinary;
-import com.cloudinary.utils.ObjectUtils;
 import org.musketeers.dto.request.CreatePersonnelRequestDto;
 import org.musketeers.dto.request.UpdatePersonnelRequestDto;
 import org.musketeers.dto.response.*;
@@ -18,11 +16,12 @@ import org.musketeers.utility.JwtTokenManager;
 import org.musketeers.utility.ServiceManager;
 import org.springframework.stereotype.Service;
 
-import java.io.IOException;
 import java.time.Instant;
 import java.time.ZoneId;
 import java.time.temporal.ChronoUnit;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 @Service
 public class PersonnelService extends ServiceManager<Personnel, String> {
@@ -31,7 +30,7 @@ public class PersonnelService extends ServiceManager<Personnel, String> {
 
     private final JwtTokenManager jwtTokenManager;
 
-    private final Cloudinary cloudinary;
+//    private final Cloudinary cloudinary;
 
     private final CreatePersonnelProducer createPersonnelProducer;
 
@@ -53,11 +52,10 @@ public class PersonnelService extends ServiceManager<Personnel, String> {
 
     private final SendSpendingExpenseToCompanyServiceProducer sendSpendingExpenseToCompanyServiceProducer;
 
-    public PersonnelService(PersonnelRepository personnelRepository, JwtTokenManager jwtTokenManager, Cloudinary cloudinary, CreatePersonnelProducer createPersonnelProducer, GetCompanyIdFromSupervisorTokenProducer getCompanyIdFromSupervisorTokenProducer, GetCompanyDetailsByPersonnelRequestProducer getCompanyDetailsByPersonnelRequestProducer, UpdatePersonnelRequestProducer updatePersonnelRequestProducer, UpdateSupervisorProducer updateSupervisorProducer, SendDayOffStatusChangeMailProducer sendDayOffStatusChangeMailProducer, SendAdvanceStatusChangeMailProducer sendAdvanceStatusChangeMailProducer, SendAdvanceExpenseToCompanyServiceProducer sendAdvanceExpenseToCompanyServiceProducer, SendSpendingStatusChangeMailProducer sendSpendingStatusChangeMailProducer, SendSpendingExpenseToCompanyServiceProducer sendSpendingExpenseToCompanyServiceProducer) {
+    public PersonnelService(PersonnelRepository personnelRepository, JwtTokenManager jwtTokenManager, CreatePersonnelProducer createPersonnelProducer, GetCompanyIdFromSupervisorTokenProducer getCompanyIdFromSupervisorTokenProducer, GetCompanyDetailsByPersonnelRequestProducer getCompanyDetailsByPersonnelRequestProducer, UpdatePersonnelRequestProducer updatePersonnelRequestProducer, UpdateSupervisorProducer updateSupervisorProducer, SendDayOffStatusChangeMailProducer sendDayOffStatusChangeMailProducer, SendAdvanceStatusChangeMailProducer sendAdvanceStatusChangeMailProducer, SendAdvanceExpenseToCompanyServiceProducer sendAdvanceExpenseToCompanyServiceProducer, SendSpendingStatusChangeMailProducer sendSpendingStatusChangeMailProducer, SendSpendingExpenseToCompanyServiceProducer sendSpendingExpenseToCompanyServiceProducer) {
         super(personnelRepository);
         this.personnelRepository = personnelRepository;
         this.jwtTokenManager = jwtTokenManager;
-        this.cloudinary = cloudinary;
         this.createPersonnelProducer = createPersonnelProducer;
         this.getCompanyIdFromSupervisorTokenProducer = getCompanyIdFromSupervisorTokenProducer;
         this.getCompanyDetailsByPersonnelRequestProducer = getCompanyDetailsByPersonnelRequestProducer;
@@ -288,24 +286,6 @@ public class PersonnelService extends ServiceManager<Personnel, String> {
                     .build());
         }
         personnel.setPhones(personnelPhones);
-//        String profilePictureFileName = personnel.getId() + ".jpg";
-//        String profilePicturePath = "H:\\Program Files\\PROJECTS\\human-resources-management-system\\personnel-service\\src\\main\\resources\\uploads\\" + profilePictureFileName;
-//        try {
-//            dto.getProfileImage().transferTo(new File(profilePicturePath));
-//        } catch (IOException e) {
-//            throw new RuntimeException(e);
-//        }
-        if(Optional.ofNullable(dto.getProfileImageUrl()).isEmpty()) {
-            try {
-                byte[] fileBytes = dto.getProfileImage().getBytes();
-                Map<?, ?> response = cloudinary.uploader().upload(fileBytes, ObjectUtils.emptyMap());
-                String url = (String) response.get("url");
-                personnel.setImage(url);
-                return;
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
-        }
         personnel.setImage(dto.getProfileImageUrl());
     }
 

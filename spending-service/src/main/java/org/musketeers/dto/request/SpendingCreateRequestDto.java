@@ -25,8 +25,8 @@ public class SpendingCreateRequestDto {
 
     private String currency;
 
-    private String spendingDate;
+    private LocalDate spendingDate;
 
-    private List<MultipartFile> attachments;
+    private List<String> attachmentUrls;
 
 }

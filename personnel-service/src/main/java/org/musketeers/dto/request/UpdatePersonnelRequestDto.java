@@ -22,9 +22,7 @@ public class UpdatePersonnelRequestDto {
 
     private String email;
 
-    private List<String> phones;         // get(0) personal, get(1) work phone...
-
-    private MultipartFile profileImage;
+    private List<String> phones;
 
     private String profileImageUrl;
 

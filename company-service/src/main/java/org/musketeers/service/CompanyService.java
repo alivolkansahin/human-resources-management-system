@@ -1,7 +1,5 @@
 package org.musketeers.service;
 
-import com.cloudinary.Cloudinary;
-import com.cloudinary.utils.ObjectUtils;
 import org.musketeers.dto.request.CompanyUpdateRequestDTO;
 import org.musketeers.dto.response.GetCompanyDetailedInfoResponseDto;
 import org.musketeers.dto.response.GetCompanySummaryInfoResponseDto;
@@ -23,11 +21,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
-import java.io.IOException;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.ZoneId;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -35,7 +35,7 @@ public class CompanyService extends ServiceManager<Company, String> {
     private final CompanyRepository companyRepository;
     private final JwtTokenManager jwtTokenManager;
 
-    private final Cloudinary cloudinary;
+//    private final Cloudinary cloudinary;
 
     private final GetCompanyIdFromSupervisorProducer getCompanyIdFromSupervisorProducer;
 
@@ -55,11 +55,10 @@ public class CompanyService extends ServiceManager<Company, String> {
         this.departmentService = departmentService;
     }
 
-    public CompanyService(CompanyRepository companyRepository, JwtTokenManager jwtTokenManager, Cloudinary cloudinary, GetCompanyIdFromSupervisorProducer getCompanyIdFromSupervisorProducer, GetCompanySupervisorRequestProducer getCompanySupervisorRequestProducer, PersonnelService personnelService) {
+    public CompanyService(CompanyRepository companyRepository, JwtTokenManager jwtTokenManager, GetCompanyIdFromSupervisorProducer getCompanyIdFromSupervisorProducer, GetCompanySupervisorRequestProducer getCompanySupervisorRequestProducer, PersonnelService personnelService) {
         super(companyRepository);
         this.companyRepository = companyRepository;
         this.jwtTokenManager=jwtTokenManager;
-        this.cloudinary = cloudinary;
         this.getCompanyIdFromSupervisorProducer = getCompanyIdFromSupervisorProducer;
         this.getCompanySupervisorRequestProducer = getCompanySupervisorRequestProducer;
         this.personnelService = personnelService;
@@ -102,23 +101,7 @@ public class CompanyService extends ServiceManager<Company, String> {
     private Company getUpdatedCompany(CompanyUpdateRequestDTO dto,Company company) {
         Long time = System.currentTimeMillis();
         company.setEstablishmentDate(dto.getEstablishmentDate());
-        try {
-//            byte[] fileBytes =
-            System.out.println("TRY CATCHTEYIM URL YUKLEYECEGİM...");
-            Map<?, ?> response = cloudinary.uploader().upload(dto.getCompanyLogo().getBytes(), ObjectUtils.emptyMap());
-            String url = (String) response.get("url");
-            System.out.println("URL DÖNDÜ : " + url);
-            company.setCompanyLogo(url);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-        System.out.println("THREAD SLEEPTE");
-        try {
-            Thread.sleep(4000);
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
-        }
-        System.out.println("THREAD SLEEPTEN ÇIKTI");
+        company.setCompanyLogo(dto.getCompanyLogoUrl());
         company.setCompanyStatus(EStatus.ACTIVE);
         company.setAddress(dto.getAddress());
         company.setHrInfos(dto.getHrInfos().stream()
@@ -144,34 +127,40 @@ public class CompanyService extends ServiceManager<Company, String> {
                         .updatedAt(time)
                         .build())
                 .collect(Collectors.toList()));
-        company.setHolidays(dto.getHolidays().stream()
-                .map(holidayDto -> Holiday.builder()
-                        .company(company)
-                        .name(holidayDto.getName())
-                        .startDate(holidayDto.getStartDate())
-                        .endDate(holidayDto.getEndDate())
-                        .build())
-                .collect(Collectors.toList()));
-        company.setIncomes(dto.getIncomes().stream()
-                .map(incomeDto -> Income.builder()
-                        .company(company)
-                        .description(incomeDto.getDescription())
-                        .amount(incomeDto.getAmount())
-                        .incomeDate(incomeDto.getIncomeDate())
-                        .createdAt(time)
-                        .updatedAt(time)
-                        .build())
-                .collect(Collectors.toList()));
-        company.setExpenses(dto.getExpenses().stream()
-                .map(expenseDto -> Expense.builder()
-                        .company(company)
-                        .description(expenseDto.getDescription())
-                        .amount(expenseDto.getAmount())
-                        .expenseDate(expenseDto.getExpenseDate())
-                        .createdAt(time)
-                        .updatedAt(time)
-                        .build())
-                .collect(Collectors.toList()));
+        if(Optional.ofNullable(dto.getHolidays()).isPresent()){
+            company.setHolidays(dto.getHolidays().stream()
+                    .map(holidayDto -> Holiday.builder()
+                            .company(company)
+                            .name(holidayDto.getName())
+                            .startDate(holidayDto.getStartDate())
+                            .endDate(holidayDto.getEndDate())
+                            .build())
+                    .collect(Collectors.toList()));
+        }
+        if(Optional.ofNullable(dto.getIncomes()).isPresent()){
+            company.setIncomes(dto.getIncomes().stream()
+                    .map(incomeDto -> Income.builder()
+                            .company(company)
+                            .description(incomeDto.getDescription())
+                            .amount(incomeDto.getAmount())
+                            .incomeDate(incomeDto.getIncomeDate())
+                            .createdAt(time)
+                            .updatedAt(time)
+                            .build())
+                    .collect(Collectors.toList()));
+        }
+        if(Optional.ofNullable(dto.getExpenses()).isPresent()){
+            company.setExpenses(dto.getExpenses().stream()
+                    .map(expenseDto -> Expense.builder()
+                            .company(company)
+                            .description(expenseDto.getDescription())
+                            .amount(expenseDto.getAmount())
+                            .expenseDate(expenseDto.getExpenseDate())
+                            .createdAt(time)
+                            .updatedAt(time)
+                            .build())
+                    .collect(Collectors.toList()));
+        }
         return company;
     }
 

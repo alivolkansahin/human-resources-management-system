@@ -1,7 +1,5 @@
 package org.musketeers.service;
 
-import com.cloudinary.Cloudinary;
-import com.cloudinary.utils.ObjectUtils;
 import org.musketeers.dto.request.SpendingCancelRequestDto;
 import org.musketeers.dto.request.SpendingCreateRequestDto;
 import org.musketeers.dto.request.SpendingUpdateRequestDto;
@@ -10,8 +8,8 @@ import org.musketeers.dto.response.SpendingGetAllRequestsResponseDto;
 import org.musketeers.entity.Attachment;
 import org.musketeers.entity.Spending;
 import org.musketeers.entity.enums.ECurrency;
-import org.musketeers.entity.enums.ERequestStatus;
 import org.musketeers.entity.enums.EReason;
+import org.musketeers.entity.enums.ERequestStatus;
 import org.musketeers.exception.ErrorType;
 import org.musketeers.exception.SpendingServiceException;
 import org.musketeers.rabbitmq.model.GetPersonnelDetailsForSpendingRequestModel;
@@ -25,12 +23,12 @@ import org.musketeers.utility.JwtTokenManager;
 import org.musketeers.utility.ServiceManager;
 import org.springframework.stereotype.Service;
 
-import java.io.IOException;
 import java.time.Instant;
-import java.time.LocalDate;
 import java.time.ZoneId;
-import java.time.format.DateTimeFormatter;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class SpendingService extends ServiceManager<Spending, String> {
@@ -39,7 +37,7 @@ public class SpendingService extends ServiceManager<Spending, String> {
 
     private final JwtTokenManager jwtTokenManager;
 
-    private final Cloudinary cloudinary;
+//    private final Cloudinary cloudinary;
 
     private final GetPersonnelIdAndCompanyIdForSpendingRequestProducer getPersonnelIdAndCompanyIdForSpendingRequestProducer;
 
@@ -51,11 +49,10 @@ public class SpendingService extends ServiceManager<Spending, String> {
 
     private static final String PERSONNEL_ROLE = "PERSONNEL";
 
-    public SpendingService(SpendingRepository spendingRepository, JwtTokenManager jwtTokenManager, Cloudinary cloudinary, GetPersonnelIdAndCompanyIdForSpendingRequestProducer getPersonnelIdAndCompanyIdForSpendingRequestProducer, SendSpendingStatusChangeNotificationProducer sendSpendingStatusChangeNotificationProducer, GetPersonnelDetailsForSpendingRequestProducer getPersonnelDetailsForSpendingRequestProducer) {
+    public SpendingService(SpendingRepository spendingRepository, JwtTokenManager jwtTokenManager, GetPersonnelIdAndCompanyIdForSpendingRequestProducer getPersonnelIdAndCompanyIdForSpendingRequestProducer, SendSpendingStatusChangeNotificationProducer sendSpendingStatusChangeNotificationProducer, GetPersonnelDetailsForSpendingRequestProducer getPersonnelDetailsForSpendingRequestProducer) {
         super(spendingRepository);
         this.spendingRepository = spendingRepository;
         this.jwtTokenManager = jwtTokenManager;
-        this.cloudinary = cloudinary;
         this.getPersonnelIdAndCompanyIdForSpendingRequestProducer = getPersonnelIdAndCompanyIdForSpendingRequestProducer;
         this.sendSpendingStatusChangeNotificationProducer = sendSpendingStatusChangeNotificationProducer;
         this.getPersonnelDetailsForSpendingRequestProducer = getPersonnelDetailsForSpendingRequestProducer;
@@ -74,7 +71,6 @@ public class SpendingService extends ServiceManager<Spending, String> {
         String personnelId = responseModel.getPersonnelId();
         String companyId = responseModel.getCompanyId();
         List<Spending> personnelPendingRequests = spendingRepository.findAllByPersonnelIdAndRequestStatus(personnelId, ERequestStatus.PENDING);
-//        if(!personnelPendingRequests.isEmpty()) throw new SpendingServiceException(ErrorType.PENDING_REQUEST_EXISTS);
         Spending spending = Spending.builder()
                 .personnelId(personnelId)
                 .companyId(companyId)
@@ -82,29 +78,18 @@ public class SpendingService extends ServiceManager<Spending, String> {
                 .description(dto.getDescription())
                 .amount(dto.getAmount())
                 .currency(ECurrency.valueOf(dto.getCurrency()))
-                .spendingDate(LocalDate.parse(dto.getSpendingDate(), DateTimeFormatter.ofPattern("EEE MMM dd yyyy HH:mm:ss 'GMT'Z (z)", Locale.ENGLISH)))
+                .spendingDate(dto.getSpendingDate())
                 .build();
-        if(Optional.ofNullable(dto.getAttachments()).isPresent()){
-            List<Attachment> attachments = new ArrayList<>();
-            long time = System.currentTimeMillis();
-            dto.getAttachments().forEach(multipartFile -> {
-                try {
-                    byte[] fileBytes = multipartFile.getBytes();
-                    Map<?, ?> response = cloudinary.uploader().upload(fileBytes, ObjectUtils.emptyMap());
-                    String url = (String) response.get("url");
-                    attachments.add(Attachment.builder()
+        long time = System.currentTimeMillis();
+        spending.setAttachments(dto.getAttachmentUrls().stream()
+                        .map(attachmentUrl -> Attachment.builder()
                             .spending(spending)
-                            .fileUrl(url)
+                            .fileUrl(attachmentUrl)
                             .createdAt(time)
                             .updatedAt(time)
                             .status(true)
-                            .build());
-                } catch (IOException e) {
-                    throw new RuntimeException(e);
-                }
-            });
-            spending.setAttachments(attachments);
-        }
+                            .build())
+                        .collect(Collectors.toList()));
         save(spending);
         return "Request Created!";
     }

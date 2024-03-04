@@ -22,6 +22,8 @@ public class GetPersonnelDetailsResponseDto {
 
     private String email;
 
+    private String companyId;
+
     private List<PhoneResponseDto> phones;
 
     private List<String> addresses;

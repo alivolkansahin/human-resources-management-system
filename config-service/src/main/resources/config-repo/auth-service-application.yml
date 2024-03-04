@@ -41,5 +41,5 @@ rabbitmq:
   search-for-company-name-queue: searchForCompanyNameQueue
   search-for-company-name-bindingKey: searchForCompanyNameBindingKey
   expiration-timeout: 5000
-#  active-status-queue: activeStatusQueue
-#  active-status-bindingKey: activeStatusBindingKey
+auth:
+  vite-url: http://localhost:5173

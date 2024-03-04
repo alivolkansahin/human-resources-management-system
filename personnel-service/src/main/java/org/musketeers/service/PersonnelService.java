@@ -82,6 +82,7 @@ public class PersonnelService extends ServiceManager<Personnel, String> {
                 .lastName(personnel.getLastName())
                 .image(personnel.getImage())
                 .email(personnel.getEmail())
+                .companyId(personnel.getCompanyId())
                 .phones(personnel.getPhones().stream().map(phone -> PhoneResponseDto.builder()
                         .phoneType(phone.getPhoneType().toString())
                         .phoneNumber(phone.getPhoneNumber())

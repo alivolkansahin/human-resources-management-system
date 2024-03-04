@@ -29,6 +29,10 @@
             border-top-right-radius: 8px;
         }
 
+        .header h1 {
+            text-align: center;
+        }
+
         .content {
             padding: 20px;
             color: #333;
@@ -58,6 +62,10 @@
             text-align: center;
             border-bottom-left-radius: 8px;
             border-bottom-right-radius: 8px;
+        }
+
+        .footer p{
+            color: #fff;
         }
     </style>
 </head>

@@ -28,9 +28,14 @@
             border-top-right-radius: 8px;
         }
 
+        .header h1 {
+            text-align: center;
+        }
+
         .content {
             padding: 20px;
             color: #333;
+            text-align: center;
         }
 
         h1 {
@@ -83,7 +88,7 @@
     <div class="content">
         <h1>Welcome to Musketeers HR System Management ${name}!</h1>
         <p>Please click the button below to activate your account: ${email}</p>
-        <a href="http://localhost:80/auth/activate-guest/${id}" target="_blank">
+        <a href="${gatewayUrl}/auth/activate-guest/${id}" target="_blank">
             <button>Activate Account</button>
         </a>
     </div>

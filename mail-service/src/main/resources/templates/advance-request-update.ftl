@@ -29,10 +29,13 @@
             border-top-right-radius: 8px;
         }
 
+        .header h1 {
+            text-align: center;
+        }
+
         .content {
             padding: 20px;
             color: #333;
-
         }
 
         h2 {
@@ -43,8 +46,7 @@
 
         p {
             margin-bottom: 8px;
-            color: #333;
-
+            color: #666;
         }
 
         hr {
@@ -60,6 +62,10 @@
             text-align: center;
             border-bottom-left-radius: 8px;
             border-bottom-right-radius: 8px;
+        }
+
+        .footer p{
+            color: #fff;
         }
     </style>
 </head>
@@ -78,7 +84,7 @@
         <p><strong>Updated At:</strong> ${requestUpdatedAt}</p>
     </div>
     <div class="footer">
-        <p1>Thank you for choosing MUSKETEERS HR Management.</p1>
+        <p>Thank you for choosing MUSKETEERS HR Management.</p>
     </div>
 </div>
 </body>

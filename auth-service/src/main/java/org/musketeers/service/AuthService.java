@@ -18,6 +18,7 @@ import org.musketeers.repository.IAuthRepository;
 import org.musketeers.utility.CodeGenerator;
 import org.musketeers.utility.JwtTokenManager;
 import org.musketeers.utility.ServiceManager;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Service;
 import org.springframework.util.FileCopyUtils;
@@ -40,6 +41,10 @@ public class AuthService extends ServiceManager<Auth, String> {
     private final GetCompanyIdForLoginRequestProducer getCompanyIdForLoginRequestProducer;
     private final CompanyStatusCheckRequestProducer companyStatusCheckRequestProducer;
     private final SearchForCompanyNameRequestProducer searchForCompanyNameRequestProducer;
+
+    @Value("${auth.vite-url}")
+    private String viteUrl;
+
 
     public AuthService(IAuthRepository repository, JwtTokenManager tokenManager, MailSenderForGuestProducer mailSenderProducerForGuest, RegisterGuestProducer registerGuestProducer, RegisterSupervisorProducer registerSupervisorProducer, RegisterGuestActivationProducer registerGuestActivationProducer, PersonnelMailSendProducer personnelMailSendProducer, GetCompanyIdForLoginRequestProducer getCompanyIdForLoginRequestProducer, CompanyStatusCheckRequestProducer companyStatusCheckRequestProducer, SearchForCompanyNameRequestProducer searchForCompanyNameRequestProducer) {
         super(repository);
@@ -170,7 +175,9 @@ public class AuthService extends ServiceManager<Auth, String> {
             ClassPathResource classPathResource = new ClassPathResource("templates/activation-success-page.html");
             InputStream inputStream = classPathResource.getInputStream();
             byte[] activationSuccessfulPage = FileCopyUtils.copyToByteArray(inputStream);
-            return new String(activationSuccessfulPage);
+            String htmlContent = new String(activationSuccessfulPage);
+            htmlContent = htmlContent.replaceAll("viteUrl", viteUrl);
+            return htmlContent;
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

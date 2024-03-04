@@ -51,7 +51,7 @@ public class MailService {
         MimeMessageHelper mimeMessageHelper = new MimeMessageHelper(mimeMessage);
         try {
             mimeMessageHelper.setSubject("Musketeers HR Management System Account Activation");
-            mimeMessageHelper.setFrom("musketeershmrs@gmail.com");
+            mimeMessageHelper.setFrom("infomusketeershmrs@gmail.com");
             mimeMessageHelper.setTo(model.getEmail());
             mimeMessageHelper.setText(getActivationMailContent(model), true);
         } catch (MessagingException e) {

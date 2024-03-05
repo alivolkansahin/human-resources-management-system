@@ -74,10 +74,10 @@ public class ExpenseService extends ServiceManager<Expense, String> {
                 multiplier = 1.0;
                 break;
             case "USD":
-                multiplier = 31.13;
+                multiplier = 31.63;
                 break;
             case "EUR":
-                multiplier = 33.77;
+                multiplier = 34.33;
                 break;
             default:
                 return;

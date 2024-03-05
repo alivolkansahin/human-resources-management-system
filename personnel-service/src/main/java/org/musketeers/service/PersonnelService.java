@@ -178,7 +178,7 @@ public class PersonnelService extends ServiceManager<Personnel, String> {
                 .personnelId(personnel.getId())
                 .companyId(personnel.getCompanyId())
                 .departmentId(personnel.getDepartmentId())
-                .expenseDescription("SALARY")
+                .expenseDescription("Salary")
                 .expenseAmount(personnel.getSalary())
                 .expenseDate(Instant.ofEpochMilli(personnel.getCreatedAt())
                         .atZone(ZoneId.systemDefault())
@@ -362,7 +362,7 @@ public class PersonnelService extends ServiceManager<Personnel, String> {
             update(personnel);
             sendAdvanceExpenseToCompanyServiceProducer.sendExpense(SendAdvanceExpenseToCompanyServiceModel.builder()
                     .companyId(personnel.getCompanyId())
-                    .description("ADVANCE")
+                    .description("Advance")
                     .amount(reduceAmount)
                     .expenseDate(Instant.ofEpochMilli(personnel.getUpdatedAt())
                             .atZone(ZoneId.systemDefault())
@@ -416,7 +416,7 @@ public class PersonnelService extends ServiceManager<Personnel, String> {
         if(model.getUpdatedStatus().equals("ACCEPTED")) {
             sendSpendingExpenseToCompanyServiceProducer.sendExpense(SendSpendingExpenseToCompanyServiceModel.builder()
                     .companyId(personnel.getCompanyId())
-                    .description("SPENDING")
+                    .description("Spending")
                     .amount(model.getRequestAmount())
                     .currency(model.getRequestCurrency())
                     .expenseDate(Instant.ofEpochMilli(personnel.getUpdatedAt())

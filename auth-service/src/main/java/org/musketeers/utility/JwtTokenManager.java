@@ -23,7 +23,7 @@ public class JwtTokenManager {
 
     @Value("${authserviceconfig.secrets.issuer}")
     String issuer;
-    Long expTime=1000L*60*90;
+    Long expTime=1000L*60*360;
 
     public Optional<String> createToken(String id, ERole role){
         try {
